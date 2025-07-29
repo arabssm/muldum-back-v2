@@ -1,9 +1,8 @@
-
 package co.kr.muldum.infrastructure.user.oauth;
 
-import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfo;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,7 @@ public class GoogleOAuthClient {
         this.restTemplate = new RestTemplate();
     }
 
-    public GoogleUserInfo getUserInfo(String accessToken) {
+    public GoogleUserInfoDto getUserInfo(String accessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(accessToken);
@@ -28,11 +27,11 @@ public class GoogleOAuthClient {
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
-            ResponseEntity<GoogleUserInfo> response = restTemplate.exchange(
+            ResponseEntity<GoogleUserInfoDto> response = restTemplate.exchange(
                     "https://www.googleapis.com/oauth2/v3/userinfo",
                     HttpMethod.GET,
                     request,
-                    GoogleUserInfo.class
+                    GoogleUserInfoDto.class
             );
 
             return response.getBody();
