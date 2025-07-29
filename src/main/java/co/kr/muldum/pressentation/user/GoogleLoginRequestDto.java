@@ -3,7 +3,7 @@ package co.kr.muldum.pressentation.user;
 import lombok.Getter;
 
 @Getter
-public class GoogleLoginRequest {
+public class GoogleLoginRequestDto {
 
     private String accessToken;
 }
