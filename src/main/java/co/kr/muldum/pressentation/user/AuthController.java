@@ -1,6 +1,6 @@
 package co.kr.muldum.pressentation.user;
 
-import co.kr.muldum.application.user.LoginResponse;
+import co.kr.muldum.application.user.LoginResponseDto;
 import co.kr.muldum.application.user.OAuthLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +14,10 @@ public class AuthController {
     private final OAuthLoginService oAuthLoginService;
 
     @PostMapping("/login/google")
-    public ResponseEntity<LoginResponse> loginWithGoogle(
-            @RequestBody GoogleLoginRequest request
+    public ResponseEntity<LoginResponseDto> loginWithGoogle(
+            @RequestBody GoogleLoginRequestDto request
     ) {
-        LoginResponse response = oAuthLoginService.loginWithGoogle(request.getAccessToken());
+        LoginResponseDto response = oAuthLoginService.loginWithGoogle(request.getAccessToken());
         return ResponseEntity.ok(response);
     }
 }
