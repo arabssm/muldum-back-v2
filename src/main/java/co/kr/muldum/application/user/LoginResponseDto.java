@@ -22,7 +22,7 @@ public class LoginResponseDto {
                 .userId(userInfo.getUserId())
                 .name(userInfo.getName())
                 .teamId(userInfo.getTeamId())
-                .role(userInfo.getRole())
+                .role(userInfo.getRole().name())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
