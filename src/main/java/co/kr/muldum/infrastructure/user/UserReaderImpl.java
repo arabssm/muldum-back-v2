@@ -3,6 +3,7 @@ package co.kr.muldum.infrastructure.user;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.domain.user.model.UserType;
+import co.kr.muldum.domain.user.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,7 @@ public class UserReaderImpl implements UserReader {
                         .userId(rs.getLong("id"))
                         .name(rs.getString("name"))
                         .teamId(null)
-                        .role("student")
+                        .role(Role.MEMBER)
                         .build(),
                     email
                 )
