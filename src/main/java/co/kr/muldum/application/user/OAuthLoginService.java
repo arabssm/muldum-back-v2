@@ -25,7 +25,7 @@ public class OAuthLoginService {
         // 구글에서 사용자 정보 받아오기
         GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(accessToken);
 
-        String email = GoogleUserInfoDto.getEmail();
+        String email = userInfoDto.getEmail();
 
         if (!email.endsWith("@bssm.hs.kr")) {
             throw new UnauthorizedDomainException("허용되지 않은 이메일 도메인입니다.");
