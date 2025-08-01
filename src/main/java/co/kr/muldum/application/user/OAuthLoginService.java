@@ -3,6 +3,7 @@ package co.kr.muldum.application.user;
 
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
+import co.kr.muldum.global.exception.UnauthorizedDomainException;
 import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
@@ -23,6 +24,12 @@ public class OAuthLoginService {
 
         // 구글에서 사용자 정보 받아오기
         GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(accessToken);
+
+        String email = GoogleUserInfoDto.getEmail();
+
+        if (!email.endsWith("@bssm.hs.kr")) {
+            throw new UnauthorizedDomainException("허용되지 않은 이메일 도메인입니다.");
+        }
 
         // email 기반으로 DB에서 사용자 조회
         UserInfo userInfo = userReader.findByEmail(userInfoDto.getEmail())
