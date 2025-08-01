@@ -1,7 +1,8 @@
-package co.kr.muldum.pressentation.user;
+package co.kr.muldum.presentation.user;
 
 import co.kr.muldum.application.user.LoginResponseDto;
 import co.kr.muldum.application.user.OAuthLoginService;
+import co.kr.muldum.infrastructure.user.oauth.dto.GoogleLoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
