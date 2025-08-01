@@ -9,8 +9,4 @@ public class GoogleUserInfoDto {
     private String email;
     private String name;
     private String picture;
-
-    public static String getEmail() {
-        return email;
-    }
 }
