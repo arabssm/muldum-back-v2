@@ -1,9 +1,11 @@
 package co.kr.muldum.global.security;
 
+import co.kr.muldum.global.util.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 2. 토큰이 유효하다면, 인증 정보 설정하기
         if (token != null && jwtTokenResolver.validateToken(token)) {
             SecurityContextHolder.getContext().setAuthentication(
-                    jwtTokenResolver.getAuthentication(token)
+                    (Authentication) jwtTokenResolver.getAuthentication(token)
             );
         }
 
