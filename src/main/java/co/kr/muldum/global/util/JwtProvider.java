@@ -2,9 +2,12 @@ package co.kr.muldum.global.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtProvider {
@@ -41,5 +44,15 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public boolean validateToken(String token) {
+        // TODO: 토큰 유효성 검사 로직 작성 (예: 서명 확인, 만료일 확인 등)
+        return true;
+    }
+
+    public Authentication getAuthentication(String token) {
+        // TODO: 토큰을 바탕으로 인증 객체 생성 (예: 사용자 정보 꺼내기)
+        return new UsernamePasswordAuthenticationToken("user", null, List.of());
     }
 }
