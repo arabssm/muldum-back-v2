@@ -1,0 +1,39 @@
+package co.kr.muldum.global.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtTokenResolver jwtTokenResolver;
+
+    public JwtAuthenticationFilter(JwtTokenResolver jwtTokenResolver) {
+        this.jwtTokenResolver = jwtTokenResolver;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
+
+        // 1. 요청에서 토큰 꺼내기 (Authorization 헤더)
+        String token = jwtTokenResolver.resolveToken(request);
+
+        // 2. 토큰이 유효하다면, 인증 정보 설정하기
+        if (token != null && jwtTokenResolver.validateToken(token)) {
+            SecurityContextHolder.getContext().setAuthentication(
+                    jwtTokenResolver.getAuthentication(token)
+            );
+        }
+
+        // 3. 다음 필터로 넘어가기
+        filterChain.doFilter(request, response);
+    }
+}
