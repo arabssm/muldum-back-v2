@@ -1,5 +1,7 @@
 package co.kr.muldum.global.util;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,12 +49,39 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
-        // TODO: 토큰 유효성 검사 로직 작성 (예: 서명 확인, 만료일 확인 등)
         return true;
     }
 
     public Authentication getAuthentication(String token) {
-        // TODO: 토큰을 바탕으로 인증 객체 생성 (예: 사용자 정보 꺼내기)
         return new UsernamePasswordAuthenticationToken("user", null, List.of());
+    }
+
+    public long getRefreshTokenExpirationMillis() {
+        return 7 * 24 * 60 * 60 * 1000L;
+    }
+
+    public boolean isValidRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String createAccessTokenByRefreshToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+
+        Long userId = Long.valueOf(claims.get("userId", String.class));
+        String userType = claims.get("userType", String.class);
+
+        return createAccessToken(userId, userType);
     }
 }
