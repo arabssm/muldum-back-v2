@@ -11,6 +11,8 @@ import co.kr.muldum.infrastructure.user.oauth.GoogleOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.concurrent.TimeUnit;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +20,8 @@ public class OAuthLoginService {
 
     private final GoogleOAuthClient googleOAuthClient;
     private final UserReader userReader;
-    private final JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider =  new JwtProvider();
+    private final RedisTemplate<String, String> redisTemplate;
 
     public LoginResponseDto loginWithGoogle(String accessToken) {
 
@@ -38,6 +41,9 @@ public class OAuthLoginService {
         // 토큰 발급
         String access = jwtProvider.createAccessToken(userInfo.getUserId(), userInfo.getUserType().name());
         String refresh = jwtProvider.createRefreshToken(userInfo.getUserId(), userInfo.getUserType().name());
+
+        String redisKey = "refresh:" + userInfo.getUserType().name() + ":" + userInfo.getUserId();
+        redisTemplate.opsForValue().set(redisKey, refresh, jwtProvider.getRefreshTokenExpirationMillis(), TimeUnit.MILLISECONDS);
 
         // 응답 DTO
         return LoginResponseDto.of(userInfo, access, refresh);
