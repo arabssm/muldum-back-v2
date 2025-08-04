@@ -60,14 +60,41 @@ public class JwtProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        // 토큰에서 사용자 정보 추출
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
         Object userId = claims.get("userId");
         Object userType = claims.get("userType");
-        // principal에 userId를, credentials에 userType을 넣을 수 있음 (필요에 따라 조정)
         return new UsernamePasswordAuthenticationToken(userId, userType, List.of());
+    }
+
+    public long getRefreshTokenExpirationMillis() {
+        return 7 * 24 * 60 * 60 * 1000L;
+    }
+
+    public boolean isValidRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String createAccessTokenByRefreshToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+
+        Long userId = Long.valueOf(claims.get("userId", String.class));
+        String userType = claims.get("userType", String.class);
+
+        return createAccessToken(userId, userType);
     }
 }
