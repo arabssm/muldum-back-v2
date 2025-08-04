@@ -1,13 +1,14 @@
 package co.kr.muldum.global.util;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -44,16 +45,28 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
-        return true;
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            // 토큰이 유효하지 않거나 만료된 경우 false 반환
+            return false;
+        }
     }
 
     public Authentication getAuthentication(String token) {
-        return new UsernamePasswordAuthenticationToken("user", null, List.of());
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        Object userId = claims.get("userId");
+        Object userType = claims.get("userType");
+        return new UsernamePasswordAuthenticationToken(userId, userType, List.of());
     }
 
     public long getRefreshTokenExpirationMillis() {
