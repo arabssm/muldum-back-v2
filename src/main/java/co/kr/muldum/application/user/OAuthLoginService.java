@@ -1,6 +1,5 @@
 package co.kr.muldum.application.user;
 
-
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.exception.UnauthorizedDomainException;
@@ -8,7 +7,9 @@ import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
 import co.kr.muldum.infrastructure.user.oauth.GoogleOAuthClient;
+import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
+import co.kr.muldum.infrastructure.user.oauth.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
