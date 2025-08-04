@@ -31,7 +31,7 @@ public class OAuthLoginService {
         String email = userInfoDto.getEmail();
 
         if (!email.endsWith("@bssm.hs.kr")) {
-            throw new UnauthorizedDomainException("허용되지 않은 이메일 도메인입니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }
 
         // email 기반으로 DB에서 사용자 조회
