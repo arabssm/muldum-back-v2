@@ -15,8 +15,8 @@ public class GoogleOAuthClient {
 
     private final RestTemplate restTemplate;
 
-    public GoogleOAuthClient() {
-        this.restTemplate = new RestTemplate();
+    public GoogleOAuthClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public GoogleUserInfoDto getUserInfo(String accessToken) {
