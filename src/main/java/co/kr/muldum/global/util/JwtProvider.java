@@ -1,11 +1,14 @@
 package co.kr.muldum.global.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +34,7 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -42,17 +45,29 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
-        // TODO: 토큰 유효성 검사 로직 작성 (예: 서명 확인, 만료일 확인 등)
-        return true;
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            // 토큰이 유효하지 않거나 만료된 경우 false 반환
+            return false;
+        }
     }
 
     public Authentication getAuthentication(String token) {
-        // TODO: 토큰을 바탕으로 인증 객체 생성 (예: 사용자 정보 꺼내기)
-        return new UsernamePasswordAuthenticationToken("user", null, List.of());
+        // 토큰에서 사용자 정보 추출
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        Object userId = claims.get("userId");
+        Object userType = claims.get("userType");
+        // principal에 userId를, credentials에 userType을 넣을 수 있음 (필요에 따라 조정)
+        return new UsernamePasswordAuthenticationToken(userId, userType, List.of());
     }
 }
