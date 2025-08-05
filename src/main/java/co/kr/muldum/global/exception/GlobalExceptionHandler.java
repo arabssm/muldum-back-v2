@@ -13,9 +13,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
   @ExceptionHandler(FileSizeLimitExceededException.class)
   public ResponseEntity<Map<String, Object>> handleFileSizeLimitExceeded(FileSizeLimitExceededException ex) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             .body(Map.of(
-                    "statusCode", 500,
+                    "statusCode", 413,
                     "message", ex.getMessage()
             ));
   }
