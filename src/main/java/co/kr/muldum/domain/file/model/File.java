@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Entity
 @Table(name = "files")
@@ -29,7 +28,7 @@ public class File {
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
-  private Map<String, Object> metadata;
+  private FileMetadata metadata;
 
   @Column(name = "owner_user_type", nullable = false)
   @Enumerated(EnumType.STRING)
