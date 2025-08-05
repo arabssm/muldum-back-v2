@@ -38,4 +38,9 @@ public class UserReaderImpl implements UserReader {
             return Optional.empty();
         }
     }
+
+    @Override
+    public UserInfo read(Class<?> clazz, Long id) {
+        return null;
+    }
 }
