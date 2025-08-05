@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.file.model;
 
+import co.kr.muldum.domain.user.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,4 @@ public class File {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
-  public enum UserType {
-    STUDENT, TEACHER, MENTOR // TODO: 유저 타입 enum 머지 시 리팩토링
-  }
 }
