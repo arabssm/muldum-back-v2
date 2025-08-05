@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.file.service;
 
 import co.kr.muldum.domain.file.model.File;
+import co.kr.muldum.domain.file.model.FileMetadata;
 import co.kr.muldum.domain.file.repository.FileRepository;
 import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.global.config.FilePathConfig;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -34,13 +34,13 @@ public class FileStorageService {
 
     File file = File.builder()
             .path(webPath)
-            .metadata(Map.of(
-                    "name", Objects.requireNonNull(multipartFile.getOriginalFilename()),
-                    "type", Objects.requireNonNull(multipartFile.getContentType()),
-                    "size_bytes", multipartFile.getSize()
+            .metadata(FileMetadata.of(
+                    Objects.requireNonNull(multipartFile.getOriginalFilename()),
+                    Objects.requireNonNull(multipartFile.getContentType()),
+                    multipartFile.getSize()
             ))
-            .ownerUserId(ownerUserId.intValue()) // 임시 사용자 ID
-            .ownerUserType(UserType.valueOf(ownerUserType)) // 임시 사용자 타입
+            .ownerUserId(ownerUserId.intValue())
+            .ownerUserType(UserType.valueOf(ownerUserType))
             .build();
 
     fileRepository.save(file);
