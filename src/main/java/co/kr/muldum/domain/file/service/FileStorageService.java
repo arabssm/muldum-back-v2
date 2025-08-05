@@ -1,7 +1,9 @@
 package co.kr.muldum.domain.file.service;
 
+import co.kr.muldum.domain.file.exception.FileSizeLimitExceededException;
 import co.kr.muldum.domain.file.model.File;
 import co.kr.muldum.domain.file.model.FileMetadata;
+import co.kr.muldum.domain.file.model.FileType;
 import co.kr.muldum.domain.file.repository.FileRepository;
 import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.global.config.FilePathConfig;
@@ -21,15 +23,12 @@ public class FileStorageService {
   private final FilePathConfig filePathConfig;
 
   public String upload(MultipartFile multipartFile, String type, Long ownerUserId, String ownerUserType) {
-    String uploadDir;
-
-    if ("BANNER".equalsIgnoreCase(type)) {
-      uploadDir = filePathConfig.getUploadDir() + "/banner";
-    } else if("TEAMSPACE".equalsIgnoreCase(type)) {
-      uploadDir = filePathConfig.getUploadDir() + "/teamspace";
-    } else {
-      uploadDir = filePathConfig.getUploadDir() + "/notice";
+    if(multipartFile.getSize() > 20 * 1024 * 1024){
+      throw new FileSizeLimitExceededException("업로드 할 수 있는 파일 크기가 초과되었습니다. (20MB)");
     }
+
+    FileType fileType = FileType.fromString(type);
+    String uploadDir = filePathConfig.getUploadDir() + fileType.getUploadSubDir();
 
     String savedFileName = FileUtil.saveFile(multipartFile, uploadDir);
     String webPath = "/uploads/" + type.toLowerCase() + "/" + savedFileName;
