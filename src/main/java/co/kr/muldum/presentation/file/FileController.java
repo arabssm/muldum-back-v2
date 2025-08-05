@@ -1,5 +1,6 @@
 package co.kr.muldum.presentation.file;
 
+import co.kr.muldum.domain.file.exception.FileNotAttachedException;
 import co.kr.muldum.domain.file.service.FileStorageService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,9 @@ public class FileController {
           @RequestParam(name = "type", defaultValue = "NOTICE") String type,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
+    if(files == null){
+      throw new FileNotAttachedException("파일이 첨부되지 않았습니다.");
+    }
     List<String> fileUrl = Arrays.stream(files)
             .map(file -> fileStorageService.upload(
                     file, type, customUserDetails.getUserId(), customUserDetails.getUserType())
