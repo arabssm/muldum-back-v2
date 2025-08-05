@@ -21,9 +21,10 @@ import java.util.Objects;
 public class FileStorageService {
   private final FileRepository fileRepository;
   private final FilePathConfig filePathConfig;
+  private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;
 
   public String upload(MultipartFile multipartFile, String type, Long ownerUserId, String ownerUserType) {
-    if(multipartFile.getSize() > 20 * 1024 * 1024){
+    if(multipartFile.getSize() > MAX_FILE_SIZE){
       throw new FileSizeLimitExceededException("업로드 할 수 있는 파일 크기가 초과되었습니다. (20MB)");
     }
 
