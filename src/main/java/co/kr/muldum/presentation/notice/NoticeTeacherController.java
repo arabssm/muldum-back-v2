@@ -3,9 +3,11 @@ package co.kr.muldum.presentation.notice;
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
 import co.kr.muldum.application.notice.command.CreateNoticeResponse;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
+import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +22,10 @@ public class NoticeTeacherController {
 
   @PostMapping()
   public ResponseEntity<CreateNoticeResponse> createNotice(
-          @RequestBody CreateNoticeRequest createNoticeRequest
-          // TO DO: @AuthenticationPrincipal UserDetailsImpl userDetails
+          @RequestBody CreateNoticeRequest createNoticeRequest,
+          @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
-    Long fakeUserId = 1L; //TO DO: Security 연동 후 리팩터링
-    Long noticeId = noticeCommandService.createNotice(createNoticeRequest, fakeUserId);
+    Long noticeId = noticeCommandService.createNotice(createNoticeRequest, customUserDetails.getUserId());
     return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CreateNoticeResponse.builder()
