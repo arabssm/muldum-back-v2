@@ -16,8 +16,9 @@ public class FileBook {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "file_id", nullable = false)
-  private Long fileId;
+  @JoinColumn(name = "file_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private File file;
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "book_config", columnDefinition = "jsonb")
