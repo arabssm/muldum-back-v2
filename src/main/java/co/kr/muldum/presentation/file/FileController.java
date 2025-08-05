@@ -1,6 +1,7 @@
 package co.kr.muldum.presentation.file;
 
 import co.kr.muldum.domain.file.exception.FileNotAttachedException;
+import co.kr.muldum.domain.file.model.FileType;
 import co.kr.muldum.domain.file.service.FileStorageService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class FileController {
   @PostMapping("/upload")
   public ResponseEntity<?> uploadFile(
           @RequestPart("files") MultipartFile[] files,
-          @RequestParam(name = "type", defaultValue = "NOTICE") String type,
+          @RequestParam(name = "type", defaultValue = "NOTICE") FileType type,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
     if(files == null){
@@ -31,7 +32,7 @@ public class FileController {
     }
     List<String> fileUrl = Arrays.stream(files)
             .map(file -> fileStorageService.upload(
-                    file, type, customUserDetails.getUserId(), customUserDetails.getUserType())
+                    file, type.toString(), customUserDetails.getUserId(), customUserDetails.getUserType())
             ).toList();
 
     return ResponseEntity.ok(Map.of("fileUrl", fileUrl));
