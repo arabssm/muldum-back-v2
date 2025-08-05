@@ -1,6 +1,8 @@
 package co.kr.muldum.domain.notice.model;
 
+import co.kr.muldum.domain.file.model.FileBook;
 import co.kr.muldum.domain.notice.model.enums.Status;
+import co.kr.muldum.domain.user.model.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +25,9 @@ public class Notice {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "author_user_id", nullable = false)
-  private Long authorUserId;
+  @JoinColumn(name = "author_user_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private Teacher teacher;
 
   private String title;
 
@@ -37,10 +40,11 @@ public class Notice {
   @Column(nullable = false)
   private Status status;
 
-  @Column(name = "filebook_id")
-  private Long filebookId;
+  @JoinColumn(name = "filebook_id")
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  private FileBook filebook;
 
-  @Column(name = "notification_config", nullable = true, columnDefinition = "VARCHAR(255)")
+  @Column(name = "notification_config", columnDefinition = "VARCHAR(255)")
   private String notificationConfig;
 
   @Column(name = "deadline_date")
