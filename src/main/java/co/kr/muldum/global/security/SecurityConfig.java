@@ -4,7 +4,9 @@ import co.kr.muldum.global.util.JwtTokenResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -20,11 +22,12 @@ public class SecurityConfig {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenResolver);
 
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ara/auth/**").permitAll() // 로그인 관련은 모두 허용
-                        .anyRequest().authenticated() // 나머지는 인증 필요
-                );
+                        .requestMatchers("/ara/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
