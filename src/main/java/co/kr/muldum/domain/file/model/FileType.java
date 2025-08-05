@@ -18,7 +18,7 @@ public enum FileType {
     try {
       return FileType.valueOf(type.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new InvalidFileTypeException("존재하지 않는 type입니다.");
+      throw new InvalidFileTypeException("존재하지 않는 type입니다." + type);
     }
   }
 }
