@@ -25,6 +25,8 @@ public class FileStorageService {
 
     if ("BANNER".equalsIgnoreCase(type)) {
       uploadDir = filePathConfig.getUploadDir() + "/banner";
+    } else if("TEAMSPACE".equalsIgnoreCase(type)) {
+      uploadDir = filePathConfig.getUploadDir() + "/teamspace";
     } else {
       uploadDir = filePathConfig.getUploadDir() + "/notice";
     }
