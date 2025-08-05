@@ -21,8 +21,8 @@ public class NoticeCommandService {
   private final TeamRepository teamRepository;
 
   @Transactional
-  public Long createNotice(CreateNoticeRequest createNoticeRequest, Long fakeUserId) {
-    Notice notice = noticeRequestFactory.createNotice(createNoticeRequest, fakeUserId);
+  public Long createNotice(CreateNoticeRequest createNoticeRequest, Long authorUserId) {
+    Notice notice = noticeRequestFactory.createNotice(createNoticeRequest, authorUserId);
     noticeRepository.save(notice);
 
     if(createNoticeRequest.isTeamNotice()){
