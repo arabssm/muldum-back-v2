@@ -15,16 +15,17 @@ public class NoticeRequestFactory {
   private final TeacherRepository teacherRepository;
 
   public Notice createNotice(CreateNoticeRequest createNoticeRequest, Long authorUserId) {
-    Teacher teacherRef = teacherRepository.getReferenceById(authorUserId);
+    Teacher teacher = teacherRepository.findById(authorUserId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 교사입니다. " + authorUserId));
 
     ContentData contentData = new ContentData(
             createNoticeRequest.getContent(),
             createNoticeRequest.getFiles().stream()
-                    .map(file -> new FileData(file.getUrl()))
+                    .map(file -> file == null ? null : new FileData(file.getUrl()))
                     .toList()
     );
     return Notice.builder()
-            .teacher(teacherRef)
+            .teacher(teacher)
             .title(createNoticeRequest.getTitle())
             .contentData(contentData)
             .deadlineDate(createNoticeRequest.getDeadlineDate())
