@@ -1,12 +1,17 @@
 package co.kr.muldum.domain.notice.model;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Getter
 @Embeddable
 public class NoticeTeamId implements Serializable {
+  @Serial
+  private static final long serialVersionUID = 1L;
   private Long noticeId;
   private Long teamId;
 
@@ -17,17 +22,10 @@ public class NoticeTeamId implements Serializable {
     this.teamId = teamId;
   }
 
-  public Long getNoticeId() {
-    return noticeId;
-  }
-  public Long getTeamId() {
-    return teamId;
-  }
-
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
     if (!(o instanceof NoticeTeamId that)) return false;
+    if (this == o) return true;
     return noticeId.equals(that.noticeId) && teamId.equals(that.teamId);
   }
   @Override
