@@ -30,7 +30,7 @@ public class NoticeTeacherController {
             .status(HttpStatus.CREATED)
             .body(CreateNoticeResponse.builder()
                     .id(noticeId)
-                    .message("공지사항이 성공적으로 등록되었습니다.")
+                    .message(NoticeMessage.NOTICE_CREATED_SUCCESS.getMessage())
                     .build());
   }
 }
