@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.notice.model;
 
+import co.kr.muldum.domain.notice.exception.NoticeOrTeamIdNullException;
 import co.kr.muldum.domain.teamspace.model.Team;
 import jakarta.persistence.*;
 
@@ -24,6 +25,9 @@ public class NoticeTeam {
   public NoticeTeam(Notice notice, Team team) {
     this.notice = notice;
     this.team = team;
+    if (notice.getId() == null || team.getId() == null) {
+      throw new NoticeOrTeamIdNullException("noticeId 또는 teamId가 null입니다.");
+    }
     this.id = new NoticeTeamId(notice.getId(), team.getId());
   }
 
