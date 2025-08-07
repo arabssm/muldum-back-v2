@@ -7,6 +7,7 @@ import co.kr.muldum.domain.user.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
 
@@ -18,13 +19,19 @@ public class UserReaderImpl implements UserReader {
 
     @Override
     public Optional<UserInfo> findByEmail(String email) {
-        // 1. 학생 테이블 조회
+        return tryFindUser(email, "students", UserType.STUDENT)
+                .or(() -> tryFindUser(email, "teachers", UserType.TEACHER))
+                .or(() -> tryFindUser(email, "mentors", UserType.MENTOR));
+    }
+
+    private Optional<UserInfo> tryFindUser(String email, String tableName, UserType userType) {
         try {
+            String query = String.format("SELECT id, profile ->> 'name' as name FROM %s WHERE email = ?", tableName);
             return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                    "SELECT id, profile ->> 'name' as name FROM students WHERE email = ?",
+                    query,
                     (rs, rowNum) -> UserInfo.builder()
-                        .userType(UserType.STUDENT)
+                        .userType(userType)
                         .userId(rs.getLong("id"))
                         .name(rs.getString("name"))
                         .teamId(null)
@@ -33,42 +40,8 @@ public class UserReaderImpl implements UserReader {
                     email
                 )
             );
-        } catch (Exception e1) {
-            // 2. 교사 테이블 조회
-            try {
-                return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(
-                        "SELECT id, profile ->> 'name' as name FROM teachers WHERE email = ?",
-                        (rs, rowNum) -> UserInfo.builder()
-                            .userType(UserType.TEACHER)
-                            .userId(rs.getLong("id"))
-                            .name(rs.getString("name"))
-                            .teamId(null)
-                            .role(Role.MEMBER)
-                            .build(),
-                        email
-                    )
-                );
-            } catch (Exception e2) {
-                // 3. 멘토 테이블 조회
-                try {
-                    return Optional.ofNullable(
-                        jdbcTemplate.queryForObject(
-                            "SELECT id, profile ->> 'name' as name FROM mentors WHERE email = ?",
-                            (rs, rowNum) -> UserInfo.builder()
-                                .userType(UserType.MENTOR)
-                                .userId(rs.getLong("id"))
-                                .name(rs.getString("name"))
-                                .teamId(null)
-                                .role(Role.MEMBER)
-                                .build(),
-                            email
-                        )
-                    );
-                } catch (Exception e3) {
-                    return Optional.empty();
-                }
-            }
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 
