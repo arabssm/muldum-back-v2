@@ -3,6 +3,7 @@ package co.kr.muldum.presentation.user;
 import co.kr.muldum.application.user.LogoutService;
 import co.kr.muldum.global.dto.MessageResponse;
 import co.kr.muldum.presentation.dto.LogoutRequestDto;
+import co.kr.muldum.presentation.dto.LogoutResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ public class LogoutController {
     private final LogoutService logoutService;
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody LogoutRequestDto logoutRequestDto) {
+    public ResponseEntity<LogoutResponseDto> logout(@RequestBody LogoutRequestDto logoutRequestDto) {
         logoutService.logout(logoutRequestDto);
-        return ResponseEntity.ok(new MessageResponse("로그아웃 되었습니다."));
+        return ResponseEntity.ok(new LogoutResponseDto("로그아웃 되었습니다."));
     }
 }
