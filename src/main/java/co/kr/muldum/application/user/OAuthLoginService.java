@@ -33,7 +33,9 @@ public class OAuthLoginService {
         GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(accessToken);
 
         String email = userInfoDto.getEmail();
-      
+        if (email == null || email.trim().isEmpty()) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN); // or suitable error code
+        }
         if (!email.endsWith("@bssm.hs.kr")) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }
