@@ -18,8 +18,7 @@ public class UserReaderImpl implements UserReader {
 
     @Override
     public Optional<UserInfo> findByEmail(String email) {
-
-        // 학생 테이블에서 먼저 조회
+        // 1. 학생 테이블 조회
         try {
             return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
@@ -34,8 +33,42 @@ public class UserReaderImpl implements UserReader {
                     email
                 )
             );
-        } catch (Exception e) {
-            return Optional.empty();
+        } catch (Exception e1) {
+            // 2. 교사 테이블 조회
+            try {
+                return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(
+                        "SELECT id, profile ->> 'name' as name FROM teachers WHERE email = ?",
+                        (rs, rowNum) -> UserInfo.builder()
+                            .userType(UserType.TEACHER)
+                            .userId(rs.getLong("id"))
+                            .name(rs.getString("name"))
+                            .teamId(null)
+                            .role(Role.MEMBER)
+                            .build(),
+                        email
+                    )
+                );
+            } catch (Exception e2) {
+                // 3. 멘토 테이블 조회
+                try {
+                    return Optional.ofNullable(
+                        jdbcTemplate.queryForObject(
+                            "SELECT id, profile ->> 'name' as name FROM mentors WHERE email = ?",
+                            (rs, rowNum) -> UserInfo.builder()
+                                .userType(UserType.MENTOR)
+                                .userId(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .teamId(null)
+                                .role(Role.MEMBER)
+                                .build(),
+                            email
+                        )
+                    );
+                } catch (Exception e3) {
+                    return Optional.empty();
+                }
+            }
         }
     }
 
