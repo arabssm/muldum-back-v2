@@ -5,6 +5,7 @@ import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import co.kr.muldum.infrastructure.user.UserReaderImpl;
 import co.kr.muldum.infrastructure.user.oauth.GoogleOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
@@ -24,6 +25,7 @@ public class OAuthLoginService {
     private final UserReader userReader;
     private final JwtProvider jwtProvider; // 생성자 주입 방식(DI)
     private final RedisTemplate<String, String> redisTemplate;
+
 
     public LoginResponseDto loginWithGoogle(String accessToken) {
 
