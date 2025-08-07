@@ -1,8 +1,10 @@
 package co.kr.muldum.domain.user.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -18,11 +20,12 @@ public class Student {
     @Column(name = "student_id")
     private String studentId;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private String profile;
+    private Map<String, Object> profile;
 
     @Builder
-    public Student(String email, String studentId, String profile) {
+    public Student(String email, String studentId, Map<String, Object> profile) {
         this.email = email;
         this.studentId = studentId;
         this.profile = profile;
