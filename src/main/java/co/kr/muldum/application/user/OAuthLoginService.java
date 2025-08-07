@@ -11,10 +11,12 @@ import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
 import co.kr.muldum.infrastructure.user.oauth.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthLoginService {
@@ -31,7 +33,7 @@ public class OAuthLoginService {
 
         String email = userInfoDto.getEmail();
 
-        if (!email.endsWith("@bssm.hs.kr")) {
+        if (!email.endsWith("@bssm.hs.kr") && !email.endsWith("@gmail.com")) {
             throw new UnauthorizedDomainException("허용되지 않은 이메일 도메인입니다.");
         }
 
