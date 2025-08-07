@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Repository
 public class TokenRepositoryImpl implements TokenRepository {
 
+    private static final String REFRESH_TOKEN_KEY_FORMAT = "%s:%d:refresh";
+
     private final RedisTemplate<String, String> redisTemplate;
 
     public TokenRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
@@ -16,7 +18,7 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public boolean deleteByRefreshToken(UserType userType, Long userId, String refreshToken) {
-        String key = userType.name() + ":" + userId + ":refresh";
+        String key = String.format(REFRESH_TOKEN_KEY_FORMAT, userType.name(), userId);
         Boolean result = redisTemplate.delete(key);
         return Boolean.TRUE.equals(result);
     }
