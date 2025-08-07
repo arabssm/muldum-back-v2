@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Repository
-public class TokenRepositoryImpl extends TokenRepository {
+public class TokenRepositoryImpl implements TokenRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
