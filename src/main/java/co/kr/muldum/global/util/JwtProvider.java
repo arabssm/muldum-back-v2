@@ -1,17 +1,20 @@
 package co.kr.muldum.global.util;
 
+import co.kr.muldum.global.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
+import io.jsonwebtoken.JwtException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 
 @Component
+@Slf4j
 public class JwtProvider {
 
     private final String secretKey;
@@ -33,7 +36,7 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -44,16 +47,36 @@ public class JwtProvider {
                 .claim("userType", userType)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
+      try {
+        Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token);
         return true;
+      } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+        log.info("[JwtProvider] 토큰 검증 실패: {}", e.getMessage());
+        return false;
+      }
     }
 
     public Authentication getAuthentication(String token) {
-        return new UsernamePasswordAuthenticationToken("user", null, List.of());
+      Claims claims = Jwts.parserBuilder()
+              .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+              .build()
+              .parseClaimsJws(token)
+              .getBody();
+
+      Long userId = Long.valueOf(claims.get("userId").toString());
+      String userType = claims.get("userType").toString();
+
+      CustomUserDetails userDetails = new CustomUserDetails(userId, userType);
+
+      return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     public long getRefreshTokenExpirationMillis() {
@@ -63,7 +86,7 @@ public class JwtProvider {
     public boolean isValidRefreshToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -74,7 +97,7 @@ public class JwtProvider {
 
     public String createAccessTokenByRefreshToken(String refreshToken) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody();
