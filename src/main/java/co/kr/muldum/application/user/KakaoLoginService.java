@@ -10,8 +10,10 @@ import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoLoginService {
@@ -25,7 +27,7 @@ public class KakaoLoginService {
         KakaoUserInfoDto userInfoDto = kakaoOAuthClient.getUserInfo(accessToken);
 
         String email = userInfoDto.getEmail().trim();
-        System.out.println("카카오 로그인 이메일: " + email);
+        log.info("카카오 로그인 이메일: {}", email);
 
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
