@@ -19,6 +19,11 @@ spring:
 jwt:
   secret: ${JWT_SECRET_KEY}
 
+google:
+  client-id: ${GOOGLE_CLIENT_ID}
+  client-secret: ${GOOGLE_CLIENT_SECRET}
+  redirect-uri: ${GOOGLE_REDIRECT_URI}
+
 oauth:
   kakao:
     user-info-uri: https://kapi.kakao.com/v2/user/me
