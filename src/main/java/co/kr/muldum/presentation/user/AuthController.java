@@ -30,7 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login/kakao")
-    public LoginResponseDto kakaoLogin(@RequestBody KakaoLoginRequestDto requestDto) {
+    public LoginResponseDto kakaoLogin(
+            @RequestBody KakaoLoginRequestDto requestDto
+    ) {
         return kakaoLoginService.login(requestDto.getAccessToken());
     }
 
