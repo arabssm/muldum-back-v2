@@ -17,6 +17,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public boolean deleteByRefreshToken(UserType userType, Long userId, String refreshToken) {
         String key = userType.name() + ":" + userId + ":refresh";
-        return redisTemplate.delete(key);
+        Boolean result = redisTemplate.delete(key);
+        return Boolean.TRUE.equals(result);
     }
 }
