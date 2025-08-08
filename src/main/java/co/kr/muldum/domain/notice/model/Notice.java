@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.notice.model;
 
-import co.kr.muldum.domain.file.model.FileBook;
 import co.kr.muldum.domain.notice.model.enums.Status;
 import co.kr.muldum.domain.user.model.Teacher;
 import jakarta.persistence.*;
@@ -39,10 +38,6 @@ public class Notice {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Status status;
-
-  @JoinColumn(name = "filebook_id")
-  @ManyToOne(fetch = FetchType.LAZY, optional = true)
-  private FileBook filebook;
 
   @Column(name = "notification_config", columnDefinition = "VARCHAR(255)")
   private String notificationConfig;
