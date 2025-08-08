@@ -18,7 +18,9 @@ public class LogoutController {
     private final LogoutService logoutService;
 
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResponseDto> logout(@RequestBody LogoutRequestDto logoutRequestDto) {
+    public ResponseEntity<LogoutResponseDto> logout(
+            @RequestBody LogoutRequestDto logoutRequestDto
+    ) {
         logoutService.logout(logoutRequestDto);
         return ResponseEntity.ok(new LogoutResponseDto("로그아웃 되었습니다."));
     }
