@@ -29,7 +29,7 @@ public class OAuthLoginService {
 
         String email = userInfoDto.getEmail();
 
-        if (!email.endsWith("@bssm.hs.kr") && !email.endsWith("@gmail.com")) {
+        if (!email.endsWith("@bssm.hs.kr")) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }
 
