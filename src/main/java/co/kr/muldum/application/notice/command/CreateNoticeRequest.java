@@ -16,12 +16,10 @@ public class CreateNoticeRequest {
   private Status status;
   private List<Long> teamIds;
 
+  @Getter
   public static class FileRequest {
     private String url;
 
-    public String getUrl() {
-      return url;
-    }
   }
 
   public boolean isTeamNotice() {

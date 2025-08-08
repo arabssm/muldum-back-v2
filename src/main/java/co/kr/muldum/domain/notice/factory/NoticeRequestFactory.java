@@ -9,6 +9,9 @@ import co.kr.muldum.domain.user.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class NoticeRequestFactory {
@@ -20,7 +23,9 @@ public class NoticeRequestFactory {
 
     ContentData contentData = new ContentData(
             createNoticeRequest.getContent(),
-            createNoticeRequest.getFiles().stream()
+            Optional.ofNullable(createNoticeRequest.getFiles())
+                    .orElse(Collections.emptyList())
+                    .stream()
                     .map(file -> file == null ? null : new FileData(file.getUrl()))
                     .toList()
     );

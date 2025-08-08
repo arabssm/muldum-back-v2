@@ -1,5 +1,8 @@
 package co.kr.muldum.application.notice.command;
 
+import co.kr.muldum.domain.file.model.FileBook;
+import co.kr.muldum.domain.file.repository.FileBookRepository;
+import co.kr.muldum.domain.file.repository.FileRepository;
 import co.kr.muldum.domain.notice.factory.NoticeRequestFactory;
 import co.kr.muldum.domain.notice.model.Notice;
 import co.kr.muldum.domain.notice.model.NoticeTeam;
@@ -19,6 +22,8 @@ public class NoticeCommandService {
   private final NoticeRequestFactory noticeRequestFactory;
   private final NoticeTeamRepository noticeTeamRepository;
   private final TeamRepository teamRepository;
+  private final FileBookRepository fileBookRepository;
+  private final FileRepository fileRepository;
 
   @Transactional
   public Long createNotice(CreateNoticeRequest createNoticeRequest, Long authorUserId) {
@@ -32,6 +37,12 @@ public class NoticeCommandService {
 
       noticeTeamRepository.saveAll(noticeTeams);
     }
+    List<FileBook> fileBooks = createNoticeRequest.getFiles().stream()
+            .map(fileDto -> fileRepository.findByPath(fileDto.getUrl())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 URL의 파일이 존재하지 않습니다: " + fileDto.getUrl())))
+            .map(file -> new FileBook(notice, file))
+            .toList();
+    fileBookRepository.saveAll(fileBooks);
     return notice.getId();
   }
 }

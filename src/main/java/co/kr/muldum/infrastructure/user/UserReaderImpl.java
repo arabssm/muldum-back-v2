@@ -35,7 +35,24 @@ public class UserReaderImpl implements UserReader {
                 )
             );
         } catch (Exception e) {
+          // 학생에서 못 찾으면 선생님에서 찾기
+          try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(
+                            "SELECT id, profile ->> 'name' as name FROM teachers WHERE email = ?",
+                            (rs, rowNum) -> UserInfo.builder()
+                                    .userType(UserType.TEACHER)
+                                    .userId(rs.getLong("id"))
+                                    .name(rs.getString("name"))
+                                    .teamId(null)
+                                    .role(Role.MEMBER)
+                                    .build(),
+                            email
+                    )
+            );
+          } catch (Exception ex) {
             return Optional.empty();
+          }
         }
     }
 }
