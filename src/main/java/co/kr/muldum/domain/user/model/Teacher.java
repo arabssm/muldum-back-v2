@@ -21,6 +21,7 @@ public class Teacher {
   private String employeeId;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
   private Map<String, Object> profile;
 
   @Column(name = "created_at", nullable = false)
