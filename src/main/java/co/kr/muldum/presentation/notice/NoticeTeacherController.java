@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +29,16 @@ public class NoticeTeacherController {
                     .id(noticeId)
                     .message(NoticeMessage.NOTICE_CREATED_SUCCESS.getMessage())
                     .build());
+  }
+
+  @DeleteMapping("/{notice_id}")
+  public ResponseEntity<String> deleteNotice(
+          @PathVariable("notice_id") Long noticeId,
+          @AuthenticationPrincipal CustomUserDetails customUserDetails
+  ) {
+    noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
+    return ResponseEntity
+            .status(HttpStatus.NO_CONTENT)
+            .body(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage());
   }
 }
