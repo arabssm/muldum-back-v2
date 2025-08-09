@@ -1,7 +1,7 @@
-package co.kr.muldum.domain.user.model;
-
+package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -9,25 +9,22 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Entity
-@Table(name = "teachers")
-public class Teacher {
-
+@Table(name = "teams")
+@Getter
+public class Team {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String email;
-
-  @Column(name = "employee_id")
-  private String employeeId;
+  @Column(nullable = false)
+  private String name;
 
   @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> profile;
+  private Map<String, Object> config;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
+  @Column(name = "updated_at", nullable = true)
   private LocalDateTime updatedAt;
 }

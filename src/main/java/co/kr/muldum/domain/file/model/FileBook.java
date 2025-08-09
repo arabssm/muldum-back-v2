@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.file.model;
 
+import co.kr.muldum.domain.notice.model.Notice;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -20,6 +21,10 @@ public class FileBook {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private File file;
 
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "notice_id", nullable = false)
+  private Notice notice;
+
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "book_config", columnDefinition = "jsonb")
   private Map<String, Object> bookConfig;
@@ -32,4 +37,10 @@ public class FileBook {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
+  public FileBook(Notice notice, File file) {
+    this.notice = notice;
+    this.file = file;
+  }
+
+  public FileBook() {}
 }
