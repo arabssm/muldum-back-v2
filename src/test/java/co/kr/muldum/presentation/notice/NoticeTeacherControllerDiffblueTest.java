@@ -1,5 +1,6 @@
 package co.kr.muldum.presentation.notice;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
@@ -49,7 +50,6 @@ class NoticeTeacherControllerDiffblueTest {
             .thenReturn(1L);
     MockHttpServletRequestBuilder contentTypeResult =
             MockMvcRequestBuilders.post("/tch/notice").contentType(MediaType.APPLICATION_JSON);
-
     ObjectMapper objectMapper = new ObjectMapper();
     MockHttpServletRequestBuilder requestBuilder =
             contentTypeResult.content(objectMapper.writeValueAsString(new CreateNoticeRequest()));
@@ -64,5 +64,28 @@ class NoticeTeacherControllerDiffblueTest {
             .andExpect(
                     MockMvcResultMatchers.content()
                             .string("{\"id\":1,\"message\":\"공지사항이 성공적으로 등록되었습니다.\"}"));
+  }
+
+  /**
+   * Test {@link NoticeTeacherController#deleteNotice(Long, CustomUserDetails)}.
+   *
+   * <p>Method under test: {@link NoticeTeacherController#deleteNotice(Long, CustomUserDetails)}
+   */
+  @Test
+  @DisplayName("Test deleteNotice(Long, CustomUserDetails)")
+  void testDeleteNotice() throws Exception {
+    // Arrange
+    doNothing().when(noticeCommandService).deleteNotice(Mockito.<Long>any(), Mockito.<Long>any());
+    MockHttpServletRequestBuilder requestBuilder =
+            MockMvcRequestBuilders.delete("/tch/notice/{notice_id}", 1L);
+
+    // Act and Assert
+    MockMvcBuilders.standaloneSetup(noticeTeacherController)
+            .setControllerAdvice(globalExceptionHandler)
+            .build()
+            .perform(requestBuilder)
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
+            .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
+            .andExpect(MockMvcResultMatchers.content().string("????? ????? ???????."));
   }
 }
