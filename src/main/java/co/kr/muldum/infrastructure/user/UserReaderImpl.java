@@ -7,6 +7,7 @@ import co.kr.muldum.domain.user.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
 
@@ -18,14 +19,19 @@ public class UserReaderImpl implements UserReader {
 
     @Override
     public Optional<UserInfo> findByEmail(String email) {
+        return tryFindUser(email, "students", UserType.STUDENT)
+                .or(() -> tryFindUser(email, "teachers", UserType.TEACHER))
+                .or(() -> tryFindUser(email, "mentors", UserType.MENTOR));
+    }
 
-        // 학생 테이블에서 먼저 조회
+    private Optional<UserInfo> tryFindUser(String email, String tableName, UserType userType) {
         try {
+            String query = String.format("SELECT id, profile ->> 'name' as name FROM %s WHERE email = ?", tableName);
             return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                    "SELECT id, profile ->> 'name' as name FROM students WHERE email = ?",
+                    query,
                     (rs, rowNum) -> UserInfo.builder()
-                        .userType(UserType.STUDENT)
+                        .userType(userType)
                         .userId(rs.getLong("id"))
                         .name(rs.getString("name"))
                         .teamId(null)
@@ -54,5 +60,10 @@ public class UserReaderImpl implements UserReader {
             return Optional.empty();
           }
         }
+    }
+
+    @Override
+    public UserInfo read(Class<?> clazz, Long id) {
+        return null;
     }
 }

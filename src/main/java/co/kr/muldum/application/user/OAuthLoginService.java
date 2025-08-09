@@ -1,18 +1,22 @@
 package co.kr.muldum.application.user;
 
-
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import co.kr.muldum.infrastructure.user.UserReaderImpl;
 import co.kr.muldum.infrastructure.user.oauth.GoogleOAuthClient;
+import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
+import co.kr.muldum.infrastructure.user.oauth.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthLoginService {
@@ -22,13 +26,16 @@ public class OAuthLoginService {
     private final JwtProvider jwtProvider; // 생성자 주입 방식(DI)
     private final RedisTemplate<String, String> redisTemplate;
 
+
     public LoginResponseDto loginWithGoogle(String accessToken) {
 
         // 구글에서 사용자 정보 받아오기
         GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(accessToken);
 
         String email = userInfoDto.getEmail();
-
+        if (email == null || email.trim().isEmpty()) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN); // or suitable error code
+        }
         if (!email.endsWith("@bssm.hs.kr")) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }

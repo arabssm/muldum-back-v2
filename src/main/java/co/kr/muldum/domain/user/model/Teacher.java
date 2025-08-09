@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.user.model;
 
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;

@@ -12,8 +12,4 @@ public class MuldumApplication {
 		SpringApplication.run(MuldumApplication.class, args);
 	}
 
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 }
