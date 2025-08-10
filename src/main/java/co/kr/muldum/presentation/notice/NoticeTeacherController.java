@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("tch/notice")
@@ -36,7 +38,7 @@ public class NoticeTeacherController {
   public ResponseEntity<DeleteNoticeResponse> deleteNotice(
           @PathVariable("notice_id") Long noticeId,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
-  ) {
+  ) throws AccessDeniedException {
     noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
     return ResponseEntity
             .status(HttpStatus.OK)
