@@ -38,7 +38,6 @@ public class NoticeTeacherController {
   ) {
     noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
     return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage());
+            .ok(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage());
   }
 }
