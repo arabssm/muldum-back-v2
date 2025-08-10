@@ -14,9 +14,7 @@ public class HistoryService {
     private final HistoryRepository historyRepository;
 
     public List<History> findHistories(Integer generation){
-        if (generation == null) {
-            return historyRepository.findAll();
-        }
+
         return historyRepository.findByGeneration(generation);
     }
 }
