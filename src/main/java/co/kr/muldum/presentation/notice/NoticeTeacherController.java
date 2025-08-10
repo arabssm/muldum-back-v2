@@ -2,6 +2,7 @@ package co.kr.muldum.presentation.notice;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
 import co.kr.muldum.application.notice.command.CreateNoticeResponse;
+import co.kr.muldum.application.notice.command.DeleteNoticeResponse;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,16 @@ public class NoticeTeacherController {
   }
 
   @DeleteMapping("/{notice_id}")
-  public ResponseEntity<String> deleteNotice(
+  public ResponseEntity<DeleteNoticeResponse> deleteNotice(
           @PathVariable("notice_id") Long noticeId,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
     noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
     return ResponseEntity
-            .ok(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage());
+            .status(HttpStatus.OK)
+            .body(DeleteNoticeResponse.builder()
+                    .message(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage())
+                    .build()
+            );
   }
 }
