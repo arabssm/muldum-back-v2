@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,12 +50,12 @@ public class NoticeCommandService {
   }
 
   @Transactional
-  public void deleteNotice(Long noticeId, Long authorUserId) {
+  public void deleteNotice(Long noticeId, Long authorUserId) throws AccessDeniedException {
     Notice notice = noticeRepository.findById(noticeId)
             .orElseThrow(() -> new IllegalArgumentException("공지사항이 존재하지 않습니다: " + noticeId));
 
     if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
-      throw new IllegalArgumentException("공지사항 작성자만 삭제할 수 있습니다.");
+      throw new AccessDeniedException("공지사항 작성자만 삭제할 수 있습니다.");
     }
 
     noticeTeamRepository.deleteAllByNoticeId(noticeId);
