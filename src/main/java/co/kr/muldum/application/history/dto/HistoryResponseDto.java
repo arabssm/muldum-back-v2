@@ -31,15 +31,15 @@ public class HistoryResponseDto {
         private LocalDate givenAt;
     }
 
-    public static HistoryResponseDto fromEntity(History h) {
+    public static HistoryResponseDto fromEntity(History history) {
         return HistoryResponseDto.builder()
-                .id(h.getId())
-                .name(h.getName())
-                .generation(h.getGeneration())
-                .description(h.getDescription())
-                .logoUrl(h.getLogoUrl())
-                .awards(h.getAwards() == null ? List.of() :
-                        h.getAwards().stream()
+                .id(history.getId())
+                .name(history.getName())
+                .generation(history.getGeneration())
+                .description(history.getDescription())
+                .logoUrl(history.getLogoUrl())
+                .awards(history.getAwards() == null ? List.of() :
+                        history.getAwards().stream()
                                 .map(a -> AwardDto.builder()
                                         .awardType(a.getAwardType())
                                         .givenAt(a.getGivenAt())
