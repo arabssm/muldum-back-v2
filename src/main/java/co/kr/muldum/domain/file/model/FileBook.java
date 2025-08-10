@@ -2,6 +2,7 @@ package co.kr.muldum.domain.file.model;
 
 import co.kr.muldum.domain.notice.model.Notice;
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "file_books")
+@Getter
 public class FileBook {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

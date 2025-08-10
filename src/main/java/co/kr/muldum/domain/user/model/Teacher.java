@@ -2,6 +2,7 @@ package co.kr.muldum.domain.user.model;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "teachers")
+@Getter
 public class Teacher {
 
   @Id

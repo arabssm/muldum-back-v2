@@ -23,6 +23,9 @@ public class ContentDataConverter implements AttributeConverter<ContentData, Str
   @Override
   public ContentData convertToEntityAttribute(String dbData) {
     try {
+      if (dbData == null || dbData.isBlank()) {
+        return null;
+      }
       return objectMapper.readValue(dbData, ContentData.class);
     } catch (Exception e) {
       log.error("Error converting JSON string to ContentData", e);

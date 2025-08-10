@@ -2,16 +2,16 @@ package co.kr.muldum.presentation.notice;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
 import co.kr.muldum.application.notice.command.CreateNoticeResponse;
+import co.kr.muldum.application.notice.command.DeleteNoticeResponse;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.AccessDeniedException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +32,19 @@ public class NoticeTeacherController {
                     .id(noticeId)
                     .message(NoticeMessage.NOTICE_CREATED_SUCCESS.getMessage())
                     .build());
+  }
+
+  @DeleteMapping("/{notice_id}")
+  public ResponseEntity<DeleteNoticeResponse> deleteNotice(
+          @PathVariable("notice_id") Long noticeId,
+          @AuthenticationPrincipal CustomUserDetails customUserDetails
+  ) throws AccessDeniedException {
+    noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(DeleteNoticeResponse.builder()
+                    .message(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage())
+                    .build()
+            );
   }
 }

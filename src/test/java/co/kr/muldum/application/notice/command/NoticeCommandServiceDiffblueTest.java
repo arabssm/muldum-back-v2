@@ -71,4 +71,21 @@ class NoticeCommandServiceDiffblueTest {
             () -> noticeCommandService.createNotice(new CreateNoticeRequest(), 1L));
     verify(noticeRequestFactory).createNotice(isA(CreateNoticeRequest.class), eq(1L));
   }
+
+  /**
+   * Test {@link NoticeCommandService#deleteNotice(Long, Long)}.
+   *
+   * <p>Method under test: {@link NoticeCommandService#deleteNotice(Long, Long)}
+   */
+  @Test
+  @DisplayName("Test deleteNotice(Long, Long)")
+  void testDeleteNotice() {
+    // Arrange
+    when(noticeRepository.findById(Mockito.<Long>any()))
+            .thenThrow(new IllegalArgumentException("foo"));
+
+    // Act and Assert
+    assertThrows(IllegalArgumentException.class, () -> noticeCommandService.deleteNotice(1L, 1L));
+    verify(noticeRepository).findById(eq(1L));
+  }
 }

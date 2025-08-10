@@ -1,5 +1,6 @@
 package co.kr.muldum.application.notice.command;
 
+import co.kr.muldum.domain.file.model.File;
 import co.kr.muldum.domain.file.model.FileBook;
 import co.kr.muldum.domain.file.repository.FileBookRepository;
 import co.kr.muldum.domain.file.repository.FileRepository;
@@ -13,7 +14,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +47,34 @@ public class NoticeCommandService {
             .toList();
     fileBookRepository.saveAll(fileBooks);
     return notice.getId();
+  }
+
+  @Transactional
+  public void deleteNotice(Long noticeId, Long authorUserId) throws AccessDeniedException {
+    Notice notice = noticeRepository.findById(noticeId)
+            .orElseThrow(() -> new IllegalArgumentException("공지사항이 존재하지 않습니다: " + noticeId));
+
+    if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
+      throw new AccessDeniedException("공지사항 작성자만 삭제할 수 있습니다.");
+    }
+
+    noticeTeamRepository.deleteAllByNoticeId(noticeId);
+
+    List<FileBook> fileBooks = fileBookRepository.findAllByNoticeId(noticeId);
+
+    List<File> files = fileBooks.stream()
+            .map(FileBook::getFile)
+            .toList();
+
+    fileBookRepository.deleteAllByNoticeId(noticeId);
+    fileBookRepository.flush();
+
+    if (!files.isEmpty()) {
+      fileRepository.deleteAllByFiles(files);
+      fileRepository.flush();
+    }
+
+    noticeRepository.delete(notice);
+
   }
 }
