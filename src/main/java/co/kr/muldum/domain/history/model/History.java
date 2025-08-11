@@ -61,9 +61,6 @@ public class History {
 
         @Column(name = "award_type", nullable = false)
         private String awardType;
-
-        @Column(name = "given_at")
-        private LocalDate givenAt;
     }
 
     @Getter
