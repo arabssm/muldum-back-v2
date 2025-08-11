@@ -42,7 +42,6 @@ public class HistoryResponseDto {
                         history.getAwards().stream()
                                 .map(a -> AwardDto.builder()
                                         .awardType(a.getAwardType())
-                                        .givenAt(a.getGivenAt())
                                         .build())
                                 .collect(Collectors.toList()))
                 .build();
