@@ -27,9 +27,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. 요청에서 토큰 꺼내기 (Authorization 헤더)
+        String path = request.getRequestURI();
+        if (path.startsWith("/ara/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = jwtTokenResolver.resolveToken(request);
-        // 2. 토큰이 유효하다면, 인증 정보 설정하기
         if (token != null && jwtTokenResolver.validateToken(token)) {
             log.info("[JwtFilter] 유효한 토큰입니다.");
             SecurityContextHolder.getContext().setAuthentication(
@@ -37,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             );
         }
 
-        // 3. 다음 필터로 넘어가기
         filterChain.doFilter(request, response);
     }
 }
