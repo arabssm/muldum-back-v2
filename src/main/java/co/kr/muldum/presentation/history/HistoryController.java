@@ -28,6 +28,7 @@ public class HistoryController {
 
     @GetMapping("/{teamId}")
     public HistoryDetailResponseDto getHistoryDetail(@PathVariable("teamId") Long teamId) {
+
         return historyUseCase.getHistoryDetail(teamId);
     }
 }
