@@ -29,7 +29,7 @@ public class CalenderService {
 
         Calender savedCalender = calenderRepository.save(calender);
 
-        CalenderResponseDto calenderResponse = new CalenderResponseDto(
+        CalenderResponseDto response = new CalenderResponseDto(
                 savedCalender.getId(),
                 savedCalender.getTeamId(),
                 savedCalender.getYear(),
@@ -37,6 +37,6 @@ public class CalenderService {
                 savedCalender.getTitle(),
                 savedCalender.getContent()
         );
-        return calenderResponse;
+        return response;
     }
 }
