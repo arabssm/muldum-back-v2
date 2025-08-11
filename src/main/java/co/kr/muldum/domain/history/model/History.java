@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 @Table(name = "histories")
@@ -31,22 +31,94 @@ public class History {
     @Column(name = "logo_url")
     private String logoUrl;
 
-    @ElementCollection
-    @CollectionTable(name = "history_awards", joinColumns = @JoinColumn(name = "history_id"))
+    @Column
+    private String slogan;
+
+    @Column(name = "detail_background", columnDefinition = "text")
+    private String detailBackground;
+
+    @Column(name = "detail_features", columnDefinition = "text")
+    private String detailFeatures;
+
+    @Column(name = "detail_research", columnDefinition = "text")
+    private String detailResearch;
+
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistoryAward> awards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contributor> contributors = new ArrayList<>();
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void changeLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public void addAward(String awardType) {
+        if (this.awards == null) {
+            this.awards = new ArrayList<>();
+        }
+        this.awards.add(HistoryAward.of(this, awardType));
+    }
+
+    public void removeAward(String awardType) {
+        if (this.awards == null) return;
+        this.awards.removeIf(a -> awardType != null && awardType.equals(a.getAwardType()));
+    }
+
+    public List<Contributor> getContributors() {
+        return contributors;
+    }
+
     @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    @Embeddable
+    @Entity
+    @Table(name = "history_awards")
     public static class HistoryAward {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "history_id", nullable = false)
+        private History history;
 
         @Column(name = "award_type", nullable = false)
         private String awardType;
 
-        @Column(name = "given_at")
-        private LocalDate givenAt;
+        public static HistoryAward of(History history, String awardType) {
+            HistoryAward a = new HistoryAward();
+            a.history = history;
+            a.awardType = awardType;
+            return a;
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Entity
+    @Table(name = "contributors")
+    public static class Contributor {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "history_id", nullable = false)
+        private History history;
+
+        @Column(nullable = false)
+        private String name;
+
+        @Column(name = "github_url")
+        private String githubUrl;
     }
 }
