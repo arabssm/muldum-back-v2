@@ -1,5 +1,6 @@
 package co.kr.muldum.application.history;
 
+import co.kr.muldum.domain.history.dto.HistoryDetailResponseDto;
 import org.springframework.transaction.annotation.Transactional;
 import co.kr.muldum.application.history.dto.HistoryResponseDto;
 import co.kr.muldum.domain.history.model.History;
@@ -17,9 +18,17 @@ public class HistoryUseCase {
 
     @Transactional(readOnly = true)
     public List<HistoryResponseDto> getHistories(Integer generation) {
+
         List<History> histories = historyService.findHistories(generation);
         return histories.stream()
                 .map(HistoryResponseDto::fromEntity)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public HistoryDetailResponseDto getHistoryDetail(Long teamId) {
+
+        History history = historyService.findHistoryDetail(teamId);
+        return HistoryDetailResponseDto.fromEntity(history);
     }
 }
