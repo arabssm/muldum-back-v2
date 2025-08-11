@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoryDetailResponseDto {
+
     private Long id;
     private String name;
     private Integer generation;
