@@ -22,16 +22,18 @@ public class GoogleSheetsConfig {
 
   @Bean
   public Sheets sheetsService() throws IOException, GeneralSecurityException {
-    GoogleCredentials credentials = GoogleCredentials
-            .fromStream(new FileInputStream(credentialsPath))
-            .createScoped(Collections.singletonList("https://www.googleapis.com/auth/spreadsheets"));
+    try(FileInputStream fileInputStream = new FileInputStream(credentialsPath)) {
+      GoogleCredentials credentials = GoogleCredentials
+              .fromStream(fileInputStream)
+              .createScoped(Collections.singletonList("https://www.googleapis.com/auth/spreadsheets"));
 
-    HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+      HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
-    return new Sheets.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(),
-            JacksonFactory.getDefaultInstance(),
-            requestInitializer
-    ).setApplicationName("MyApp").build();
+      return new Sheets.Builder(
+              GoogleNetHttpTransport.newTrustedTransport(),
+              JacksonFactory.getDefaultInstance(),
+              requestInitializer
+      ).setApplicationName("MyApp").build();
+    }
   }
 }

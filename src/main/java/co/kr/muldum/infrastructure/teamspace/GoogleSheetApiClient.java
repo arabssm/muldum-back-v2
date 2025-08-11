@@ -44,21 +44,23 @@ public class GoogleSheetApiClient {
   }
 
   public List<List<Object>> readSheet(String spreadsheetId, String range) throws Exception {
-    ServiceAccountCredentials credentials = (ServiceAccountCredentials) ServiceAccountCredentials
-            .fromStream(new FileInputStream(keyFilePath))
-            .createScoped(Collections.singleton("https://www.googleapis.com/auth/spreadsheets"));
+    try (FileInputStream fileInputStream = new FileInputStream(keyFilePath)) {
+      ServiceAccountCredentials credentials = (ServiceAccountCredentials) ServiceAccountCredentials
+              .fromStream(fileInputStream)
+              .createScoped(Collections.singleton("https://www.googleapis.com/auth/spreadsheets"));
 
-    Sheets service = new Sheets.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(),
-            new JacksonFactory(),
-            new HttpCredentialsAdapter(credentials))
-            .setApplicationName("Student Importer")
-            .build();
+      Sheets service = new Sheets.Builder(
+              GoogleNetHttpTransport.newTrustedTransport(),
+              new JacksonFactory(),
+              new HttpCredentialsAdapter(credentials))
+              .setApplicationName("Student Importer")
+              .build();
 
-    ValueRange response = service.spreadsheets().values()
-            .get(spreadsheetId, range)
-            .execute();
+      ValueRange response = service.spreadsheets().values()
+              .get(spreadsheetId, range)
+              .execute();
 
-    return response.getValues();
+      return response.getValues();
+    }
   }
 }
