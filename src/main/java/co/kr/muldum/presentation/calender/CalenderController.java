@@ -1,6 +1,6 @@
 package co.kr.muldum.presentation.calender;
 
-import co.kr.muldum.application.calender.CalenderService;
+import co.kr.muldum.application.calender.service.CalenderService;
 import co.kr.muldum.application.calender.dto.CalenderResponseDto;
 import co.kr.muldum.application.calender.dto.CreateCalenderRequestDto;
 import co.kr.muldum.global.exception.TokenNotFoundException;
