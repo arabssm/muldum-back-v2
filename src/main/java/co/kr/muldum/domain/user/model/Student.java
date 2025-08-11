@@ -9,6 +9,7 @@ import java.util.Map;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "students")
 public class Student {
 
     @Id
