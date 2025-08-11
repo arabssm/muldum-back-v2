@@ -18,17 +18,13 @@ public class Student {
 
     private String email;
 
-    @Column(name = "student_id")
-    private String studentId;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> profile;
 
     @Builder
-    public Student(String email, String studentId, Map<String, Object> profile) {
+    public Student(String email, Map<String, Object> profile) {
         this.email = email;
-        this.studentId = studentId;
         this.profile = profile;
     }
 }

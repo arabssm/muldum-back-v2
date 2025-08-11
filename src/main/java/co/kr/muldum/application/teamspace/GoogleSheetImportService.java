@@ -56,7 +56,6 @@ public class GoogleSheetImportService {
         // 기본 필수 필드 추출 (email, studentId 같은 건 직접 명시해야 함)
         // 예외 처리도 추가 가능
         String email = dataMap.getOrDefault("email", "").toString();
-        String studentId = dataMap.getOrDefault("studentId", "").toString();
 
         // profile은 나머지 데이터(필수 아닌 나머지)로 구성 (email, studentId 제외)
         Map<String, Object> profile = new HashMap<>(dataMap);
@@ -65,7 +64,6 @@ public class GoogleSheetImportService {
 
         Student student = Student.builder()
                 .email(email)
-                .studentId(studentId)
                 .profile(profile)
                 .build();
 
