@@ -17,4 +17,10 @@ public class HistoryService {
 
         return historyRepository.findByGeneration(generation);
     }
+
+    public History findHistoryDetail(Long teamId) {
+
+        return historyRepository.findByIdWithContributorsAndAwards(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 동아리를 찾을 수 없습니다. ID=" + teamId));
+    }
 }
