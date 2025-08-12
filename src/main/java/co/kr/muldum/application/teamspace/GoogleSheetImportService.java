@@ -31,7 +31,7 @@ public class GoogleSheetImportService {
 
       // 2) 첫 번째 시트 이름으로 데이터 읽기
       String firstSheetName = sheetNames.getFirst();
-      String range = String.format("%s!A1:", firstSheetName);
+      String range = String.format("%s!A1:ZZ", firstSheetName);
       List<List<Object>> rows = googleSheetApiClient.readSheet(spreadsheetId, range);
       if (rows.isEmpty()) {
         return List.of();
