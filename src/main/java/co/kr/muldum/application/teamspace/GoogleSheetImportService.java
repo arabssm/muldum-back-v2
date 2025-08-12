@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -77,10 +79,10 @@ public class GoogleSheetImportService {
     }
   }
   private String extractSpreadsheetId(String url) {
-    // https://docs.google.com/spreadsheets/d/{ID}/edit#gid=0
-    String[] parts = url.split("/d/");
-    if (parts.length > 1) {
-      return parts[1].split("/")[0];
+    Pattern pattern = Pattern.compile("/spreadsheets/d/([a-zA-Z0-9-_]+)");
+    Matcher matcher = pattern.matcher(url);
+    if (matcher.find()) {
+      return matcher.group(1);
     }
     throw new IllegalArgumentException("Invalid Google Sheet URL");
   }
