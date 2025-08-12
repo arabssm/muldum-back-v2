@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,12 +25,16 @@ public class GoogleSheetImportService {
 
       List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
 
+      if (sheetNames.isEmpty()) {
+        throw new IllegalArgumentException("스프레드시트에 시트가 없습니다.");
+      }
+
       // 2) 첫 번째 시트 이름으로 데이터 읽기
       String firstSheetName = sheetNames.getFirst();
       String range = String.format("%s!A1:Z", firstSheetName);
       List<List<Object>> rows = googleSheetApiClient.readSheet(spreadsheetId, range);
       if (rows.isEmpty()) {
-        return List.of();  // 빈 리스트 리턴
+        return List.of();
       }
 
       // 첫 행이 헤더: 컬럼명 리스트
@@ -45,7 +46,7 @@ public class GoogleSheetImportService {
       // 두 번째 행부터 데이터
       for (int i = 1; i < rows.size(); i++) {
         List<Object> row = rows.get(i);
-        if (row.isEmpty()) continue;
+        if (row == null || row.isEmpty()) continue;
 
         // Map<컬럼명, 값> 생성 (헤더 기준)
         Map<String, Object> dataMap = new HashMap<>();
@@ -55,14 +56,14 @@ public class GoogleSheetImportService {
           dataMap.put(key, value);
         }
 
-        // 기본 필수 필드 추출 (email, studentId 같은 건 직접 명시해야 함)
-        // 예외 처리도 추가 가능
-        String email = dataMap.getOrDefault("email", "").toString();
+        // 필수값 추출 및 검증 (email)
+        String email = Optional.ofNullable(dataMap.get("email"))
+                .map(Object::toString)
+                .orElseThrow(() -> new IllegalArgumentException("email 컬럼이 비어있습니다."));
 
-        // profile은 나머지 데이터(필수 아닌 나머지)로 구성 (email, studentId 제외)
+        // profile은 나머지 데이터(필수 아닌 나머지)로 구성 (email 제외)
         Map<String, Object> profile = new HashMap<>(dataMap);
         profile.remove("email");
-        profile.remove("studentId");
 
         Student student = Student.builder()
                 .email(email)
