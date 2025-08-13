@@ -80,7 +80,7 @@ public class JwtProvider {
     }
 
     public long getRefreshTokenExpirationMillis() {
-        return 7 * 24 * 60 * 60 * 1000L;
+        return refreshTokenExpiration;
     }
 
     public boolean isValidRefreshToken(String token) {
