@@ -4,6 +4,7 @@ import co.kr.muldum.domain.file.model.File;
 import co.kr.muldum.domain.file.model.FileBook;
 import co.kr.muldum.domain.file.repository.FileBookRepository;
 import co.kr.muldum.domain.file.repository.FileRepository;
+import co.kr.muldum.domain.notice.exception.NotFoundException;
 import co.kr.muldum.domain.notice.factory.NoticeRequestFactory;
 import co.kr.muldum.domain.notice.model.Notice;
 import co.kr.muldum.domain.notice.model.NoticeTeam;
@@ -46,7 +47,7 @@ public class NoticeCommandService {
   @Transactional
   public void updateNotice(Long noticeId, CreateNoticeRequest createNoticeRequest, Long authorUserId) throws AccessDeniedException {
     Notice notice = noticeRepository.findById(noticeId)
-            .orElseThrow(() -> new IllegalArgumentException("공지사항이 존재하지 않습니다: " + noticeId));
+            .orElseThrow(() -> new NotFoundException("공지사항이 존재하지 않습니다: "));
 
     if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
       throw new AccessDeniedException("공지사항 작성자만 수정할 수 있습니다.");
