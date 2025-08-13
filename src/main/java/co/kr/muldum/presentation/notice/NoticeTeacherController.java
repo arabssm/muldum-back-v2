@@ -5,6 +5,7 @@ import co.kr.muldum.application.notice.command.CreateNoticeResponse;
 import co.kr.muldum.application.notice.command.DeleteNoticeResponse;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
 import co.kr.muldum.global.security.CustomUserDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class NoticeTeacherController {
   @PatchMapping("/{notice_id}")
   public ResponseEntity<CreateNoticeResponse> updateNotice(
           @PathVariable("notice_id") Long noticeId,
-          @RequestBody CreateNoticeRequest createNoticeRequest,
+          @Valid @RequestBody CreateNoticeRequest createNoticeRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) throws AccessDeniedException {
     noticeCommandService.updateNotice(noticeId, createNoticeRequest, customUserDetails.getUserId());
