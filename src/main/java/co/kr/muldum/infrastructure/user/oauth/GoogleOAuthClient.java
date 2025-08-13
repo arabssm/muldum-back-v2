@@ -31,7 +31,7 @@ public class GoogleOAuthClient {
     public GoogleOAuthClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-]
+
     public GoogleUserInfoDto getUserInfoByCode(String authorizationCode) {
         try {
             GoogleTokenResponse token = exchangeCodeForToken(authorizationCode);
