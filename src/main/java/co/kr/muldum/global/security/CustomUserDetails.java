@@ -18,7 +18,6 @@ public class CustomUserDetails implements UserDetails {
     this.userType = userType;
   }
 
-  // 필수 메서드 구현
   @Override
   public String getUsername() {
     return userId.toString(); // 굳이 필요 없으면 그냥 ID 리턴
