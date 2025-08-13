@@ -23,8 +23,7 @@ public class SecurityConfig {
         this.jwtTokenResolver = jwtTokenResolver;
     }
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = jwtAuthenticationFilter();
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
         http
             .cors(c -> c.configurationSource(corsConfigurationSource()))
