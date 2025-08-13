@@ -28,10 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;
         }
-        String uri = request.getRequestURI();
-        return uri != null && (
-            uri.startsWith("/ara/auth/") ||
-            uri.startsWith("/actuator/")
+        String path = request.getServletPath(); // use servletPath (excludes context-path such as /ara)
+        return path != null && (
+            path.startsWith("/auth/") ||
+            path.startsWith("/actuator/")
         );
     }
 
@@ -40,24 +40,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        // If there is no Bearer token, do not attempt auth; proceed down the chain
+        // If Authorization header is missing, just continue (public endpoints handle their own access)
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || authHeader.isBlank()) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // If header is present but not Bearer, treat as unauthorized
+        if (!authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         try {
             String token = jwtTokenResolver.resolveToken(request);
             if (token != null && jwtTokenResolver.validateToken(token)) {
                 log.info("[JwtFilter] 유효한 토큰입니다.");
                 Authentication authentication = (Authentication) jwtTokenResolver.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+                return;
+            } else {
+                // Bearer header가 있지만 토큰이 없거나 유효하지 않음 → 401
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         } catch (Exception ex) {
             log.warn("[JwtFilter] 토큰 검증 실패: {}", ex.getMessage());
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        filterChain.doFilter(request, response);
     }
 }
