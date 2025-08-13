@@ -53,8 +53,6 @@ public class Notice {
   private LocalDateTime updatedAt = LocalDateTime.now();
 
   public void updateNotice(CreateNoticeRequest createNoticeRequest) {
-    validateRequest(createNoticeRequest);
-
     this.title = createNoticeRequest.getTitle();
     this.contentData = new ContentData(
         createNoticeRequest.getContent(),
@@ -68,14 +66,6 @@ public class Notice {
     this.deadlineDate = createNoticeRequest.getDeadlineDate();
   }
 
-  private void validateRequest(CreateNoticeRequest request) {
-    if (request.getTitle() == null || request.getTitle().isBlank()) {
-      throw new IllegalArgumentException("공지 제목은 필수입니다.");
-    }
-    if (request.getStatus() == null) {
-      throw new IllegalArgumentException("공지 상태는 필수입니다.");
-    }
-  }
 
   @PreUpdate
   public void onUpdate() {
