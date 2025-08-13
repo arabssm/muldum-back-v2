@@ -7,8 +7,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.LinkedMultiValueMap;
@@ -46,8 +47,13 @@ public class GoogleOAuthClient {
                 throw new CustomException(ErrorCode.INVALID_AUTH_CODE);
             }
             return getUserInfo(token.getAccessToken());
-        } catch (HttpClientErrorException e) {
-            log.warn("Google OAuth 코드 교환 실패: {}", e.getResponseBodyAsString());
+        } catch (RestClientResponseException e) {
+            String body = e.getResponseBodyAsString();
+            log.warn("Google OAuth 코드 교환 실패: status={}, body-length={}",
+                    e.getRawStatusCode(), body != null ? body.length() : 0);
+            throw new CustomException(ErrorCode.INVALID_AUTH_CODE);
+        } catch (RestClientException e) {
+            log.warn("Google OAuth 코드 교환 중 통신 오류: {}", e.getMessage());
             throw new CustomException(ErrorCode.INVALID_AUTH_CODE);
         }
     }
@@ -91,8 +97,13 @@ public class GoogleOAuthClient {
             );
 
             return response.getBody();
-        } catch (HttpClientErrorException e) {
-            log.warn("Google OAuth 인증 실패: {}", e.getMessage());
+        } catch (RestClientResponseException e) {
+            String body = e.getResponseBodyAsString();
+            log.warn("Google OAuth 사용자 조회 실패: status={}, body-length={}",
+                    e.getRawStatusCode(), body != null ? body.length() : 0);
+            throw new CustomException(ErrorCode.INVALID_AUTH_CODE);
+        } catch (RestClientException e) {
+            log.warn("Google OAuth 사용자 조회 중 통신 오류: {}", e.getMessage());
             throw new CustomException(ErrorCode.INVALID_AUTH_CODE);
         }
     }
