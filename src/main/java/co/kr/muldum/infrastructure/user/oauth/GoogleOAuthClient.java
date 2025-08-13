@@ -29,6 +29,12 @@ public class GoogleOAuthClient {
     @Value("${oauth.google.redirect-uri}")
     private String redirectUri;
 
+    @Value("${oauth.google.token-url:https://oauth2.googleapis.com/token}")
+    private String tokenUrl;
+
+    @Value("${oauth.google.user-info-url:https://www.googleapis.com/oauth2/v3/userinfo}")
+    private String userInfoUrl;
+
     public GoogleOAuthClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -60,7 +66,7 @@ public class GoogleOAuthClient {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
 
         ResponseEntity<GoogleTokenResponse> response = restTemplate.exchange(
-                "https://oauth2.googleapis.com/token",
+                tokenUrl,
                 HttpMethod.POST,
                 request,
                 GoogleTokenResponse.class
@@ -78,7 +84,7 @@ public class GoogleOAuthClient {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             ResponseEntity<GoogleUserInfoDto> response = restTemplate.exchange(
-                    "https://www.googleapis.com/oauth2/v3/userinfo",
+                    userInfoUrl,
                     HttpMethod.GET,
                     request,
                     GoogleUserInfoDto.class
