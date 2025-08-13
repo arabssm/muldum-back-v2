@@ -25,7 +25,7 @@ public class NoticeTeacherController {
 
   @PostMapping()
   public ResponseEntity<CreateNoticeResponse> createNotice(
-          @RequestBody CreateNoticeRequest createNoticeRequest,
+          @Valid @RequestBody CreateNoticeRequest createNoticeRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
     Long noticeId = noticeCommandService.createNotice(createNoticeRequest, customUserDetails.getUserId());
