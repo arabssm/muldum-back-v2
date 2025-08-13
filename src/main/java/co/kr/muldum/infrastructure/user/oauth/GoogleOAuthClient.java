@@ -3,6 +3,7 @@ package co.kr.muldum.infrastructure.user.oauth;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -90,7 +91,7 @@ public class GoogleOAuthClient {
         }
     }
 
-    @lombok.Getter
+    @Getter
     static class GoogleTokenResponse {
         @JsonProperty("access_token")
         private String accessToken;
@@ -103,8 +104,5 @@ public class GoogleOAuthClient {
 
         @JsonProperty("refresh_token")
         private String refreshToken;
-
-        @JsonProperty("token_type")
-        private String tokenType;
     }
 }
