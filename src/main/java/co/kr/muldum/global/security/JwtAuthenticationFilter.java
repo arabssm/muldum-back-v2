@@ -22,25 +22,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip JWT filtering for preflight, auth endpoints, and actuator
+        String method = request.getMethod();
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
+        String uri = request.getRequestURI();
+        return uri != null && (
+            uri.startsWith("/ara/auth/") ||
+            uri.startsWith("/actuator/")
+        );
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-        if (path.startsWith("/ara/auth")) {
+        // If there is no Bearer token, do not attempt auth; proceed down the chain
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String token = jwtTokenResolver.resolveToken(request);
-        if (token != null && jwtTokenResolver.validateToken(token)) {
-            log.info("[JwtFilter] 유효한 토큰입니다.");
-            SecurityContextHolder.getContext().setAuthentication(
-                    (Authentication) jwtTokenResolver.getAuthentication(token)
-            );
+        try {
+            String token = jwtTokenResolver.resolveToken(request);
+            if (token != null && jwtTokenResolver.validateToken(token)) {
+                log.info("[JwtFilter] 유효한 토큰입니다.");
+                Authentication authentication = (Authentication) jwtTokenResolver.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception ex) {
+            log.warn("[JwtFilter] 토큰 검증 실패: {}", ex.getMessage());
+            filterChain.doFilter(request, response);
+            return;
         }
-
         filterChain.doFilter(request, response);
     }
 }
