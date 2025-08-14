@@ -1,8 +1,8 @@
 package co.kr.muldum.presentation.user;
 
 import co.kr.muldum.application.auth.TokenRefreshService;
+import co.kr.muldum.application.user.GoogleLoginService;
 import co.kr.muldum.application.user.LoginResponseDto;
-import co.kr.muldum.application.user.OAuthLoginService;
 import co.kr.muldum.global.dto.MessageResponse;
 import co.kr.muldum.global.dto.TokenRefreshRequestDto;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleLoginRequestDto;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class GoogleOAuthController {
 
-    private final OAuthLoginService oAuthLoginService;
+    private final GoogleLoginService oAuthLoginService;
     private final TokenRefreshService tokenRefreshService;
 
     @PostMapping("/login/google")
