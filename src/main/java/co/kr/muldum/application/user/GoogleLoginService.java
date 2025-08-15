@@ -5,11 +5,8 @@ import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.util.JwtProvider;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
-import co.kr.muldum.infrastructure.user.UserReaderImpl;
 import co.kr.muldum.infrastructure.user.oauth.GoogleOAuthClient;
-import co.kr.muldum.infrastructure.user.oauth.KakaoOAuthClient;
 import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
-import co.kr.muldum.infrastructure.user.oauth.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OAuthLoginService {
+public class GoogleLoginService {
 
     private final GoogleOAuthClient googleOAuthClient;
     private final UserReader userReader;
