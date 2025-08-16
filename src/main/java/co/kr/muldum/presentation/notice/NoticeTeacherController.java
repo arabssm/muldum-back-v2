@@ -26,7 +26,7 @@ public class NoticeTeacherController {
   private final NoticeCommandService noticeCommandService;
   private final NoticeQueryService noticeQueryService;
 
-  @PostMapping()
+  @PostMapping
   public ResponseEntity<CreateNoticeResponse> createNotice(
           @RequestBody CreateNoticeRequest createNoticeRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
