@@ -2,7 +2,6 @@ package co.kr.muldum.presentation.notice;
 
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
@@ -171,7 +170,6 @@ class NoticeTeacherControllerDiffblueTest {
 
     // Act and Assert
     MockMvcBuilders.standaloneSetup(noticeTeacherController)
-            .apply(springSecurity())
             .setControllerAdvice(globalExceptionHandler)
             .build()
             .perform(requestBuilder)
