@@ -20,35 +20,33 @@ public class OAuthLoginService {
 
     private final GoogleOAuthClient googleOAuthClient;
     private final UserReader userReader;
-    private final JwtProvider jwtProvider; // 생성자 주입 방식(DI)
+    private final JwtProvider jwtProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
+    public LoginResponseDto loginWithGoogle(String authorizationCode) {
+        GoogleOAuthClient.TokenResponse token = googleOAuthClient.exchangeCodeForToken(authorizationCode);
 
-    public LoginResponseDto loginWithGoogle(String accessToken) {
-
-        // 구글에서 사용자 정보 받아오기
-        GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(accessToken);
+        GoogleUserInfoDto userInfoDto = googleOAuthClient.getUserInfo(token.getAccessToken());
 
         String email = userInfoDto.getEmail();
         if (email == null || email.trim().isEmpty()) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN); // or suitable error code
+            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }
         if (!email.endsWith("@bssm.hs.kr")) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
         }
 
-        // email 기반으로 DB에서 사용자 조회
-        UserInfo userInfo = userReader.findByEmail(userInfoDto.getEmail())
+        UserInfo userInfo = userReader.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
-        // 토큰 발급
         String access = jwtProvider.createAccessToken(userInfo.getUserId(), userInfo.getUserType().name());
         String refresh = jwtProvider.createRefreshToken(userInfo.getUserId(), userInfo.getUserType().name());
 
         String redisKey = "refresh:" + userInfo.getUserType().name() + ":" + userInfo.getUserId();
-        redisTemplate.opsForValue().set(redisKey, refresh, jwtProvider.getRefreshTokenExpirationMillis(), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(
+                redisKey, refresh, jwtProvider.getRefreshTokenExpirationMillis(), TimeUnit.MILLISECONDS
+        );
 
-        // 응답 DTO
         return LoginResponseDto.of(userInfo, access, refresh);
     }
 }
