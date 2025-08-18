@@ -19,11 +19,11 @@ public class GoogleOAuthClient {
 
     private final WebClient webClient = WebClient.builder().build();
 
-    @Value("${google.client-id}")     private String clientId;
-    @Value("${google.client-secret}") private String clientSecret;
-    @Value("${google.redirect-uri}")  private String redirectUri;
-    @Value("${google.token-url}")     private String tokenUrl;
-    @Value("${google.user-info-url}") private String userInfoUrl;
+    @Value("${oauth.google.client-id}")     private String clientId;
+    @Value("${oauth.google.client-secret}") private String clientSecret;
+    @Value("${oauth.google.redirect-uri}")  private String redirectUri;
+    @Value("${oauth.google.token-url}")     private String tokenUrl;
+    @Value("${oauth.google.user-info-url}") private String userInfoUrl;
 
     // PKCE 안 쓰면 codeVerifier는 null로 넘겨도 OK
     public TokenResponse exchangeCodeForToken(String authorizationCode) {
