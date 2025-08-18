@@ -8,7 +8,7 @@
 ## 취약점 신고 방법
 - 선호: GitHub **Private Vulnerability Reporting(PVR)** 을 이용해 비공개로 신고해 주세요.
   - 리포지토리의 **Security → Report a vulnerability** 버튼을 사용합니다.
-- 대안: security@example.com 으로 메일(가능하면 PGP 사용) 주세요.
+- 대안: 1308hyunwoo@gmail.com 으로 메일(가능하면 PGP 사용) 주세요.
 
 ### 암호화
 - PGP: `0xAAAAAAAA` (https://keys.openpgp.org/…)
