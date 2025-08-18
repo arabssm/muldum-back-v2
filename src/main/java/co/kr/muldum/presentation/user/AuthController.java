@@ -23,7 +23,7 @@ public class AuthController {
     public ResponseEntity<LoginResponseDto> loginWithGoogle(
             @RequestBody GoogleLoginRequestDto request
     ) {
-        LoginResponseDto response = oAuthLoginService.loginWithGoogle(request.getAccessToken());
+        LoginResponseDto response = oAuthLoginService.loginWithGoogle(request.getAuthorizationCode());
         return ResponseEntity.ok(response);
     }
 
