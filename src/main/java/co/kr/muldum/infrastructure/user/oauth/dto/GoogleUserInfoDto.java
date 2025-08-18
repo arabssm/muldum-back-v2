@@ -2,11 +2,13 @@ package co.kr.muldum.infrastructure.user.oauth.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class GoogleUserInfoDto {
     private String email;
-    private String name;
-    private String picture;
+    private Boolean email_verified;
+    private String hd;
 }
