@@ -18,7 +18,6 @@ public class NoticeQueryService {
   public Page<NoticeSimpleResponse> getAllNotices(Pageable pageable, Long userId) throws AccessDeniedException {
     boolean isTeacher = teacherRepository.existsById(userId);
     if(!isTeacher){
-      //userId 가 teachers에 없을 경우
       throw new AccessDeniedException("해당 사용자는 교사가 아닙니다.");
     }
 
