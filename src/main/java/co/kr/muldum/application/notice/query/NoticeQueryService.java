@@ -1,5 +1,6 @@
 package co.kr.muldum.application.notice.query;
 
+import co.kr.muldum.domain.notice.model.enums.Status;
 import co.kr.muldum.domain.notice.repository.NoticeRepository;
 import co.kr.muldum.domain.user.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,15 @@ public class NoticeQueryService {
     }
 
     return noticeRepository.getAllOrderByUpdatedAt(pageable)
+            .map(NoticeSimpleResponse::fromEntity);
+  }
+
+  public Page<NoticeSimpleResponse> getAllNoticesByTeamId(Pageable pageable, Long teamId) {
+    if(teamId == null){
+      return noticeRepository.findGeneralNotice(Status.GENERAL, pageable)
+              .map(NoticeSimpleResponse::fromEntity);
+    }
+    return noticeRepository.findAllNoticeByTeamId(teamId, pageable)
             .map(NoticeSimpleResponse::fromEntity);
   }
 }
