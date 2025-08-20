@@ -12,10 +12,12 @@ public class CustomUserDetails implements UserDetails {
 
   private final Long userId;
   private final String userType;
+  private final Long teamId;
 
-  public CustomUserDetails(Long userId, String userType) {
+  public CustomUserDetails(Long userId, String userType, Long teamId) {
     this.userId = userId;
     this.userType = userType;
+    this.teamId = teamId;
   }
 
   @Override
