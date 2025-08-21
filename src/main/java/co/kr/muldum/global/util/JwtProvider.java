@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -78,6 +79,7 @@ public class JwtProvider {
 
       Long userId = Long.valueOf(claims.get("userId").toString());
       String userType = claims.get("userType").toString();
+      Long teamId = claims.get("teamId") != null ? Long.parseLong(claims.get("teamId").toString()) : null;
 
       List<GrantedAuthority> authorities = new ArrayList<>();
       if ("teacher".equalsIgnoreCase(userType)) {
@@ -86,7 +88,7 @@ public class JwtProvider {
         authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
       }
 
-      CustomUserDetails userDetails = new CustomUserDetails(userId, userType);
+      CustomUserDetails userDetails = new CustomUserDetails(userId, userType, teamId);
 
       return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }

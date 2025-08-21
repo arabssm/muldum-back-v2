@@ -3,11 +3,8 @@ package co.kr.muldum.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Entity
 @Table(name = "teachers")
@@ -23,9 +20,8 @@ public class Teacher {
   @Column(name = "employee_id")
   private String employeeId;
 
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> profile;
+  @Column(nullable = false)
+  private String name;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
