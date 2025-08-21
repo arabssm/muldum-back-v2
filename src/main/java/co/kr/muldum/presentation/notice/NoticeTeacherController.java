@@ -21,8 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,7 +67,7 @@ public class NoticeTeacherController {
   public ResponseEntity<DeleteNoticeResponse> deleteNotice(
           @PathVariable("notice_id") Long noticeId,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
-  ) throws AccessDeniedException {
+  ){
     noticeCommandService.deleteNotice(noticeId, customUserDetails.getUserId());
     return ResponseEntity
             .status(HttpStatus.OK)
@@ -82,7 +81,7 @@ public class NoticeTeacherController {
   public ResponseEntity<Page<NoticeSimpleResponse>> getNoticeList(
           @AuthenticationPrincipal CustomUserDetails customUserDetails,
           @PageableDefault(size = 10) Pageable pageable
-  ) throws AccessDeniedException {
+  ){
     Long userId = customUserDetails.getUserId();
     Page<NoticeSimpleResponse> notices = noticeQueryService.getAllNotices(pageable, userId);
     return ResponseEntity.ok(notices);
