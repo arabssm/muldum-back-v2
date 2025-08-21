@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,8 +24,8 @@ public class JwtProvider {
 
     private final String secretKey;
 
-    public JwtProvider() {
-        this.secretKey = System.getenv("JWT_SECRET_KEY");
+    public JwtProvider(@Value("${jwt.secret-key}") String secretKey) {
+        this.secretKey = secretKey;
         if (this.secretKey == null || this.secretKey.isEmpty()) {
             throw new IllegalStateException("JWT_SECRET_KEY 환경 변수가 설정되지 않았습니다.");
         }
