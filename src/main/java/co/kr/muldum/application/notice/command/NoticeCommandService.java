@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,7 +67,7 @@ public class NoticeCommandService {
   }
 
   @Transactional
-  public void deleteNotice(Long noticeId, Long authorUserId) throws AccessDeniedException {
+  public void deleteNotice(Long noticeId, Long authorUserId) {
     Notice notice = noticeRepository.findById(noticeId)
             .orElseThrow(() -> new IllegalArgumentException("공지사항이 존재하지 않습니다: " + noticeId));
 
