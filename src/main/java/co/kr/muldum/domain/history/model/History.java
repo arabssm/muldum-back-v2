@@ -31,6 +31,7 @@ public class History {
     @Column(name = "logo_url")
     private String logoUrl;
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "history_awards", joinColumns = @JoinColumn(name = "history_id"))
     private List<HistoryAward> awards = new ArrayList<>();

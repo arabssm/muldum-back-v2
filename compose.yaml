@@ -10,6 +10,13 @@ services:
       - '5432:5432'
     networks:
       - app-network
+  redis:
+    image: 'redis'
+    container_name: muldum-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - app-network
   app:
     build:
       context: .
@@ -17,10 +24,20 @@ services:
     container_name: muldum-app-v2
     depends_on:
       - postgres
+      - redis
+    env_file:
+      - .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/muldum
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - GOOGLE_SHEETS_KEY_FILE_PATH=/app/keys/club-2025.json
+    volumes:
+      - "/Users/haeun/Library/Mobile Documents/com~apple~CloudDocs/ARA/muldum-back/club-2025-1deb98e262f6.json:/app/keys/club-2025.json:ro"
     networks:
       - app-network
 networks:

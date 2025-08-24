@@ -25,10 +25,13 @@ public class JwtProvider {
     private final String secretKey;
 
     public JwtProvider(@Value("${jwt.secret-key}") String secretKey) {
-        this.secretKey = secretKey;
-        if (this.secretKey == null || this.secretKey.isEmpty()) {
-            throw new IllegalStateException("JWT_SECRET_KEY 환경 변수가 설정되지 않았습니다.");
+        if (secretKey == null || secretKey.isBlank()) {
+            throw new IllegalStateException("jwt.secret 프로퍼티가 비어 있습니다. 환경변수 JWT_SECRET_KEY 또는 SECURITY_JWT_SECRET를 설정하세요.");
         }
+        if (secretKey.getBytes(java.nio.charset.StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("jwt.secret 길이가 너무 짧습니다(HS256 최소 32바이트).");
+        }
+        this.secretKey = secretKey;
     }
 
     private final long accessTokenExpiration = 1000 * 60 * 60; // 1시간
