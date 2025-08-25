@@ -34,7 +34,6 @@ public class NoticeRequestFactory {
             .title(createNoticeRequest.getTitle())
             .contentData(contentData)
             .deadlineDate(createNoticeRequest.getDeadlineDate())
-            .status(createNoticeRequest.getStatus())
             .build();
   }
 
