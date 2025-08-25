@@ -7,10 +7,7 @@ import co.kr.muldum.domain.file.repository.FileRepository;
 import co.kr.muldum.domain.notice.exception.NotFoundException;
 import co.kr.muldum.domain.notice.factory.NoticeRequestFactory;
 import co.kr.muldum.domain.notice.model.Notice;
-import co.kr.muldum.domain.notice.model.NoticeTeam;
 import co.kr.muldum.domain.notice.repository.NoticeRepository;
-import co.kr.muldum.domain.notice.repository.NoticeTeamRepository;
-import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +23,6 @@ import java.util.Objects;
 public class NoticeCommandService {
   private final NoticeRepository noticeRepository;
   private final NoticeRequestFactory noticeRequestFactory;
-  private final NoticeTeamRepository noticeTeamRepository;
-  private final TeamRepository teamRepository;
   private final FileBookRepository fileBookRepository;
   private final FileRepository fileRepository;
 
@@ -36,9 +31,6 @@ public class NoticeCommandService {
     Notice notice = noticeRequestFactory.createNotice(createNoticeRequest, authorUserId);
     noticeRepository.save(notice);
 
-    if(createNoticeRequest.isTeamNotice()) {
-      saveNoticeTeams(notice, createNoticeRequest.getTeamIds());
-    }
     saveFileBooks(notice, createNoticeRequest.getFiles());
 
     return notice.getId();
@@ -55,12 +47,6 @@ public class NoticeCommandService {
 
     notice.updateNotice(createNoticeRequest);
 
-    // 팀 매핑
-    noticeTeamRepository.deleteAllByNoticeId(noticeId);
-    if (createNoticeRequest.isTeamNotice()) {
-      saveNoticeTeams(notice, createNoticeRequest.getTeamIds());
-    }
-
     // 파일 매핑
     fileBookRepository.deleteAllByNoticeId(noticeId);
     saveFileBooks(notice, createNoticeRequest.getFiles());
@@ -74,8 +60,6 @@ public class NoticeCommandService {
     if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
       throw new AccessDeniedException("공지사항 작성자만 삭제할 수 있습니다.");
     }
-
-    noticeTeamRepository.deleteAllByNoticeId(noticeId);
 
     List<FileBook> fileBooks = fileBookRepository.findAllByNoticeId(noticeId);
 
@@ -93,14 +77,6 @@ public class NoticeCommandService {
 
     noticeRepository.delete(notice);
 
-  }
-
-  private void saveNoticeTeams(Notice notice, List<Long> teamIds) {
-    log.info("saveNoticeTeams 호출 - teamIds: {}", teamIds);
-    List<NoticeTeam> noticeTeams = teamIds.stream()
-            .map(teamId -> new NoticeTeam(notice, teamRepository.getReferenceById(teamId)))
-            .toList();
-    noticeTeamRepository.saveAll(noticeTeams);
   }
 
   private void saveFileBooks(Notice notice, List<CreateNoticeRequest.FileRequest> files) {
