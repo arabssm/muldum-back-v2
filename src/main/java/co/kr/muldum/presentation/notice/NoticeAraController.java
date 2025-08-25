@@ -19,10 +19,10 @@ public class NoticeAraController {
   private final NoticeQueryService noticeQueryService;
 
   @GetMapping
-  public ResponseEntity<Page<NoticeSimpleResponse>> getGeneralNoticeList(
+  public ResponseEntity<Page<NoticeSimpleResponse>> getAllNoticeList(
           @PageableDefault(size = 10) Pageable pageable
   ) {
-    Page<NoticeSimpleResponse> notices = noticeQueryService.getAllNoticesByTeamId(pageable, null);
+    Page<NoticeSimpleResponse> notices = noticeQueryService.getAllNotices(pageable);
     return ResponseEntity.ok(notices);
   }
 }
