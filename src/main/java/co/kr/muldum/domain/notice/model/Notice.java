@@ -1,7 +1,6 @@
 package co.kr.muldum.domain.notice.model;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
-import co.kr.muldum.domain.notice.model.enums.Status;
 import co.kr.muldum.domain.user.model.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,10 +37,6 @@ public class Notice {
   @Column(name = "content_data")
   private ContentData contentData;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private Status status;
-
   @Column(name = "notification_config", columnDefinition = "VARCHAR(255)")
   private String notificationConfig;
 
@@ -62,7 +57,6 @@ public class Notice {
                     .map(file -> new FileData(file.getUrl()))
                     .toList()
     );
-    this.status = createNoticeRequest.getStatus();
     this.deadlineDate = createNoticeRequest.getDeadlineDate();
   }
 

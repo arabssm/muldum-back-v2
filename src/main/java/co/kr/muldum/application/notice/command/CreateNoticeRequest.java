@@ -1,6 +1,5 @@
 package co.kr.muldum.application.notice.command;
 
-import co.kr.muldum.domain.notice.model.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,16 +20,10 @@ public class CreateNoticeRequest {
   private String content;
   private List<FileRequest> files;
   private LocalDate deadlineDate;
-  private Status status;
-  private List<Long> teamIds;
 
   @Getter
   public static class FileRequest {
     private String url;
 
-  }
-
-  public boolean isTeamNotice() {
-    return teamIds != null && !teamIds.isEmpty();
   }
 }
