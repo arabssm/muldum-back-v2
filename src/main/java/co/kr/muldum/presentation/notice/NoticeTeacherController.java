@@ -4,21 +4,10 @@ import co.kr.muldum.application.notice.command.CreateNoticeRequest;
 import co.kr.muldum.application.notice.command.CreateNoticeResponse;
 import co.kr.muldum.application.notice.command.DeleteNoticeResponse;
 import co.kr.muldum.application.notice.command.NoticeCommandService;
-import co.kr.muldum.application.notice.query.NoticeQueryService;
-import co.kr.muldum.application.notice.query.NoticeSimpleResponse;
 import co.kr.muldum.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +23,6 @@ import org.springframework.security.access.AccessDeniedException;
 public class NoticeTeacherController {
 
   private final NoticeCommandService noticeCommandService;
-  private final NoticeQueryService noticeQueryService;
 
   @PostMapping
   public ResponseEntity<CreateNoticeResponse> createNotice(
@@ -78,15 +66,5 @@ public class NoticeTeacherController {
                     .message(NoticeMessage.NOTICE_DELETED_SUCCESS.getMessage())
                     .build()
             );
-  }
-
-  @GetMapping
-  public ResponseEntity<Page<NoticeSimpleResponse>> getNoticeList(
-          @AuthenticationPrincipal CustomUserDetails customUserDetails,
-          @PageableDefault(size = 10) Pageable pageable
-  ){
-    Long userId = customUserDetails.getUserId();
-    Page<NoticeSimpleResponse> notices = noticeQueryService.getAllNotices(pageable, userId);
-    return ResponseEntity.ok(notices);
   }
 }
