@@ -1,10 +1,15 @@
 package co.kr.muldum.global.util;
 
+import co.kr.muldum.domain.token.model.RefreshToken;
+import co.kr.muldum.domain.token.repository.TokenRepository;
+import co.kr.muldum.domain.user.model.UserType;
+import co.kr.muldum.global.dto.TokenRefreshRequestDto;
 import co.kr.muldum.global.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,24 +25,29 @@ import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtProvider {
 
-    private final String secretKey;
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
-    public JwtProvider(@Value("${jwt.secret-key}") String secretKey) {
-        if (secretKey == null || secretKey.isBlank()) {
-            throw new IllegalStateException("jwt.secret 프로퍼티가 비어 있습니다. 환경변수 JWT_SECRET_KEY 또는 SECURITY_JWT_SECRET를 설정하세요.");
-        }
-        if (secretKey.getBytes(java.nio.charset.StandardCharsets.UTF_8).length < 32) {
-            throw new IllegalStateException("jwt.secret 길이가 너무 짧습니다(HS256 최소 32바이트).");
-        }
-        this.secretKey = secretKey;
-    }
+    private final TokenRepository tokenRepository;
 
-    private final long accessTokenExpiration = 1000 * 60 * 60; // 1시간
+    private final long accessTokenExpiration = 1000 * 60 * 60;
+    private final long teacherAccessTokenExpiration = 1000 * 60 * 60 * 24 * 14;// 1시간
     private final long refreshTokenExpiration = 1000 * 60 * 60 * 24 * 14; // 2주
 
     public String createAccessToken(Long userId, String userType) {
+      if ("teacher".equalsIgnoreCase(userType)) {
+        return Jwts.builder()
+                .setSubject("AccessToken")
+                .claim("userId", userId)
+                .claim("userType", userType)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + teacherAccessTokenExpiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
+                .compact();
+      } else {
         return Jwts.builder()
                 .setSubject("AccessToken")
                 .claim("userId", userId)
@@ -46,10 +56,12 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
+      }
     }
 
-    public String createRefreshToken(Long userId, String userType) {
-        return Jwts.builder()
+    public String createRefreshToken(Long userId, UserType userType) {
+
+        String refreshToken = Jwts.builder()
                 .setSubject("RefreshToken")
                 .claim("userId", userId)
                 .claim("userType", userType)
@@ -57,6 +69,10 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
+
+        tokenRepository.save(new RefreshToken(refreshToken, userId, userType));
+
+        return refreshToken;
     }
 
     public boolean validateToken(String token) {
@@ -79,7 +95,7 @@ public class JwtProvider {
               .parseClaimsJws(token)
               .getBody();
 
-      Long userId = Long.valueOf(claims.get("userId").toString());
+      Long userId = Long.valueOf((claims.get("userId").toString()));
       String userType = claims.get("userType").toString();
 
       List<GrantedAuthority> authorities = new ArrayList<>();
@@ -110,14 +126,14 @@ public class JwtProvider {
         }
     }
 
-    public String createAccessTokenByRefreshToken(String refreshToken) {
+    public String createAccessTokenByRefreshToken(TokenRefreshRequestDto refreshToken) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .build()
-                .parseClaimsJws(refreshToken)
+                .parseClaimsJws(refreshToken.getRefreshToken())
                 .getBody();
 
-        Long userId = Long.valueOf(claims.get("userId", String.class));
+        Long userId = claims.get("userId", Long.class);
         String userType = claims.get("userType", String.class);
 
         return createAccessToken(userId, userType);

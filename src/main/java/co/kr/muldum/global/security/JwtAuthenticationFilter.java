@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String path = request.getServletPath();
         return path != null && (
-            path.startsWith("/auth/") ||
+            path.startsWith("/ara/auth/") ||
             path.startsWith("/actuator/")
         );
     }
