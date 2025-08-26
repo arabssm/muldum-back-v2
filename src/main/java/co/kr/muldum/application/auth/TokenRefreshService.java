@@ -11,7 +11,15 @@ public class TokenRefreshService {
 
     private final JwtProvider jwtProvider;
 
-    public RefreshResponse refreshToken(TokenRefreshRequestDto refreshToken) {
-        return new RefreshResponse(jwtProvider.createAccessTokenByRefreshToken(refreshToken));
+    public RefreshResponse refreshToken(TokenRefreshRequestDto requestDto) {
+        String refreshToken = requestDto.getRefreshToken();
+
+        if (!jwtProvider.isValidRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("리프레시 토큰이 유효하지 않습니다.");
+        }
+
+        String newAccessToken = jwtProvider.createAccessTokenByRefreshToken(requestDto);
+
+        return new RefreshResponse(newAccessToken);
     }
 }

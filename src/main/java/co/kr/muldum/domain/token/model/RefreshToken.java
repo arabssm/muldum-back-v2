@@ -1,9 +1,7 @@
 package co.kr.muldum.domain.token.model;
 
 import co.kr.muldum.domain.user.model.UserType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +16,7 @@ public class RefreshToken {
   @Id
   private String refreshToken;
   private Long id;
+  @Enumerated(EnumType.STRING)
   private UserType userType;
 
 
