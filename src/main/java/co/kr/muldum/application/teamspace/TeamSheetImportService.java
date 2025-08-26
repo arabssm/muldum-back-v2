@@ -1,5 +1,7 @@
 package co.kr.muldum.application.teamspace;
 
+import co.kr.muldum.domain.teamspace.model.Member;
+
 import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.repository.MemberRepository;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class TeamSheetImportService {
     private final GoogleSheetsClient googleSheetsClient;
 
     public TeamSheetImportResponseDto importFromSheet(TeamSheetImportRequestDto teamSheetImportRequestDto) {
+        List<TeamSheetImportResponseDto.ErrorDetail> errors = new ArrayList<>();
         // 1. 구글 시트 링크에서 sheetId 추출
         String link = teamSheetImportRequestDto.getSheetLink();
         String sheetId = extractSheetId(link);
@@ -34,8 +39,10 @@ public class TeamSheetImportService {
         int totalRows = (rows != null) ? rows.size() : 0;
 
         int skipped = 0, failed = 0, teamsUpserted = 0, studentsUpserted = 0;
+        int membersUpserted = 0;
 
         if (rows != null) {
+            int rowIndex = 0;
             for (java.util.List<Object> row : rows) {
                 String teamName = row.size() > 0 ? (row.get(0) != null ? row.get(0).toString() : "") : "";
                 String name = row.size() > 1 ? (row.get(1) != null ? row.get(1).toString() : "") : "";
@@ -45,15 +52,21 @@ public class TeamSheetImportService {
 
                 // Validation logic
                 if (teamName.isBlank() && name.isBlank() && email.isBlank() && role.isBlank()) {
+                    errors.add(new TeamSheetImportResponseDto.ErrorDetail(rowIndex, "Row is blank"));
                     skipped++;
+                    rowIndex++;
                     continue;
                 }
                 if (teamName.isBlank()) {
+                    errors.add(new TeamSheetImportResponseDto.ErrorDetail(rowIndex, "Team name is blank"));
                     failed++;
+                    rowIndex++;
                     continue;
                 }
                 if (!isValidEmail(email)) {
+                    errors.add(new TeamSheetImportResponseDto.ErrorDetail(rowIndex, "Invalid email format"));
                     failed++;
+                    rowIndex++;
                     continue;
                 }
                 // Upsert Team by name
@@ -84,6 +97,22 @@ public class TeamSheetImportService {
                     studentRepository.save(newStudent);
                     studentsUpserted++;
                 }
+
+                // Upsert Member by teamId and studentId
+                Long teamId = teamRepository.findByName(teamName).get().getId();
+                Long studentId = studentRepository.findByEmail(email).get().getId();
+                if (!memberRepository.existsByTeamIdAndStudentId(teamId, studentId)) {
+                    Member member = new Member();
+                    member.setTeamId(teamId);
+                    member.setStudentId(studentId);
+                    member.setRole(role.isBlank() ? "MEMBER" : role.toUpperCase());
+                    member.setDisplayName(name);
+                    member.setCreatedAt(LocalDateTime.now());
+                    member.setUpdatedAt(LocalDateTime.now());
+                    memberRepository.save(member);
+                    membersUpserted++;
+                }
+                rowIndex++;
             }
         }
 
@@ -92,10 +121,11 @@ public class TeamSheetImportService {
         return TeamSheetImportResponseDto.builder()
                 .total(totalRows)
                 .teamsUpserted(teamsUpserted)
-                .membersUpserted(0)
+                .membersUpserted(membersUpserted)
                 .studentsUpserted(studentsUpserted)
                 .skipped(skipped)
                 .failed(failed)
+                .errors(errors)
                 .build();
     }
 
