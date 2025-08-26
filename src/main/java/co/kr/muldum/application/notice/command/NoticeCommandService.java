@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,9 +53,9 @@ public class NoticeCommandService {
   }
 
   @Transactional
-  public void deleteNotice(Long noticeId, Long authorUserId) throws AccessDeniedException {
+  public void deleteNotice(Long noticeId, Long authorUserId) {
     Notice notice = noticeRepository.findById(noticeId)
-            .orElseThrow(() -> new IllegalArgumentException("공지사항이 존재하지 않습니다: " + noticeId));
+            .orElseThrow(() -> new NotFoundException("공지사항이 존재하지 않습니다: " + noticeId));
 
     if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
       throw new AccessDeniedException("공지사항 작성자만 삭제할 수 있습니다.");
@@ -82,7 +82,7 @@ public class NoticeCommandService {
   private void saveFileBooks(Notice notice, List<CreateNoticeRequest.FileRequest> files) {
     List<FileBook> fileBooks = files.stream()
             .map(fileDto -> fileRepository.findByPath(fileDto.getUrl())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 URL의 파일이 존재하지 않습니다: " + fileDto.getUrl())))
+                    .orElseThrow(() -> new NotFoundException("해당 URL의 파일이 존재하지 않습니다: " + fileDto.getUrl())))
             .map(file -> new FileBook(notice, file))
             .toList();
     fileBookRepository.saveAll(fileBooks);

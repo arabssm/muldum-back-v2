@@ -26,5 +26,4 @@ public class CreateNoticeRequest {
     private String url;
 
   }
-
 }
