@@ -95,7 +95,7 @@ public class JwtProvider {
               .parseClaimsJws(token)
               .getBody();
 
-      Long userId = Long.valueOf((claims.get("userId").toString()));
+      Long userId = claims.get("userId", Long.class);
       String userType = claims.get("userType").toString();
 
       List<GrantedAuthority> authorities = new ArrayList<>();
