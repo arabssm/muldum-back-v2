@@ -11,19 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for importing teams and members directly from a Google Sheet link.
- * Exposes POST /admin/team/import/sheet according to the spec for immediate DB upsert.
+ * Only teachers (admins) are authorized to add teams and members through this endpoint.
+ * Exposes POST /admin/team/import/sheet for immediate DB upsert.
  */
 @RestController
-@RequestMapping("/admin/team/import")
+@RequestMapping("/std/team")
 @RequiredArgsConstructor
 public class TeamSheetImportController {
 
     private final TeamSheetImportService teamSheetImportService;
 
     /**
-     * Triggers import: reads the sheet and upserts teams, students, and members.
+     * For teachers to upsert teams and members by reading the sheet.
+     * Exposes POST /std/team/invite for immediate DB upsert.
      */
-    @PostMapping("/sheet")
+    @PostMapping("/invite")
     public TeamSheetImportResponseDto importFromSheet(@RequestBody TeamSheetImportRequestDto teamSheetImportRequestDto) {
         return teamSheetImportService.importFromSheet(teamSheetImportRequestDto);
     }
