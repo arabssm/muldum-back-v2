@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "members", indexes = {
@@ -41,7 +44,8 @@ public class Member {
     private String displayName;
 
     @Column(name = "joined_snapshot", columnDefinition = "jsonb")
-    private String joinedSnapshot;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> joinedSnapshot;
 
     private LocalDateTime createdAt;
 
