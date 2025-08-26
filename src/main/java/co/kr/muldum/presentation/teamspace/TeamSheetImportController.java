@@ -1,6 +1,8 @@
 package co.kr.muldum.presentation.teamspace;
 
 import co.kr.muldum.application.teamspace.TeamSheetImportService;
+import co.kr.muldum.presentation.dto.TeamSheetImportRequestDto;
+import co.kr.muldum.presentation.dto.TeamSheetImportResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class TeamSheetImportController {
      * Triggers import: reads the sheet and upserts teams, students, and members.
      */
     @PostMapping("/sheet")
-    public TeamSheetImportResponse importFromSheet(@RequestBody TeamSheetImportRequest request) {
-        return teamSheetImportService.importFromSheet(request);
+    public TeamSheetImportResponseDto importFromSheet(@RequestBody TeamSheetImportRequestDto teamSheetImportRequestDto) {
+        return teamSheetImportService.importFromSheet(teamSheetImportRequestDto);
     }
 }
