@@ -1,5 +1,6 @@
 package co.kr.muldum.application.teamspace;
 
+import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.repository.MemberRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
@@ -32,7 +33,7 @@ public class TeamSheetImportService {
         java.util.List<java.util.List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
         int totalRows = (rows != null) ? rows.size() : 0;
 
-        int skipped = 0, failed = 0, teamsUpserted = 0;
+        int skipped = 0, failed = 0, teamsUpserted = 0, studentsUpserted = 0;
 
         if (rows != null) {
             for (java.util.List<Object> row : rows) {
@@ -66,6 +67,23 @@ public class TeamSheetImportService {
                     teamRepository.save(team);
                     teamsUpserted++;
                 }
+                // Upsert Student by email
+                java.util.Optional<Student> existingStudentOpt = studentRepository.findByEmail(email);
+                if (existingStudentOpt.isPresent()) {
+                    Student existingStudent = existingStudentOpt.get();
+                    Object profileName = null;
+                    if (existingStudent.getProfile() != null) {
+                        profileName = existingStudent.getProfile().get("name");
+                    }
+                    if ((profileName == null || profileName.toString().isBlank()) && !name.isBlank()) {
+                        existingStudent.setName(name);
+                        studentRepository.save(existingStudent);
+                    }
+                } else {
+                    Student newStudent = Student.create(email, name);
+                    studentRepository.save(newStudent);
+                    studentsUpserted++;
+                }
             }
         }
 
@@ -75,7 +93,7 @@ public class TeamSheetImportService {
                 .total(totalRows)
                 .teamsUpserted(teamsUpserted)
                 .membersUpserted(0)
-                .studentsUpserted(0)
+                .studentsUpserted(studentsUpserted)
                 .skipped(skipped)
                 .failed(failed)
                 .build();
