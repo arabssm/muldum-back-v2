@@ -29,6 +29,16 @@ public class TeamSheetImportService {
         java.util.List<java.util.List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
         int totalRows = (rows != null) ? rows.size() : 0;
 
+        if (rows != null) {
+            for (java.util.List<Object> row : rows) {
+                String teamName = row.size() > 0 ? (row.get(0) != null ? row.get(0).toString() : "") : "";
+                String name = row.size() > 1 ? (row.get(1) != null ? row.get(1).toString() : "") : "";
+                String email = row.size() > 2 ? (row.get(2) != null ? row.get(2).toString() : "") : "";
+                String role = row.size() > 3 ? (row.get(3) != null ? row.get(3).toString() : "") : "";
+                System.out.println("teamName: " + teamName + ", name: " + name + ", email: " + email + ", role: " + role);
+            }
+        }
+
         // 3. TODO: 데이터 파싱 및 DB 저장 로직 (추후 구현)
 
         return TeamSheetImportResponseDto.builder()
