@@ -45,7 +45,7 @@ public class NoticeCommandService {
       throw new AccessDeniedException("공지사항 작성자만 수정할 수 있습니다.");
     }
 
-    notice.updateNotice(createNoticeRequest);
+    noticeRequestFactory.createNotice(createNoticeRequest, authorUserId);
 
     // 파일 매핑
     fileBookRepository.deleteAllByNoticeId(noticeId);
