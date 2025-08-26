@@ -44,12 +44,7 @@ public class Student {
         this.profile.put("name", name);
     }
 
-    public static Student create(String email, String name) {
-        Student student = new Student();
-        student.setEmail(email);
-        if (name != null && !name.isBlank()) {
-            student.setName(name);
-        }
-        return student;
+    public void setProfile(Map<String, Object> profile) {
+        this.profile = profile;
     }
 }

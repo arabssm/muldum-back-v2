@@ -1,5 +1,8 @@
 package co.kr.muldum.application.teamspace;
 
+import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 import co.kr.muldum.domain.teamspace.model.Member;
 
 import co.kr.muldum.domain.user.model.Student;
@@ -15,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class TeamSheetImportService {
         // 2. GoogleSheetsClient로 시트 데이터 읽기
         // 시트 이름은 요청에 포함되거나 기본값 사용
         String range = teamSheetImportRequestDto.getRange();
-        java.util.List<java.util.List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
+        List<List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
         int totalRows = (rows != null) ? rows.size() : 0;
 
         int skipped = 0, failed = 0, teamsUpserted = 0, studentsUpserted = 0;
@@ -43,7 +45,7 @@ public class TeamSheetImportService {
 
         if (rows != null) {
             int rowIndex = 0;
-            for (java.util.List<Object> row : rows) {
+            for (List<Object> row : rows) {
                 String teamName = row.size() > 0 ? (row.get(0) != null ? row.get(0).toString() : "") : "";
                 String name = row.size() > 1 ? (row.get(1) != null ? row.get(1).toString() : "") : "";
                 String email = row.size() > 2 ? (row.get(2) != null ? row.get(2).toString() : "") : "";
@@ -70,8 +72,12 @@ public class TeamSheetImportService {
                     continue;
                 }
                 // Upsert Team by name
-                if (!teamRepository.findByName(teamName).isPresent()) {
-                    Team team = new Team();
+                Team team;
+                java.util.Optional<Team> teamOpt = teamRepository.findByName(teamName);
+                if (teamOpt.isPresent()) {
+                    team = teamOpt.get();
+                } else {
+                    team = new Team();
                     team.setName(teamName);
                     team.setType("DEFAULT");
                     LocalDateTime now = LocalDateTime.now();
@@ -81,36 +87,50 @@ public class TeamSheetImportService {
                     teamsUpserted++;
                 }
                 // Upsert Student by email
+                Student student;
                 java.util.Optional<Student> existingStudentOpt = studentRepository.findByEmail(email);
                 if (existingStudentOpt.isPresent()) {
-                    Student existingStudent = existingStudentOpt.get();
+                    student = existingStudentOpt.get();
                     Object profileName = null;
-                    if (existingStudent.getProfile() != null) {
-                        profileName = existingStudent.getProfile().get("name");
+                    if (student.getProfile() != null) {
+                        profileName = student.getProfile().get("name");
                     }
                     if ((profileName == null || profileName.toString().isBlank()) && !name.isBlank()) {
-                        existingStudent.setName(name);
-                        studentRepository.save(existingStudent);
+                        student.setName(name);
+                        studentRepository.save(student);
                     }
                 } else {
-                    Student newStudent = Student.create(email, name);
-                    studentRepository.save(newStudent);
+                    student = Student.builder()
+                        .email(email)
+                        .profile(name.isBlank() ? Collections.emptyMap() : Map.of("name", name))
+                        .build();
+                    studentRepository.save(student);
                     studentsUpserted++;
                 }
 
                 // Upsert Member by teamId and studentId
-                Long teamId = teamRepository.findByName(teamName).get().getId();
-                Long studentId = studentRepository.findByEmail(email).get().getId();
+                Long teamId = team.getId();
+                Long studentId = student.getId();
                 if (!memberRepository.existsByTeamIdAndStudentId(teamId, studentId)) {
                     Member member = new Member();
                     member.setTeamId(teamId);
                     member.setStudentId(studentId);
-                    member.setRole(role.isBlank() ? "MEMBER" : role.toUpperCase());
+                    // Normalize role
+                    String normalizedRole = (role == null) ? "" : role.trim().toUpperCase();
+                    member.setRole(normalizedRole.isEmpty() ||
+                                   (!normalizedRole.equals("LEADER") && !normalizedRole.equals("MEMBER"))
+                                   ? "MEMBER" : normalizedRole);
                     member.setDisplayName(name);
-                    member.setCreatedAt(LocalDateTime.now());
-                    member.setUpdatedAt(LocalDateTime.now());
-                    memberRepository.save(member);
-                    membersUpserted++;
+                    LocalDateTime now = LocalDateTime.now();
+                    member.setCreatedAt(now);
+                    member.setUpdatedAt(now);
+                    try {
+                        memberRepository.save(member);
+                        membersUpserted++;
+                    } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+                        // Race condition: member already inserted by another thread
+                        // Optionally log or ignore
+                    }
                 }
                 rowIndex++;
             }
@@ -131,7 +151,10 @@ public class TeamSheetImportService {
 
     // 구글 시트 링크에서 sheetId 추출
     private String extractSheetId(String link) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("/d/([^/]+)/");
+        if (link == null || link.isBlank()) {
+            throw new IllegalArgumentException("Google Sheets link is null or blank");
+        }
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("/d/([a-zA-Z0-9-_]+)");
         java.util.regex.Matcher matcher = pattern.matcher(link);
         if (matcher.find()) {
             return matcher.group(1);
