@@ -2,6 +2,7 @@ package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 @Entity
 @Table(name = "teams")
 @Getter
+@Setter
 public class Team {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,9 @@ public class Team {
 
   @Column(nullable = false)
   private String name;
+
+  @Column(nullable = false)
+  private String type;
 
   @JdbcTypeCode(SqlTypes.JSON)
   private Map<String, Object> config;
