@@ -64,6 +64,37 @@ public class UserReaderImpl implements UserReader {
 
     @Override
     public UserInfo read(Class<?> clazz, Long id) {
-        return null;
+        try {
+            String tableName = clazz.getSimpleName().toLowerCase() + "s";
+            String query = String.format("SELECT id, email, profile ->> 'name' as name, team_id FROM %s WHERE id = ?", tableName);
+            
+            return jdbcTemplate.queryForObject(
+                query,
+                (rs, rowNum) -> UserInfo.builder()
+                    .userId(rs.getLong("id"))
+                    .name(rs.getString("name"))
+                    .teamId(rs.getObject("team_id", Long.class))
+                    .userType(determineUserType(clazz))
+                    .role(Role.MEMBER)
+                    .build(),
+                id
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+    }
+    
+    private UserType determineUserType(Class<?> clazz) {
+        String className = clazz.getSimpleName().toLowerCase();
+        switch (className) {
+            case "student":
+                return UserType.STUDENT;
+            case "teacher":
+                return UserType.TEACHER;
+            case "mentor":
+                return UserType.MENTOR;
+            default:
+                return UserType.STUDENT;
+        }
     }
 }
