@@ -27,9 +27,9 @@ public class ItemRequestService {
 
     public TempItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
         UserInfo userInfo = userReader.read(Student.class, userId);
-        
-        log.info("물품 신청 - 사용자 정보: userId={}, name={}, teamId={}, userType={}", 
-                userInfo.getUserId(), userInfo.getName(), userInfo.getTeamId(), userInfo.getUserType());
+
+        log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
+                userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
 
         // teamId null 체크 추가
         if (userInfo.getTeamId() == null) {
@@ -40,7 +40,15 @@ public class ItemRequestService {
                     .build();
         }
 
+        if (requestDto.getProductLink() == null || requestDto.getProductLink().isBlank()) {
+            log.warn("물품 신청 실패 - productLink가 비었습니다. userId={}", userId);
+            return TempItemResponseDto.builder()
+            .status("REJECTED")
+            .message("상품 링크가 유효하지 않습니다.")
+            .build();
+        }
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
+
         ItemStatus status;
         String message;
 
