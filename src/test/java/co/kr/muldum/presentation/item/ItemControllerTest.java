@@ -1,45 +1,32 @@
 package co.kr.muldum.presentation.item;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
-import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.service.ItemRequestService;
-import co.kr.muldum.global.exception.GlobalExceptionHandler;
 import co.kr.muldum.global.security.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
-
-@ContextConfiguration(classes = {ItemController.class, GlobalExceptionHandler.class})
-@ExtendWith(SpringExtension.class)
+@WebMvcTest(ItemController.class)
 class ItemControllerTest {
 
     @MockitoBean
     private ItemRequestService itemRequestService;
 
-
     @Autowired
-    private ItemController itemController;
-
-    @Autowired
-    private GlobalExceptionHandler globalExceptionHandler;
+    private MockMvc mockMvc;
 
     @Test
     @DisplayName("임시 물품 신청 성공 테스트")
@@ -50,8 +37,7 @@ class ItemControllerTest {
                 "상상소나무",
                 3,
                 "32000",
-                "https://coupang.com/padark",
-                ItemSource.COUPANG,
+                "https://devicemart.co.kr/test",
                 "umm"
         );
 
@@ -66,15 +52,12 @@ class ItemControllerTest {
                 .thenReturn(responseDto);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(itemController)
-                .setControllerAdvice(globalExceptionHandler)
-                .build();
 
         // When & Then
         mockMvc.perform(post("/std/items/temp")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
-                        .principal(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())))
+                        .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value("INTEMP"))
@@ -82,19 +65,16 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("잘못된 요청 데이터로 400 에러 테스트")
-    void testCreateTempItemRequest_BadRequest() throws Exception {
+    @DisplayName("인증 없이 접근 시 401 에러 테스트")
+    @WithMockUser
+    void testCreateTempItemRequest_Unauthorized() throws Exception {
         // Given
-        String invalidJson = "{ \"invalidField\": \"value\" }";
-
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(itemController)
-                .setControllerAdvice(globalExceptionHandler)
-                .build();
+        String validJson = "{ \"productName\": \"테스트\", \"quantity\": 1, \"price\": \"1000\", \"productLink\": \"https://devicemart.co.kr/test\", \"reason\": \"테스트\" }";
 
         // When & Then
         mockMvc.perform(post("/std/items/temp")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidJson))
-                .andExpect(status().isBadRequest());
+                        .content(validJson))
+                .andExpect(status().isUnauthorized());
     }
 }
