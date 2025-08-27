@@ -22,6 +22,9 @@ public class Student {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> profile;
 
+    @Column(name = "team_id")
+    private Long teamId;
+
     @Builder
     public Student(String email, Map<String, Object> profile) {
         this.email = email;
