@@ -9,6 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
-    List<ItemRequest> findByTeamId(Integer teamId);
-    Optional<ItemRequest> findByIdAndTeamId(Long id, Integer teamId);
 }
