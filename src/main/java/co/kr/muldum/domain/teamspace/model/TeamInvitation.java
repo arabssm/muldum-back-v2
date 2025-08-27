@@ -1,33 +1,27 @@
 package co.kr.muldum.domain.teamspace.model;
 
+import co.kr.muldum.global.model.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "members")
+@Table(name = "team_invitations")
 @Getter
 @Setter
 @NoArgsConstructor
-public class TeamInvitation {
+public class TeamInvitation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "team_id", nullable = false)
     private Long teamId;
 
-    @Column(nullable = false)
+    @Column(name = "student_id", nullable = false)
     private Long studentId;
 
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false, length = 32)
     private String role;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }
