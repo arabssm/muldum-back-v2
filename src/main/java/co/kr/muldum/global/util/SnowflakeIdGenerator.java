@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.concurrent.locks.LockSupport;
 
 @Component
 public class  SnowflakeIdGenerator {
@@ -58,27 +59,14 @@ public class  SnowflakeIdGenerator {
 
     private long waitForNextMinute(long lastTimestamp) {
         long nextMinute = lastTimestamp + 1;
+        long currentTimeMillis = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+        long nextMinuteMillis = (nextMinute + EPOCH) * 60 * 1000;
+        long waitTimeNanos = (nextMinuteMillis - currentTimeMillis) * 1_000_000;
         
-        while (true) {
-            long now = getCurrentTimestamp();
-            if (now >= nextMinute) {
-                return now;
-            }
-            
-            // 다음 분까지 남은 시간을 계산 (밀리초)
-            long currentTimeMillis = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
-            long nextMinuteMillis = (nextMinute + EPOCH) * 60 * 1000;
-            long sleepTime = nextMinuteMillis - currentTimeMillis;
-            
-            // 최소 1ms, 최대 1000ms로 제한
-            sleepTime = Math.max(1, Math.min(sleepTime, 1000));
-            
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Interrupted while waiting for next minute", ie);
-            }
+        if (waitTimeNanos > 0) {
+            LockSupport.parkNanos(waitTimeNanos);
         }
+        
+        return getCurrentTimestamp();
     }
 }
