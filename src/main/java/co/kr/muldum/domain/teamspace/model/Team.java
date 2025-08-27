@@ -2,7 +2,10 @@ package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.AccessLevel;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -12,7 +15,9 @@ import java.util.Map;
 @Entity
 @Table(name = "teams")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Team {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +37,17 @@ public class Team {
 
   @Column(name = "updated_at", nullable = true)
   private LocalDateTime updatedAt;
+
+  // 업데이트 메서드
+  public void updateName(String name) {
+    this.name = name;
+  }
+
+  public void updateType(String type) {
+    this.type = type;
+  }
+
+  public void updateConfig(Map<String, Object> config) {
+    this.config = config;
+  }
 }
