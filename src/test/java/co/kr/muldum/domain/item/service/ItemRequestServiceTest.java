@@ -49,7 +49,7 @@ class ItemRequestServiceTest {
         );
 
         UserInfo userInfo = UserInfo.builder()
-                .id(userId)
+                .userId(userId)
                 .teamId(teamId.longValue())
                 .build();
 
@@ -100,7 +100,7 @@ class ItemRequestServiceTest {
         );
 
         UserInfo userInfo = UserInfo.builder()
-                .id(userId)
+                .userId(userId)
                 .teamId(teamId.longValue())
                 .build();
 
@@ -144,7 +144,7 @@ class ItemRequestServiceTest {
         );
 
         UserInfo userInfo = UserInfo.builder()
-                .id(userId)
+                .userId(userId)
                 .teamId(teamId.longValue())
                 .build();
 
@@ -171,5 +171,36 @@ class ItemRequestServiceTest {
         ItemRequest capturedItemRequest = itemRequestCaptor.getValue();
         assertThat(capturedItemRequest.getProductInfo().getItemSource()).isEqualTo(ItemSource.OTHER);
         assertThat(capturedItemRequest.getStatus()).isEqualTo(ItemStatus.REJECTED);
+    }
+
+    @Test
+    @DisplayName("팀ID가 null인 사용자의 물품 신청 시 REJECTED 상태 테스트")
+    void testCreateTempItemRequest_Rejected_NullTeamId() {
+        // Given
+        Long userId = 123L;
+        TempItemRequestDto requestDto = new TempItemRequestDto(
+                "Arduino UNO",
+                2,
+                "25000",
+                "https://www.devicemart.co.kr/goods/view?no=1234",
+                "아두이노 프로젝트용"
+        );
+
+        UserInfo userInfo = UserInfo.builder()
+                .userId(userId)
+                .teamId(null)  // teamId가 null
+                .build();
+
+        when(userReader.read(Student.class, userId)).thenReturn(userInfo);
+
+        // When
+        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+
+        // Then
+        assertThat(result.getStatus()).isEqualTo("REJECTED");
+        assertThat(result.getMessage()).isEqualTo("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.");
+
+        // itemRequestRepository.save()가 호출되지 않았는지 확인
+        verify(itemRequestRepository, org.mockito.Mockito.never()).save(any(ItemRequest.class));
     }
 }
