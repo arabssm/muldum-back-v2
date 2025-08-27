@@ -1,12 +1,6 @@
 package co.kr.muldum.domain.teamspace.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,11 +11,21 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "members", indexes = {
-        @Index(name = "idx_team_student", columnList = "teamId,studentId", unique = true),
-        @Index(name = "idx_team", columnList = "teamId"),
-        @Index(name = "idx_student", columnList = "studentId")
-})
+@Table(
+        name = "members",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_member_team_student",
+                        columnNames = {"team_id", "student_id"})
+        },
+        indexes = {
+                @Index(
+                        name = "idx_member_team_id",
+                        columnList = "team_id"),
+                @Index(name = "idx_member_student_id",
+                        columnList = "student_id")
+        }
+    )
 @Getter
 @Setter
 @NoArgsConstructor
