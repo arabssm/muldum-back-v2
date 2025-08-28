@@ -1,13 +1,13 @@
 package co.kr.muldum.domain.teamspace.model;
 
 import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.global.model.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -32,7 +32,7 @@ import org.hibernate.type.SqlTypes;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,8 +55,4 @@ public class Member {
     @Column(name = "joined_snapshot", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> joinedSnapshot;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }
