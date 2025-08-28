@@ -8,7 +8,6 @@ import java.util.Map;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "students")
 public class Student {
@@ -40,14 +39,17 @@ public class Student {
         return "";
     }
 
-    public void setName(String name) {
+    public void updateNameIfEmpty(String name) {
         if (this.profile == null) {
             this.profile = new java.util.HashMap<>();
         }
-        this.profile.put("name", name);
+        Object currentName = this.profile.get("name");
+        if (currentName == null || currentName.toString().isBlank()) {
+            this.profile.put("name", name);
+        }
     }
 
-    public void setProfile(Map<String, Object> profile) {
-        this.profile = profile;
+    public void updateProfile(Map<String, Object> profile) {
+        this.profile = profile != null ? new java.util.HashMap<>(profile) : null;
     }
 }
