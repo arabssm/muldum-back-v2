@@ -27,7 +27,6 @@ import org.hibernate.type.SqlTypes;
         }
     )
 @Getter
-@Setter
 @NoArgsConstructor
 public class Member {
 
