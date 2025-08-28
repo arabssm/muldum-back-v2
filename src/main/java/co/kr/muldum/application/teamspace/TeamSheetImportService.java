@@ -42,8 +42,8 @@ public class TeamSheetImportService {
         int totalRows = (rows != null) ? rows.size() : 0;
 
         int skipped = 0, failed = 0;
-        AtomicInteger teamsUpserted = new AtomicInteger(0);
-        int studentsUpserted = 0;
+        AtomicInteger teamsUpserted = new AtomicInteger();
+        AtomicInteger studentsUpserted = new AtomicInteger();
         int membersUpserted = 0;
 
         if (rows != null) {
@@ -86,26 +86,24 @@ public class TeamSheetImportService {
                         return newTeam;
                     });
                 // Upsert Student by email
-                Student student;
-                java.util.Optional<Student> existingStudentOpt = studentRepository.findByEmail(email);
-                if (existingStudentOpt.isPresent()) {
-                    student = existingStudentOpt.get();
-                    Object profileName = null;
-                    if (student.getProfile() != null) {
-                        profileName = student.getProfile().get("name");
-                    }
-                    if ((profileName == null || profileName.toString().isBlank()) && !name.isBlank()) {
-                        student.setName(name);
-                        studentRepository.save(student);
-                    }
-                } else {
-                    student = Student.builder()
-                        .email(email)
-                        .profile(name.isBlank() ? Collections.emptyMap() : Map.of("name", name))
-                        .build();
-                    studentRepository.save(student);
-                    studentsUpserted++;
-                }
+                Student student = studentRepository.findByEmail(email)
+                    .map(s -> {
+                        Object profileName = (s.getProfile() != null) ? s.getProfile().get("name") : null;
+                        if ((profileName == null || profileName.toString().isBlank()) && !name.isBlank()) {
+                            s.setName(name);
+                            studentRepository.save(s);
+                        }
+                        return s;
+                    })
+                    .orElseGet(() -> {
+                        Student newStudent = Student.builder()
+                            .email(email)
+                            .profile(name.isBlank() ? Collections.emptyMap() : Map.of("name", name))
+                            .build();
+                        studentRepository.save(newStudent);
+                        studentsUpserted.incrementAndGet();
+                        return newStudent;
+                    });
 
                 // Upsert Member by teamId and studentId
                 Long teamId = team.getId();
@@ -141,7 +139,7 @@ public class TeamSheetImportService {
                 .total(totalRows)
                 .teamsUpserted(teamsUpserted.get())
                 .membersUpserted(membersUpserted)
-                .studentsUpserted(studentsUpserted)
+                .studentsUpserted(studentsUpserted.get())
                 .skipped(skipped)
                 .failed(failed)
                 .errors(errors)
