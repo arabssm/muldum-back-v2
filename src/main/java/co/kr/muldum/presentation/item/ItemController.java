@@ -2,6 +2,7 @@ package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.FinalItemResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,24 @@ public class ItemController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<FinalItemResponseDto> finalizeItemRequest(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        FinalItemResponseDto finalItemResponseDto = itemRequestService.finalizeItemRequest(
+                userDetails.getUserId()
+        );
+
+        if ("REJECTED".equals(finalItemResponseDto.getStatus())) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(finalItemResponseDto);
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(finalItemResponseDto);
     }
 }
