@@ -2,6 +2,7 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.FinalItemResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.RequestDetails;
@@ -85,6 +86,26 @@ public class ItemRequestService {
         return TempItemResponseDto.builder()
                 .status(status.name())
                 .message(message)
+                .build();
+    }
+
+    public FinalItemResponseDto finalizeItemRequest(Long userId) {
+        UserInfo userInfo = userReader.read(Student.class, userId);
+
+        log.debug("물품 최종 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
+                userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+
+        if (userInfo.getTeamId() == null) {
+            log.warn("물품 최종 신청 실패 - teamId가 null입니다. userId={}", userId);
+            return FinalItemResponseDto.builder()
+                    .status("REJECTED")
+                    .message("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.")
+                    .build();
+        }
+
+        return FinalItemResponseDto.builder()
+                .status("PENDING")
+                .message("물품이 성공적으로 신청되었습니다.")
                 .build();
     }
 }
