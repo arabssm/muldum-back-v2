@@ -86,6 +86,8 @@ public class TeamSheetImportService {
                         return newTeam;
                     });
                 // Upsert Student by email
+                Student existingStudent = studentRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalStateException("학생을 찾을 수 없습니다."));
                 Student student = studentRepository.findByEmail(email)
                     .map(s -> {
                         Object profileName = (s.getProfile() != null) ? s.getProfile().get("name") : null;
