@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,9 @@ public class TeamSheetImportService {
         List<List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
         int totalRows = (rows != null) ? rows.size() : 0;
 
-        int skipped = 0, failed = 0, teamsUpserted = 0, studentsUpserted = 0;
+        int skipped = 0, failed = 0;
+        AtomicInteger teamsUpserted = new AtomicInteger(0);
+        int studentsUpserted = 0;
         int membersUpserted = 0;
 
         if (rows != null) {
@@ -72,20 +75,16 @@ public class TeamSheetImportService {
                     continue;
                 }
                 // Upsert Team by name
-                Team team;
-                java.util.Optional<Team> teamOpt = teamRepository.findByName(teamName);
-                if (teamOpt.isPresent()) {
-                    team = teamOpt.get();
-                } else {
-                    team = new Team();
-                    team.setName(teamName);
-                    team.setType("DEFAULT");
-                    LocalDateTime now = LocalDateTime.now();
-                    team.setCreatedAt(now);
-                    team.setUpdatedAt(now);
-                    teamRepository.save(team);
-                    teamsUpserted++;
-                }
+                Team team = teamRepository.findByName(teamName)
+                    .orElseGet(() -> {
+                        Team newTeam = Team.builder()
+                            .name(teamName)
+                            .type("DEFAULT")
+                            .build();
+                        teamRepository.save(newTeam);
+                        teamsUpserted.incrementAndGet();
+                        return newTeam;
+                    });
                 // Upsert Student by email
                 Student student;
                 java.util.Optional<Student> existingStudentOpt = studentRepository.findByEmail(email);
@@ -140,7 +139,7 @@ public class TeamSheetImportService {
 
         return TeamSheetImportResponseDto.builder()
                 .total(totalRows)
-                .teamsUpserted(teamsUpserted)
+                .teamsUpserted(teamsUpserted.get())
                 .membersUpserted(membersUpserted)
                 .studentsUpserted(studentsUpserted)
                 .skipped(skipped)
