@@ -33,12 +33,10 @@ public class TeamSheetImportService {
 
     public TeamSheetImportResponseDto importFromSheet(TeamSheetImportRequestDto teamSheetImportRequestDto) {
         List<TeamSheetImportResponseDto.ErrorDetail> errors = new ArrayList<>();
-        // 1. 구글 시트 링크에서 sheetId 추출
+        // 시트 ID 추출
         String link = teamSheetImportRequestDto.getSheetLink();
         String sheetId = extractSheetId(link);
 
-        // 2. GoogleSheetsClient로 시트 데이터 읽기
-        // 시트 이름은 요청에 포함되거나 기본값 사용
         String range = teamSheetImportRequestDto.getRange();
         List<List<Object>> rows = googleSheetsClient.readRows(sheetId, (range != null ? range : "A2:D"));
         int totalRows = (rows != null) ? rows.size() : 0;
@@ -57,7 +55,7 @@ public class TeamSheetImportService {
                 String role = row.size() > 3 ? (row.get(3) != null ? row.get(3).toString() : "") : "";
                 System.out.println("teamName: " + teamName + ", name: " + name + ", email: " + email + ", role: " + role);
 
-                // Validation logic
+                // 입력값 검증
                 if (teamName.isBlank() && name.isBlank() && email.isBlank() && role.isBlank()) {
                     errors.add(new TeamSheetImportResponseDto.ErrorDetail(rowIndex, "Row is blank"));
                     skipped++;
@@ -76,7 +74,6 @@ public class TeamSheetImportService {
                     rowIndex++;
                     continue;
                 }
-                // Upsert Team by name
                 Team team = teamRepository.findByName(teamName)
                     .orElseGet(() -> {
                         Team newTeam = Team.builder()
@@ -87,7 +84,6 @@ public class TeamSheetImportService {
                         teamsUpserted.incrementAndGet();
                         return newTeam;
                     });
-                // Upsert Student by email
                 Student existingStudentCheck = studentRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalStateException("학생을 찾을 수 없습니다."));
                 Student student = studentRepository.findByEmail(email)
@@ -105,7 +101,6 @@ public class TeamSheetImportService {
                         return newStudent;
                     });
 
-                // Upsert Member by teamId and studentId
                 Long teamId = team.getId();
                 Long studentId = student.getId();
                 if (!memberRepository.existsByTeamIdAndStudentId(teamId, studentId)) {
@@ -126,16 +121,13 @@ public class TeamSheetImportService {
                         memberRepository.save(member);
                         membersUpserted++;
                     } catch (org.springframework.dao.DataIntegrityViolationException ex) {
-                        // Race condition: member already inserted by another thread
-                        // Optionally log or ignore
                     }
                 }
                 rowIndex++;
             }
         }
 
-        // 3. TODO: 데이터 파싱 및 DB 저장 로직 (추후 구현)
-
+        // 결과 반환
         return TeamSheetImportResponseDto.builder()
                 .total(totalRows)
                 .teamsUpserted(teamsUpserted.get())
@@ -147,7 +139,6 @@ public class TeamSheetImportService {
                 .build();
     }
 
-    // 구글 시트 링크에서 sheetId 추출
     private String extractSheetId(String link) {
         if (link == null || link.isBlank()) {
             throw new IllegalArgumentException("Google Sheets link is null or blank");
