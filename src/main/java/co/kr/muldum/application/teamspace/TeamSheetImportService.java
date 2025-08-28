@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 @Service
 @RequiredArgsConstructor
@@ -91,7 +93,6 @@ public class TeamSheetImportService {
                 Student student = studentRepository.findByEmail(email)
                     .map(existingStudent -> {
                         existingStudent.updateNameIfEmpty(name);
-                        studentRepository.save(existingStudent);
                         return existingStudent;
                     })
                     .orElseGet(() -> {
@@ -151,8 +152,8 @@ public class TeamSheetImportService {
         if (link == null || link.isBlank()) {
             throw new IllegalArgumentException("Google Sheets link is null or blank");
         }
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("/d/([a-zA-Z0-9-_]+)");
-        java.util.regex.Matcher matcher = pattern.matcher(link);
+        Pattern pattern = Pattern.compile("/d/([a-zA-Z0-9-_]+)");
+        Matcher matcher = pattern.matcher(link);
         if (matcher.find()) {
             return matcher.group(1);
         }
