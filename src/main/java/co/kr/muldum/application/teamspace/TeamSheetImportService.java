@@ -86,13 +86,13 @@ public class TeamSheetImportService {
                         return newTeam;
                     });
                 // Upsert Student by email
-                Student existingStudent = studentRepository.findByEmail(email)
+                Student existingStudentCheck = studentRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalStateException("학생을 찾을 수 없습니다."));
                 Student student = studentRepository.findByEmail(email)
-                    .map(student-> {
-                        s.updateNameIfEmpty(name);
-                        studentRepository.save(s);
-                        return s;
+                    .map(existingStudent -> {
+                        existingStudent.updateNameIfEmpty(name);
+                        studentRepository.save(existingStudent);
+                        return existingStudent;
                     })
                     .orElseGet(() -> {
                         Student newStudent = Student.builder()
@@ -108,18 +108,19 @@ public class TeamSheetImportService {
                 Long teamId = team.getId();
                 Long studentId = student.getId();
                 if (!memberRepository.existsByTeamIdAndStudentId(teamId, studentId)) {
-                    Member member = new Member();
-                    member.setTeamId(teamId);
-                    member.setStudentId(studentId);
-                    // Normalize role
                     String normalizedRole = (role == null) ? "" : role.trim().toUpperCase();
-                    member.setRole(normalizedRole.isEmpty() ||
+                    normalizedRole = normalizedRole.isEmpty() ||
                                    (!normalizedRole.equals("LEADER") && !normalizedRole.equals("MEMBER"))
-                                   ? "MEMBER" : normalizedRole);
-                    member.setDisplayName(name);
+                                   ? "MEMBER" : normalizedRole;
                     LocalDateTime now = LocalDateTime.now();
-                    member.setCreatedAt(now);
-                    member.setUpdatedAt(now);
+                    Member member = Member.builder()
+                        .teamId(teamId)
+                        .studentId(studentId)
+                        .role(normalizedRole)
+                        .displayName(name)
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .build();
                     try {
                         memberRepository.save(member);
                         membersUpserted++;
