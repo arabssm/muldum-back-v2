@@ -1,9 +1,10 @@
 package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -25,9 +26,11 @@ import org.hibernate.type.SqlTypes;
                 @Index(name = "idx_member_student_id",
                         columnList = "student_id")
         }
-    )
+)
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member {
 
     @Id
