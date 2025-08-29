@@ -6,6 +6,7 @@ import co.kr.muldum.presentation.dto.LogoutRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +14,7 @@ public class LogoutService {
 
     private final TokenRepository tokenRepository;
 
+    @Transactional
     public void logout(LogoutRequestDto request) {
         String token = request.getRefreshToken();
         if (token == null || token.isBlank()) {
