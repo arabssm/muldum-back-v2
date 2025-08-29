@@ -13,14 +13,13 @@ public class LogoutService {
     private final TokenRepository tokenRepository;
 
     public void logout(LogoutRequestDto request) {
-//        boolean deleted = tokenRepository.deleteByRefreshToken(
-//                request.getUserType(),
-//                request.getUserId(),
-//                request.getRefreshToken()
-//        );
-//
-//        if (!deleted) {
-//            throw new TokenNotFoundException("유효한 리프레시 토큰이 없습니다.");
-//        }
+        boolean deleted = tokenRepository.deleteByToken(
+                request
+                        .getRefreshToken()
+        );
+
+        if (!deleted) {
+            throw new TokenNotFoundException("유효한 리프레시 토큰이 없습니다.");
+        }
     }
 }
