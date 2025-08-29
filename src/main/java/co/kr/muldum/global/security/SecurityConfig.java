@@ -49,7 +49,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // TODO: 운영에서는 허용 Origin을 특정 도메인(예: http://localhost:3000, https://app.example.com)으로 제한하세요.
         config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
