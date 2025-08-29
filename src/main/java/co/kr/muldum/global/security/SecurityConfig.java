@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/ara/auth/login/**").permitAll()
                     .requestMatchers("/ara/notice/**").permitAll()
+                    .requestMatchers("/ara/files/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
