@@ -16,11 +16,15 @@ public class LogoutService {
     @Transactional
     public void logout(LogoutRequestDto request) {
         String token = request.getRefreshToken();
-        if (token == null || token.isBlank()) {
-            throw new IllegalArgumentException("refreshToken 값이 비어 있을 수 없습니다.");
-        }
+        validateToken(token);
 
         tokenRepository.deleteByRefreshToken(token)
             .orElseThrow(() -> new TokenNotFoundException("유효한 리프레시 토큰이 없습니다."));
+    }
+
+    private void validateToken(String token) {
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException("refreshToken 값이 비어 있을 수 없습니다.");
+        }
     }
 }
