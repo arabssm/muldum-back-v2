@@ -5,6 +5,7 @@ import co.kr.muldum.global.exception.TokenNotFoundException;
 import co.kr.muldum.presentation.dto.LogoutRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -13,9 +14,12 @@ public class LogoutService {
     private final TokenRepository tokenRepository;
 
     public void logout(LogoutRequestDto request) {
-        long deleted = tokenRepository.deleteByRefreshToken(
-                request.getRefreshToken()
-        );
+        String token = request.getRefreshToken();
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException("refreshToken 값이 비어 있을 수 없습니다.");
+        }
+
+        long deleted = tokenRepository.deleteByRefreshToken(token);
 
         if (deleted == 0) {
             throw new TokenNotFoundException("유효한 리프레시 토큰이 없습니다.");
