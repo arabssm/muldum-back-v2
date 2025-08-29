@@ -59,8 +59,6 @@ public class AuthController {
         return ResponseEntity.status(status).body(body);
     }
 
-
-
     @PostMapping("/logout")
     public ResponseEntity<LogoutResponseDto> logout(
             @RequestBody LogoutRequestDto logoutRequestDto
