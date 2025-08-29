@@ -42,7 +42,6 @@ public class History {
 
     @Column(columnDefinition = "text")
     private String detailResearch;
-
     @ElementCollection
     @CollectionTable(name = "history_awards", joinColumns = @JoinColumn(name = "history_id"))
     private List<HistoryAward> awards = new ArrayList<>();

@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -21,15 +23,18 @@ spring:
       max-request-size: 25MB
 
 jwt:
-  secret: ${JWT_SECRET_KEY}
-
-google:
-  client-id: ${GOOGLE_CLIENT_ID}
-  client-secret: ${GOOGLE_CLIENT_SECRET}
-  redirect-uri: ${GOOGLE_REDIRECT_URI}
-  token-url: ${GOOGLE_TOKEN_URL}
-  user-info-url: ${GOOGLE_USER_INFO_URL}
+  secret-key: ${JWT_SECRET_KEY}
 
 oauth:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-uri: ${GOOGLE_REDIRECT_URI}
+    token-url: ${GOOGLE_TOKEN_URL}
+    user-info-url: ${GOOGLE_USER_INFO_URL}
   kakao:
     user-info-uri: https://kapi.kakao.com/v2/user/me
+
+google:
+  sheets:
+    credentials-path: ${GOOGLE_SHEETS_KEY_FILE_PATH}

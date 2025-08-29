@@ -3,6 +3,7 @@ package co.kr.muldum.global.util;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.security.core.Authentication;
 
 @Component
 public class JwtTokenResolver {
@@ -25,7 +26,7 @@ public class JwtTokenResolver {
         return jwtProvider.validateToken(token);
     }
 
-    public Object getAuthentication(String token) {
+    public Authentication getAuthentication(String token) {
         return jwtProvider.getAuthentication(token);
     }
 }

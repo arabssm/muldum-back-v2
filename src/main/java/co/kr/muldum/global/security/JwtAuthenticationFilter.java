@@ -22,25 +22,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String method = request.getMethod();
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
+        String path = request.getServletPath();
+        return path != null && (
+            path.startsWith("/ara/**") ||
+            path.startsWith("/actuator/")
+        );
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-        if (path.startsWith("/ara/auth")) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || authHeader.isBlank()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = jwtTokenResolver.resolveToken(request);
-        if (token != null && jwtTokenResolver.validateToken(token)) {
-            log.info("[JwtFilter] 유효한 토큰입니다.");
-            SecurityContextHolder.getContext().setAuthentication(
-                    (Authentication) jwtTokenResolver.getAuthentication(token)
-            );
+        if (!authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            String token = jwtTokenResolver.resolveToken(request);
+            if (token != null && jwtTokenResolver.validateToken(token)) {
+                log.info("[JwtFilter] 유효한 토큰입니다.");
+                Authentication authentication = jwtTokenResolver.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+                return;
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        } catch (Exception ex) {
+            log.warn("[JwtFilter] 토큰 검증 실패: {}", ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
     }
 }

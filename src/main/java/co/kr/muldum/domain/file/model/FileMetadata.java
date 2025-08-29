@@ -6,5 +6,5 @@ import lombok.Value;
 public class FileMetadata {
   String name;
   String type;
-  long size;
+  long size_bytes;
 }

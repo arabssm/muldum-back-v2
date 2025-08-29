@@ -1,9 +1,7 @@
 package co.kr.muldum.application.auth;
 
 import co.kr.muldum.global.dto.TokenRefreshRequestDto;
-import co.kr.muldum.global.exception.InvalidRefreshTokenException;
 import co.kr.muldum.global.util.JwtProvider;
-import co.kr.muldum.infrastructure.token.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +9,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TokenRefreshService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
 
-    public String refreshAccessToken(TokenRefreshRequestDto request) {
-        String refreshToken = request.getRefreshToken();
+    public RefreshResponse refreshToken(TokenRefreshRequestDto requestDto) {
+        String refreshToken = requestDto.getRefreshToken();
 
         if (!jwtProvider.isValidRefreshToken(refreshToken)) {
-            throw new InvalidRefreshTokenException();
+            throw new IllegalArgumentException("리프레시 토큰이 유효하지 않습니다.");
         }
 
-        if (!refreshTokenRepository.existsByToken(refreshToken)) {
-            throw new InvalidRefreshTokenException();
-        }
+        String newAccessToken = jwtProvider.createAccessTokenByRefreshToken(requestDto);
 
-        return jwtProvider.createAccessTokenByRefreshToken(refreshToken);
+        return new RefreshResponse(newAccessToken);
     }
 }

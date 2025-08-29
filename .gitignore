@@ -36,3 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 /.env
+/club-2025-1deb98e262f6.json
+/compose.yaml
