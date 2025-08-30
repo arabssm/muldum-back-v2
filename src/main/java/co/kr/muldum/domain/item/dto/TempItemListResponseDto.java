@@ -13,7 +13,7 @@ public class TempItemListResponseDto {
     private Long id;
     private String productName;
     private Integer quantity;
-    private Integer price;
+    private String price;
     private String status;
     private String type;
 }
