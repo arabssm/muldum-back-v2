@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +41,7 @@ class ItemControllerTest {
                 "umm"
         );
 
-        TempItemResponseDto responseDto = TempItemResponseDto.builder()
+        ItemResponseDto responseDto = ItemResponseDto.builder()
                 .status("INTEMP")
                 .message("임시 신청이 완료되었습니다.")
                 .build();

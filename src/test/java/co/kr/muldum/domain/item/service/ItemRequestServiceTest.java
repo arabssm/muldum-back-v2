@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -64,7 +64,7 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
         assertThat(result.getStatus()).isEqualTo("INTEMP");
@@ -115,7 +115,7 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
         assertThat(result.getStatus()).isEqualTo("INTEMP");
@@ -159,7 +159,7 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
         assertThat(result.getStatus()).isEqualTo("REJECTED");
@@ -194,7 +194,7 @@ class ItemRequestServiceTest {
         when(userReader.read(Student.class, userId)).thenReturn(userInfo);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
         assertThat(result.getStatus()).isEqualTo("REJECTED");
