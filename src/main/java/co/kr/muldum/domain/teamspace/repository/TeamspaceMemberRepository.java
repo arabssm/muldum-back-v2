@@ -6,5 +6,5 @@ import co.kr.muldum.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember, Long> {
-    boolean existsByTeamAndStudent(Team team, User user);
+    boolean existsByTeamAndUser(Team team, User user);
 }
