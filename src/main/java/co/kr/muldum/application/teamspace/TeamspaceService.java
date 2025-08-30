@@ -1,4 +1,8 @@
 package co.kr.muldum.application.teamspace;
+import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
+import co.kr.muldum.domain.teamspace.repository.TeamRepository;
+import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 
 import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.user.repository.StudentRepository;
@@ -21,6 +25,8 @@ public class TeamspaceService {
     private final StudentRepository studentRepository;
     private final GoogleSheetApiClient googleSheetApiClient;
     private final GoogleSheetImportService googleSheetImportService;
+    private final TeamRepository teamRepository;
+    private final TeamspaceMemberRepository teamspaceMemberRepository;
 
     @Transactional
     public TeamspaceInviteResponseDto inviteStudents(StudentCsvImportRequest studentCsvImportRequest) {
@@ -31,6 +37,9 @@ public class TeamspaceService {
                 throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
             }
             List<String> emails = googleSheetImportService.importFromGoogleSheet(url);
+            // Placeholder: get the team instance (assume teamId = 1L for now)
+            Team team = teamRepository.findById(1L)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEAM));
             for (String email : emails) {
                 if (email == null || email.isEmpty()) continue;
                 email = email.trim().toLowerCase(Locale.ROOT);
@@ -40,6 +49,12 @@ public class TeamspaceService {
                 Optional<Student> optionalStudent = studentRepository.findByEmail(email);
                 if (optionalStudent.isEmpty()) {
                     throw new CustomException(ErrorCode.UNREGISTERED_USER);
+                }
+                Student student = optionalStudent.get();
+                boolean alreadyMember = teamspaceMemberRepository.existsByTeamAndStudent(team, student);
+                if (!alreadyMember) {
+                    TeamspaceMember member = new TeamspaceMember(team, student, TeamspaceMember.Role.MEMBER);
+                    teamspaceMemberRepository.save(member);
                 }
             }
             return new TeamspaceInviteResponseDto("success");
