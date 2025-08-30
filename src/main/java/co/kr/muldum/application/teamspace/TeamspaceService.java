@@ -51,10 +51,15 @@ public class TeamspaceService {
                 // 이메일 추출 및 학생 저장
                 String email = Objects.toString(mapped.get("email"), null);
                 if (email == null || email.isEmpty()) continue;
-                Student student = Student.builder()
-                        .email(email)
-                        // add other fields if needed from mapped
-                        .build();
+                email = email.trim().toLowerCase(Locale.ROOT);
+                if (!email.endsWith("@bssm.hs.kr")) {
+                    throw new IllegalArgumentException("허용되지 않은 도메인입니다.");
+                }
+                Optional<Student> optionalStudent = studentRepository.findByEmail(email);
+                if (optionalStudent.isEmpty()) {
+                    throw new IllegalArgumentException("등록되지 않은 사용자입니다.");
+                }
+                Student student = optionalStudent.get();
                 studentRepository.save(student);
             }
             // 성공 응답 반환
