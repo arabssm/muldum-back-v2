@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "teamspace_members")
+@Table(name = "members")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamspaceMember {
@@ -23,7 +23,12 @@ public class TeamspaceMember {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime joinedAt;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -37,6 +42,16 @@ public class TeamspaceMember {
         this.team = team;
         this.user = user;
         this.role = role;
-        this.joinedAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }
