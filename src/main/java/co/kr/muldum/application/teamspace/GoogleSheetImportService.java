@@ -60,7 +60,7 @@ public class GoogleSheetImportService {
                 .map(Object::toString)
                 .orElseThrow(() -> new IllegalArgumentException("email 컬럼이 비어있습니다."));
 
-        emails.add(email);
+        emails.add(email.trim().toLowerCase());
       }
 
       return emails;
