@@ -20,8 +20,13 @@ public class TeamspaceService {
 
     public TeamspaceInviteResponseDto inviteStudents(StudentCsvImportRequest studentCsvImportRequest) {
         try {
+            Objects.requireNonNull(studentCsvImportRequest, "request must not be null");
+            String url = studentCsvImportRequest.getGoogleSheetUrl();
+            if (url == null || url.isBlank()) {
+                throw new IllegalArgumentException("googleSheetUrl must not be blank");
+            }
             // 스프레드시트 ID 추출
-            String spreadsheetId = extractSpreadsheetId(studentCsvImportRequest.getGoogleSheetUrl());
+            String spreadsheetId = extractSpreadsheetId(url);
             // 시트 이름 가져오기
             List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
             // 시트 데이터 읽기 (첫 번째 시트)
