@@ -4,8 +4,8 @@ import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 
-import co.kr.muldum.domain.user.model.Student;
-import co.kr.muldum.domain.user.repository.StudentRepository;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class TeamspaceService {
 
-    private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
     private final GoogleSheetApiClient googleSheetApiClient;
     private final GoogleSheetImportService googleSheetImportService;
     private final TeamRepository teamRepository;
@@ -39,21 +39,21 @@ public class TeamspaceService {
             List<String> emails = googleSheetImportService.importFromGoogleSheet(url);
             // Placeholder: get the team instance (assume teamId = 1L for now)
             Team team = teamRepository.findById(1L)
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEAM));
+                    .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
             for (String email : emails) {
                 if (email == null || email.isEmpty()) continue;
                 email = email.trim().toLowerCase(Locale.ROOT);
                 if (!email.endsWith("@bssm.hs.kr")) {
                     throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
                 }
-                Optional<Student> optionalStudent = studentRepository.findByEmail(email);
-                if (optionalStudent.isEmpty()) {
+                Optional<User> optionalUser = userRepository.findByEmail(email);
+                if (optionalUser.isEmpty()) {
                     throw new CustomException(ErrorCode.UNREGISTERED_USER);
                 }
-                Student student = optionalStudent.get();
-                boolean alreadyMember = teamspaceMemberRepository.existsByTeamAndStudent(team, student);
+                User user = optionalUser.get();
+                boolean alreadyMember = teamspaceMemberRepository.existsByTeamAndUser(team, user);
                 if (!alreadyMember) {
-                    TeamspaceMember member = new TeamspaceMember(team, student, TeamspaceMember.Role.MEMBER);
+                    TeamspaceMember member = new TeamspaceMember(team, user, "MEMBER");
                     teamspaceMemberRepository.save(member);
                 }
             }
