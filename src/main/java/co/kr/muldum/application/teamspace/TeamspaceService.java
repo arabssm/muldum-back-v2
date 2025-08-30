@@ -29,6 +29,9 @@ public class TeamspaceService {
             String spreadsheetId = extractSpreadsheetId(url);
             // 시트 이름 가져오기
             List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
+            if (sheetNames == null || sheetNames.isEmpty()) {
+                throw new IllegalArgumentException("스프레드시트에 시트가 없습니다.");
+            }
             // 시트 데이터 읽기 (첫 번째 시트)
             String firstSheetName = sheetNames.get(0);
             String range = firstSheetName + "!A1:ZZ";
