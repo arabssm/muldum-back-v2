@@ -1,6 +1,5 @@
 package co.kr.muldum.application.teamspace;
 
-import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.user.repository.StudentRepository;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,7 @@ public class GoogleSheetImportService {
   private final GoogleSheetApiClient googleSheetApiClient;
 
   @Transactional
-  public List<Student> importFromGoogleSheet(String googleSheetUrl) {
+  public List<String> importFromGoogleSheet(String googleSheetUrl) {
     try {
       String spreadsheetId = extractSpreadsheetId(googleSheetUrl);
 
@@ -41,7 +40,7 @@ public class GoogleSheetImportService {
       List<Object> headerRow = rows.getFirst();
       // headerRow 예: ["grade", "class", "studentId", "name", "email", ...]
 
-      List<Student> savedStudents = new ArrayList<>();
+      List<String> emails = new ArrayList<>();
 
       // 두 번째 행부터 데이터
       for (int i = 1; i < rows.size(); i++) {
@@ -61,20 +60,10 @@ public class GoogleSheetImportService {
                 .map(Object::toString)
                 .orElseThrow(() -> new IllegalArgumentException("email 컬럼이 비어있습니다."));
 
-        // profile은 나머지 데이터(필수 아닌 나머지)로 구성 (email 제외)
-        Map<String, Object> profile = new HashMap<>(dataMap);
-        profile.remove("email");
-
-        Student student = Student.builder()
-                .email(email)
-                .profile(profile)
-                .build();
-
-        studentRepository.save(student);
-        savedStudents.add(student);
+        emails.add(email);
       }
 
-      return savedStudents;
+      return emails;
     } catch (Exception e) {
       throw new RuntimeException("구글 시트 가져오기 실패", e);
     }
