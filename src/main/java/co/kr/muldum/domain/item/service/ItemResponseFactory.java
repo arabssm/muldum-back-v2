@@ -16,14 +16,7 @@ public class ItemResponseFactory {
 
     public ItemResponseDto createRejectedResponse(String message) {
         return ItemResponseDto.builder()
-                .status("REJECTED")
-                .message(message)
-                .build();
-    }
-
-    public ItemResponseDto createResponse(String status, String message) {
-        return ItemResponseDto.builder()
-                .status(status)
+                .status(ItemStatus.REJECTED.name())
                 .message(message)
                 .build();
     }
