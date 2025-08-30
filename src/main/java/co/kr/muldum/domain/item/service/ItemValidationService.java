@@ -3,6 +3,7 @@ package co.kr.muldum.domain.item.service;
 import co.kr.muldum.domain.item.validator.TeamValidator;
 import co.kr.muldum.domain.item.validator.ProductLinkValidator;
 import co.kr.muldum.domain.user.model.UserInfo;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class ItemValidationService {
         return new ValidationResult(result.isValid(), result.getErrorMessage());
     }
 
+    @Getter
     public static class ValidationResult {
         private final boolean isValid;
         private final String errorMessage;
@@ -38,14 +40,6 @@ public class ItemValidationService {
 
         public static ValidationResult fail(String errorMessage) {
             return new ValidationResult(false, errorMessage);
-        }
-
-        public boolean isValid() {
-            return isValid;
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
         }
     }
 }

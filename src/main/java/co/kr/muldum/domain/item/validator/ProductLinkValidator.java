@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.item.validator;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class ProductLinkValidator {
         return ValidationResult.success();
     }
 
+    @Getter
     public static class ValidationResult {
         private final boolean isValid;
         private final String errorMessage;
@@ -31,14 +33,6 @@ public class ProductLinkValidator {
 
         public static ValidationResult fail(String errorMessage) {
             return new ValidationResult(false, errorMessage);
-        }
-
-        public boolean isValid() {
-            return isValid;
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
         }
     }
 }
