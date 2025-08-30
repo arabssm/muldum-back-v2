@@ -67,7 +67,7 @@ class ItemRequestServiceTest {
         ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("INTEMP");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.INTEMP.name());
         assertThat(result.getMessage()).isEqualTo("임시 신청이 완료되었습니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -118,7 +118,7 @@ class ItemRequestServiceTest {
         ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("INTEMP");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.INTEMP.name());
         assertThat(result.getMessage()).isEqualTo("임시 신청이 완료되었습니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -162,7 +162,7 @@ class ItemRequestServiceTest {
         ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("REJECTED");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.REJECTED.name());
         assertThat(result.getMessage()).isEqualTo("허용되지 않은 쇼핑몰입니다. 디바이스마트(devicemart.co.kr) 또는 11번가(11st.co.kr)에서만 신청 가능합니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -197,7 +197,7 @@ class ItemRequestServiceTest {
         ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("REJECTED");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.REJECTED.name());
         assertThat(result.getMessage()).isEqualTo("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.");
 
         // itemRequestRepository.save()가 호출되지 않았는지 확인
