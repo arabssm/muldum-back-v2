@@ -28,7 +28,7 @@ public class TeamspaceService {
             if (url == null || url.isBlank()) {
                 throw new IllegalArgumentException("googleSheetUrl must not be blank");
             }
-            List<String> emails = googleSheetImportService.extractEmailsFromGoogleSheet(url);
+            List<String> emails = googleSheetImportService.importFromGoogleSheet(url);
             for (String email : emails) {
                 if (email == null || email.isEmpty()) continue;
                 email = email.trim().toLowerCase(Locale.ROOT);
