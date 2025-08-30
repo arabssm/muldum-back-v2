@@ -1,6 +1,6 @@
 package co.kr.muldum.domain.teamspace.model;
 
-import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -20,8 +20,8 @@ public class TeamspaceMember {
     private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     private LocalDateTime joinedAt;
 
@@ -33,9 +33,9 @@ public class TeamspaceMember {
         MEMBER
     }
 
-    public TeamspaceMember(Team team, Student student, Role role) {
+    public TeamspaceMember(Team team, User user, Role role) {
         this.team = team;
-        this.student = student;
+        this.user = user;
         this.role = role;
         this.joinedAt = LocalDateTime.now();
     }

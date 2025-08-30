@@ -9,25 +9,38 @@ import java.util.Map;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "students")
-public class Student {
+@Table(name = "users")
+public class User {
+
+    public enum UserType {
+        STUDENT,
+        TEACHER,
+        MENTOR
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserType userType;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> profile;
 
-    @Column(name = "team_id")
-    private Long teamId;
-
     @Builder
-    public Student(String email, Map<String, Object> profile) {
+    public User(String email, String name, UserType userType, Map<String, Object> profile) {
         this.email = email;
+        this.name = name;
+        this.userType = userType;
         this.profile = profile;
     }
 }
