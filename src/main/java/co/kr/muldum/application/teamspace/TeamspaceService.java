@@ -25,7 +25,9 @@ public class TeamspaceService {
             // 시트 이름 가져오기
             List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
             // 시트 데이터 읽기 (첫 번째 시트)
-            List<List<Object>> sheetData = googleSheetApiClient.readSheet(spreadsheetId, sheetNames.get(0));
+            String firstSheetName = sheetNames.get(0);
+            String range = firstSheetName + "!A1:ZZ";
+            List<List<Object>> sheetData = googleSheetApiClient.readSheet(spreadsheetId, range);
             if (sheetData == null || sheetData.size() < 2) {
                 throw new RuntimeException("Sheet data is empty or missing header/data rows");
             }
