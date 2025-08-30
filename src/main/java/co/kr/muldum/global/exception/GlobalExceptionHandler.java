@@ -28,4 +28,12 @@ public class GlobalExceptionHandler {
                     "message", ex.getMessage()
             ));
   }
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleTokenNotFound(TokenNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of(
+                        "error", "TOKEN_NOT_FOUND",
+                        "message", ex.getMessage()
+                ));
+    }
 }
