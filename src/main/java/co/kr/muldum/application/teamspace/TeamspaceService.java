@@ -40,12 +40,13 @@ public class TeamspaceService {
                 throw new RuntimeException("Sheet data is empty or missing header/data rows");
             }
             // 헤더와 데이터 매핑
-            List<Object> headers = sheetData.getFirst();
+            List<Object> headers = sheetData.get(0);
             for (int i = 1; i < sheetData.size(); i++) {
                 List<Object> row = sheetData.get(i);
-                Map<Object, Object> mapped = new HashMap<>();
+                Map<String, Object> mapped = new HashMap<>();
                 for (int j = 0; j < headers.size() && j < row.size(); j++) {
-                    mapped.put(headers.get(j), row.get(j));
+                    String key = String.valueOf(headers.get(j)).trim().toLowerCase(Locale.ROOT);
+                    mapped.put(key, row.get(j));
                 }
                 // 이메일 추출 및 학생 저장
                 String email = Objects.toString(mapped.get("email"), null);
