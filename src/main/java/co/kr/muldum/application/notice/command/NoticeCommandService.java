@@ -41,7 +41,7 @@ public class NoticeCommandService {
     Notice notice = noticeRepository.findById(noticeId)
             .orElseThrow(() -> new NotFoundException("공지사항이 존재하지 않습니다: "));
 
-    if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
+    if (!Objects.equals(notice.getUser().getId(), authorUserId)) {
       throw new AccessDeniedException("공지사항 작성자만 수정할 수 있습니다.");
     }
 
@@ -56,7 +56,7 @@ public class NoticeCommandService {
     Notice notice = noticeRepository.findById(noticeId)
             .orElseThrow(() -> new NotFoundException("공지사항이 존재하지 않습니다: " + noticeId));
 
-    if (!Objects.equals(notice.getTeacher().getId(), authorUserId)) {
+    if (!Objects.equals(notice.getUser().getId(), authorUserId)) {
       throw new AccessDeniedException("공지사항 작성자만 삭제할 수 있습니다.");
     }
 
