@@ -52,6 +52,9 @@ public class ItemRequest {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @Column(name = "delivery_number")
+    private String deliveryNumber;
+
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
@@ -70,4 +73,5 @@ public class ItemRequest {
     public void updateStatus(ItemStatus status) {
         this.status = status;
     }
+
 }
