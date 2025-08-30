@@ -1,8 +1,8 @@
 package co.kr.muldum.presentation.teamspace;
 
-import co.kr.muldum.presentation.teamspace.dto.TeamspaceInviteRequestDto;
-import co.kr.muldum.presentation.teamspace.dto.TeamspaceInviteResponse;
+import co.kr.muldum.application.teamspace.StudentCsvImportRequest;
 import co.kr.muldum.application.teamspace.TeamspaceService;
+import co.kr.muldum.presentation.teamspace.dto.TeamspaceInviteResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,10 @@ public class TeamspaceController {
     private final TeamspaceService teamspaceService;
 
     @PostMapping("/invite")
-    public ResponseEntity<TeamspaceInviteResponse> inviteStudents(
-            @RequestBody TeamspaceInviteRequestDto request
+    public ResponseEntity<TeamspaceInviteResponseDto> inviteStudents(
+            @RequestBody StudentCsvImportRequest request
     ) {
-        TeamspaceInviteResponse response = teamspaceService.inviteStudents(request);
+        TeamspaceInviteResponseDto response = teamspaceService.inviteStudents(request);
         return ResponseEntity.status(201).body(response);
     }
 }
