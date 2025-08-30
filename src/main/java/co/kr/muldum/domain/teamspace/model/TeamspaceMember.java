@@ -6,7 +6,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "members")
+@Table(name = "members", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "team_id", "user_id"
+        })
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamspaceMember {
@@ -30,15 +34,10 @@ public class TeamspaceMember {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(nullable = false)
+    private String role;
 
-    public enum Role {
-        LEADER,
-        MEMBER
-    }
-
-    public TeamspaceMember(Team team, User user, Role role) {
+    public TeamspaceMember(Team team, User user, String role) {
         this.team = team;
         this.user = user;
         this.role = role;
