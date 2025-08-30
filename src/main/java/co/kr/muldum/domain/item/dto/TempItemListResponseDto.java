@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TempItemListResponseDto {
     private Long id;
-    private String product_name;
+    private String productName;
     private Integer quantity;
     private Integer price;
     private String status;

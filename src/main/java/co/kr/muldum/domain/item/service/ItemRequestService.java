@@ -107,9 +107,9 @@ public class ItemRequestService {
     private TempItemListResponseDto convertToTempListDto(ItemRequest itemRequest) {
         return TempItemListResponseDto.builder()
                 .id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo().getName())
+                .productName(itemRequest.getProductInfo().getName())
                 .quantity(itemRequest.getProductInfo().getQuantity())
-                .price(Integer.parseInt(itemRequest.getProductInfo().getPrice()))
+                .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
                 .type("network")
                 .build();
