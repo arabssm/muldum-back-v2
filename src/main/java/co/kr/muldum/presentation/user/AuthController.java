@@ -31,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/login/google")
     public ResponseEntity<LoginResponseDto> loginWithGoogle(
-            @RequestBody GoogleLoginRequestDto request
+            @Valid @RequestBody GoogleLoginRequestDto request
     ) {
         return ResponseEntity.ok(oAuthLoginService.loginWithGoogle(request.getAuthorizationCode()));
     }
