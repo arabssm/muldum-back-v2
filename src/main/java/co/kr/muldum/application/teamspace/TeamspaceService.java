@@ -2,6 +2,8 @@ package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.user.repository.StudentRepository;
+import co.kr.muldum.global.exception.CustomException;
+import co.kr.muldum.global.exception.ErrorCode;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
 import co.kr.muldum.presentation.teamspace.dto.TeamspaceInviteResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +28,18 @@ public class TeamspaceService {
             Objects.requireNonNull(studentCsvImportRequest, "request must not be null");
             String url = studentCsvImportRequest.getGoogleSheetUrl();
             if (url == null || url.isBlank()) {
-                throw new IllegalArgumentException("googleSheetUrl must not be blank");
+                throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
             }
             List<String> emails = googleSheetImportService.importFromGoogleSheet(url);
             for (String email : emails) {
                 if (email == null || email.isEmpty()) continue;
                 email = email.trim().toLowerCase(Locale.ROOT);
                 if (!email.endsWith("@bssm.hs.kr")) {
-                    throw new IllegalArgumentException("허용되지 않은 도메인입니다.");
+                    throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
                 }
                 Optional<Student> optionalStudent = studentRepository.findByEmail(email);
                 if (optionalStudent.isEmpty()) {
-                    throw new IllegalArgumentException("등록되지 않은 사용자입니다.");
+                    throw new CustomException(ErrorCode.UNREGISTERED_USER);
                 }
             }
             return new TeamspaceInviteResponseDto("success");
