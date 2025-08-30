@@ -1,6 +1,6 @@
 package co.kr.muldum.application.teamspace;
 
-import co.kr.muldum.domain.user.repository.StudentRepository;
+import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class GoogleSheetImportService {
-  private final StudentRepository studentRepository;
+  private final UserRepository userRepository ;
   private final GoogleSheetApiClient googleSheetApiClient;
 
   @Transactional
