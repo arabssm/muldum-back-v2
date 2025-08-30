@@ -41,7 +41,7 @@ public class FileStorageService {
                     Objects.requireNonNull(multipartFile.getContentType()),
                     multipartFile.getSize()
             ))
-            .ownerUserId(ownerUserId.intValue())
+            .ownerUserId(ownerUserId)
             .ownerUserType(UserType.valueOf(ownerUserType))
             .build();
 
