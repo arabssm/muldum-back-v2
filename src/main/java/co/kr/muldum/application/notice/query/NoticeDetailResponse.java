@@ -25,7 +25,7 @@ public record NoticeDetailResponse(
             notice.getContentData().getFiles() != null
                     ? notice.getContentData().getFiles()
                     : Collections.emptyList(),
-            notice.getTeacher().getName(),
+            notice.getUser().getName(),
             notice.getDeadlineDate(),
             notice.getUpdatedAt()
     );
