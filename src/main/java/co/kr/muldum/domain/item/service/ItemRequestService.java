@@ -12,6 +12,7 @@ import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.Student;
 import co.kr.muldum.domain.user.model.UserInfo;
+import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -113,5 +114,22 @@ public class ItemRequestService {
                 .status(itemRequest.getStatus().name())
                 .type("network")
                 .build();
+    }
+
+    public List<ItemStatusResponseDto> getApprovedItemStatuses(Long userId) {
+        UserInfo userInfo = userReader.read(Student.class, userId);
+        log.debug("APPROVED 상태 물품 목록 조회 - teamId={}, userId={}", userInfo.getTeamId(), userInfo.getUserId());
+
+        List<ItemRequest> approvedItems = itemRequestRepository
+                .findByTeamIdAndStatus(userInfo.getTeamId().intValue(), ItemStatus.APPROVED);
+
+        return approvedItems.stream()
+                .map(item -> ItemStatusResponseDto.builder()
+                        .productName(item.getProductInfo().getName())
+                        .quantity(item.getProductInfo().getQuantity())
+                        .status(item.getStatus().name())
+                        .deliveryNumber(item.getDeliveryNumber())
+                        .build())
+                .toList();
     }
 }

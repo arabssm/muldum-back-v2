@@ -5,6 +5,7 @@ import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.global.security.CustomUserDetails;
+import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -52,5 +53,13 @@ public class ItemController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @GetMapping("/statuses")
+    public ResponseEntity<List<ItemStatusResponseDto>> getApprovedItemStatuses(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<ItemStatusResponseDto> items = itemRequestService.getApprovedItemStatuses(userDetails.getUserId());
+        return ResponseEntity.ok(items);
     }
 }
