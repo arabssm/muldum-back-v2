@@ -1,7 +1,7 @@
 package co.kr.muldum.domain.notice.model;
 
 import co.kr.muldum.application.notice.command.CreateNoticeRequest;
-import co.kr.muldum.domain.user.model.Teacher;
+import co.kr.muldum.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class Notice {
 
   @JoinColumn(name = "author_user_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  private Teacher teacher;
+  private User user;
 
   private String title;
 

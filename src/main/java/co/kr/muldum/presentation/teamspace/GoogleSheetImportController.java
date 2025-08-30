@@ -3,7 +3,7 @@ package co.kr.muldum.presentation.teamspace;
 import co.kr.muldum.application.teamspace.GoogleSheetImportService;
 import co.kr.muldum.application.teamspace.StudentCsvImportRequest;
 import co.kr.muldum.application.teamspace.StudentCsvImportResponse;
-import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +26,7 @@ public class GoogleSheetImportController {
           @RequestBody StudentCsvImportRequest studentCsvImportRequest
   ) {
 
-    List<Student> savedStudents = googleSheetImportService.importFromGoogleSheet(
+    List<User> savedStudents = googleSheetImportService.importFromGoogleSheet(
             studentCsvImportRequest.getGoogleSheetUrl()
     );
 

@@ -35,7 +35,7 @@ public class File {
   private UserType ownerUserType;
 
   @Column(name = "owner_user_id", nullable = false)
-  private Integer ownerUserId;
+  private Long ownerUserId;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)

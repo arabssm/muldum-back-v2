@@ -15,7 +15,7 @@ public record NoticeSimpleResponse(
             notice.getId(),
             notice.getTitle(),
             notice.getUpdatedAt(),
-            notice.getTeacher().getName()
+            notice.getUser().getName()
     );
   }
 }
