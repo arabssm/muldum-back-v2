@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TempItemResponseDto {
+public class ItemResponseDto {
     private String status;
     private String message;
 }
