@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/std/team")
+@RequestMapping("/tch/team")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('TEACHER')")
 public class TeamspaceController {
