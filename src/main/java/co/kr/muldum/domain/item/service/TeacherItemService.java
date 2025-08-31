@@ -1,10 +1,8 @@
 package co.kr.muldum.domain.item.service;
 
-import co.kr.muldum.domain.item.dto.ApproveItemRequestDto;
-import co.kr.muldum.domain.item.dto.ItemActionResponseDto;
-import co.kr.muldum.domain.item.dto.RejectItemRequestDto;
-import co.kr.muldum.domain.item.dto.TeacherItemResponseDto;
+import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.model.ItemRequest;
+import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -134,6 +132,43 @@ public class TeacherItemService {
                 .reason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
+                .build();
+    }
+
+    @Transactional
+    public DeliveryNumberResponseDto registerDeliveryNumber(DeliveryNumberRequestDto request) {
+        log.info("운송장 번호 등록 시작 - itemId: {}, deliveryNumber: {}",
+                request.getItemId(), request.getDeliveryNumber());
+
+        ItemRequest item = itemRequestRepository.findById(request.getItemId())
+                .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + request.getItemId()));
+
+        // RequestDetails의 deliveryInfo에 운송장 번호 저장
+        RequestDetails updatedDetails = RequestDetails.builder()
+                .reason(item.getRequestDetails() != null ? item.getRequestDetails().getReason() : null)
+                .deliveryInfo(request.getDeliveryNumber())
+                .approvalNotes(item.getRequestDetails() != null ? item.getRequestDetails().getApprovalNotes() : null)
+                .build();
+
+        // ItemRequest 업데이트 (새로운 RequestDetails로 교체)
+        ItemRequest updatedItem = ItemRequest.builder()
+                .id(item.getId())
+                .teamId(item.getTeamId())
+                .requesterUserId(item.getRequesterUserId())
+                .productInfo(item.getProductInfo())
+                .status(item.getStatus())
+                .rejectId(item.getRejectId())
+                .requestDetails(updatedDetails)
+                .createdAt(item.getCreatedAt())
+                .updatedAt(item.getUpdatedAt())
+                .build();
+
+        itemRequestRepository.save(updatedItem);
+
+        log.info("운송장 번호 등록 완료 - itemId: {}", request.getItemId());
+
+        return DeliveryNumberResponseDto.builder()
+                .message("운송장 번호가 등록되었습니다.")
                 .build();
     }
 }
