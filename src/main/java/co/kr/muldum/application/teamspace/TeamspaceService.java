@@ -10,6 +10,7 @@ import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class TeamspaceService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
+    private final GoogleSheetImportService googleSheetImportService;
 
     // 구글 시트의 이메일 목록을 기반으로 팀 멤버 초대
     public TeamspaceInviteResponseDto inviteStudents(Long teamId, TeamspaceInviteRequestDto requestDto) {
@@ -32,22 +34,21 @@ public class TeamspaceService {
             throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
         }
 
-        // TODO: GoogleSheet 파싱 로직 구현 (임시로 더미 리스트)
-        List<String> emails = List.of("student1@bssm.hs.kr", "student2@bssm.hs.kr");
-
         // 2. 팀 존재 여부 확인
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
-        // 3. 이메일 기반 멤버 추가
-        for (String email : emails) {
-            if (!email.endsWith("@bssm.hs.kr")) {
-                throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+        // 실제 구글 시트에서 이메일 추출
+        List<User> users = googleSheetImportService.importFromGoogleSheet(googleSheetUrl);
+
+        for (User user : users) {
+            if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
+                teamspaceMemberRepository.save(new TeamspaceMember(team, user, "MEMBER"));
             }
+        }
 
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
-
+        // 3. 이메일 기반 멤버 추가
+        for (User user : users) {
             if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
                 teamspaceMemberRepository.save(new TeamspaceMember(team, user, "MEMBER"));
             }
