@@ -1,6 +1,7 @@
 package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,14 +79,14 @@ public class GoogleSheetImportService {
                 .email(email)
                 .name(name)
                 .profile(profile)
+                .userType(UserType.STUDENT)
                 .build();
 
         usersToSave.add(user);
       }
 
-      List<User> savedUsers = userRepository.saveAll(usersToSave);
+      return userRepository.saveAll(usersToSave);
 
-      return savedUsers;
     } catch (Exception e) {
       throw new RuntimeException("구글 시트 가져오기 실패", e);
     }
