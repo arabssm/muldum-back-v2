@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.item.service;
 
+import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
@@ -112,6 +113,42 @@ public class ItemRequestService {
                 .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
                 .type("network")
+                .build();
+    }
+    public UsedBudgetResponseDto getUsedBudget(Long userId) {
+
+        UserInfo userInfo = userReader.read(Student.class, userId);
+
+        List<ItemRequest> allItems = itemRequestRepository
+                .findByTeamId(userInfo.getTeamId().intValue());
+
+        List<ItemRequest> validItems = allItems.stream()
+                .filter(item -> item.getStatus() != ItemStatus.REJECTED)
+                .toList();
+
+        long totalUsedBudget = 0L;
+        for (ItemRequest item : validItems) {
+
+            if (item.getProductInfo() != null
+                    && item.getProductInfo().getPrice() != null
+                    && item.getProductInfo().getQuantity() != null
+                    && !item.getProductInfo().getPrice().trim().isEmpty()) {
+                try {
+                    long price = Long.parseLong(item.getProductInfo().getPrice());
+                    int quantity = item.getProductInfo().getQuantity();
+                    long itemTotal = price * quantity;
+                    totalUsedBudget += itemTotal;
+                } catch (NumberFormatException e) {
+                    log.warn("가격 파싱 오류 - itemId={}, price={}",
+                            item.getId(), item.getProductInfo().getPrice());
+                }
+            } else {
+                log.warn("물품 정보 누락 - itemId={}", item.getId());
+            }
+        }
+
+        return UsedBudgetResponseDto.builder()
+                .usedBudget(totalUsedBudget)
                 .build();
     }
 }
