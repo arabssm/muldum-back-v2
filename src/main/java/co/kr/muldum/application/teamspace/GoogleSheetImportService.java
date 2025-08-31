@@ -41,7 +41,7 @@ public class GoogleSheetImportService {
       List<Object> headerRow = rows.getFirst();
       // headerRow 예: ["grade", "class", "studentId", "name", "email", ...]
 
-      List<User> savedUsers = new ArrayList<>();
+      List<User> usersToSave = new ArrayList<>();
 
       // 두 번째 행부터 데이터
       for (int i = 1; i < rows.size(); i++) {
@@ -65,14 +65,19 @@ public class GoogleSheetImportService {
         Map<String, Object> profile = new HashMap<>(dataMap);
         profile.remove("email");
 
+        if (userRepository.findByEmail(email).isPresent()) {
+          continue;
+        }
+
         User user = User.builder()
                 .email(email)
                 .profile(profile)
                 .build();
 
-        userRepository.save(user);
-        savedUsers.add(user);
+        usersToSave.add(user);
       }
+
+      List<User> savedUsers = userRepository.saveAll(usersToSave);
 
       return savedUsers;
     } catch (Exception e) {
