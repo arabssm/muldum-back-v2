@@ -1,9 +1,6 @@
 package co.kr.muldum.presentation.item;
 
-import co.kr.muldum.domain.item.dto.ApproveItemRequestDto;
-import co.kr.muldum.domain.item.dto.ItemActionResponseDto;
-import co.kr.muldum.domain.item.dto.RejectItemRequestDto;
-import co.kr.muldum.domain.item.dto.TeacherItemResponseDto;
+import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +66,19 @@ public class TeacherItemController {
                 userDetails.getUserId(), approveRequests.size());
 
         ItemActionResponseDto response = teacherItemService.approveItems(approveRequests);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/delivery_num")
+    public ResponseEntity<DeliveryNumberResponseDto> registerDeliveryNumber(
+            @RequestBody DeliveryNumberRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("운송장 번호 등록 요청 - teacherId: {}, itemId: {}",
+                userDetails.getUserId(), request.getItemId());
+
+        DeliveryNumberResponseDto response = teacherItemService.registerDeliveryNumber(request);
 
         return ResponseEntity.ok(response);
     }
