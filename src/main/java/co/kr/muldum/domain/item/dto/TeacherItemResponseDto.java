@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.item.dto;
 
+import co.kr.muldum.domain.item.model.ItemRequest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,4 +16,42 @@ public class TeacherItemResponseDto {
     private String productLink;
     private String reason;
     private String status;
+
+    public static TeacherItemResponseDto from(ItemRequest itemRequest) {
+        return TeacherItemResponseDto.builder()
+                .teamId(itemRequest.getTeamId())
+                .type("NETWORK") // 고정값
+                .itemId(itemRequest.getId())
+                .productName(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getName() : null)
+                .quantity(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getQuantity() : null)
+                .price(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getPrice() : null)
+                .productLink(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getLink() : null)
+                .reason(itemRequest.getRequestDetails() != null ?
+                        itemRequest.getRequestDetails().getReason() : null)
+                .status(itemRequest.getStatus().name())
+                .build();
+    }
+
+    private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
+        return TeacherItemResponseDto.builder()
+                .teamId(itemRequest.getTeamId())
+                .type("NETWORK") // 고정값
+                .itemId(itemRequest.getId())
+                .productName(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getName() : null)
+                .quantity(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getQuantity() : null)
+                .price(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getPrice() : null)
+                .productLink(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getLink() : null)
+                .reason(itemRequest.getRequestDetails() != null ?
+                        itemRequest.getRequestDetails().getReason() : null)
+                .status(itemRequest.getStatus().name())
+                .build();
+    }
 }
