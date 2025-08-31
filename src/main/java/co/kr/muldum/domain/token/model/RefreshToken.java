@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RefreshToken {
   @Id
-  private String refreshToken;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  private String refreshToken;
   @Enumerated(EnumType.STRING)
+  @Column(name = "user_type")
   private UserType userType;
-
-
 
 }
