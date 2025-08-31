@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.token.model;
 
-import co.kr.muldum.domain.user.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +16,6 @@ public class RefreshToken {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String refreshToken;
-  @Enumerated(EnumType.STRING)
-  @Column(name = "user_type")
-  private UserType userType;
+  private String email;
 
 }
