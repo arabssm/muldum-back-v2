@@ -41,7 +41,7 @@ public class GoogleSheetImportService {
       List<Object> headerRow = rows.getFirst();
       // headerRow 예: ["grade", "class", "studentId", "name", "email", ...]
 
-      List<User> savedStudents = new ArrayList<>();
+      List<User> savedUsers = new ArrayList<>();
 
       // 두 번째 행부터 데이터
       for (int i = 1; i < rows.size(); i++) {
@@ -71,10 +71,10 @@ public class GoogleSheetImportService {
                 .build();
 
         userRepository.save(user);
-        savedStudents.add(user);
+        savedUsers.add(user);
       }
 
-      return savedStudents;
+      return savedUsers;
     } catch (Exception e) {
       throw new RuntimeException("구글 시트 가져오기 실패", e);
     }
