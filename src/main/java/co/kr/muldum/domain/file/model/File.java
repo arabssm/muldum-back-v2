@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.file.model;
 
 import co.kr.muldum.domain.user.model.UserType;
+import co.kr.muldum.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,11 @@ public class File {
   private UserType ownerUserType;
 
   @Column(name = "owner_user_id", nullable = false)
-  private Integer ownerUserId;
+  private Long ownerUserId;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner_user_id", insertable = false, updatable = false)
+  private User ownerUser;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)

@@ -9,7 +9,7 @@ import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.user.UserReader;
-import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class ItemRequestService {
     private final UserReader userReader;
 
     public TempItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
-        UserInfo userInfo = userReader.read(Student.class, userId);
+        UserInfo userInfo = userReader.read(User.class, userId);
 
         log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
                 userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
