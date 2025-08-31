@@ -35,9 +35,7 @@ services:
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - GOOGLE_SHEETS_KEY_FILE_PATH=/app/keys/club-2025.json
-    volumes:
-      - "/Users/haeun/Library/Mobile Documents/com~apple~CloudDocs/ARA/muldum-back/club-2025-1deb98e262f6.json:/app/keys/club-2025.json:ro"
+      - GOOGLE_SHEETS_KEY_FILE_PATH={GOOGLE_SHEETS_KEY_FILE_PATH}
     networks:
       - app-network
 networks:
