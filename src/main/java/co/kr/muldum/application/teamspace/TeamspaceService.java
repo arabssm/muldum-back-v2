@@ -26,7 +26,7 @@ public class TeamspaceService {
     private final GoogleSheetImportService googleSheetImportService;
 
     // 구글 시트의 이메일 목록을 기반으로 팀 멤버 초대
-    public TeamspaceInviteResponseDto inviteStudents(Long teamId, TeamspaceInviteRequestDto requestDto) {
+    public TeamspaceInviteResponseDto inviteStudents(TeamspaceInviteRequestDto requestDto) {
         String googleSheetUrl = requestDto.getGoogleSheetUrl();
 
         // 1. URL 검증
@@ -35,7 +35,7 @@ public class TeamspaceService {
         }
 
         // 2. 팀 존재 여부 확인
-        Team team = teamRepository.findById(teamId)
+        Team team = teamRepository.findById(1L)   // 👈 임시로 teamId를 1로 고정
                 .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
         // 실제 구글 시트에서 이메일 추출
