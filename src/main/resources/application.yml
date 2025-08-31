@@ -21,7 +21,12 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 25MB
-
+  cloud:
+    aws:
+      s3:
+        bucket: ${AWS_BUCKET_NAME}
+        access-key: ${AWS_BUCKET_ACCESS_KEY}
+        secret-key: ${AWS_BUCKET_SECRET_KEY}
 jwt:
   secret-key: ${JWT_SECRET_KEY}
 
