@@ -24,8 +24,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ItemController.class)
-class ItemControllerTest {
+@WebMvcTest(StudentItemController.class)
+class StudentItemControllerTest {
 
     @MockitoBean
     private ItemRequestService itemRequestService;

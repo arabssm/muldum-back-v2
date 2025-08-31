@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/std/items")
 @Slf4j
 @PreAuthorize("hasRole('STUDENT')")
-public class ItemController {
+public class StudentItemController {
 
     private final ItemRequestService itemRequestService;
 
