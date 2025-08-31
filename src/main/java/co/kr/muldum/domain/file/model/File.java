@@ -40,7 +40,7 @@ public class File {
     return File.builder()
             .path(path)
             .metadata(metadata)
-            .ownerUserId(userId) // 여기 Long으로 변경 권장
+            .ownerUserId(userId)
             .build();
   }
 }

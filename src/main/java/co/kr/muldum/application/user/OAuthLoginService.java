@@ -57,7 +57,7 @@ public class OAuthLoginService {
                 .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
         String access = jwtProvider.createAccessToken(userInfo.getUserId(), userInfo.getUserType().name());
-        String refresh = jwtProvider.createRefreshToken(userInfo.getUserId(), userInfo.getUserType().name());
+        String refresh = jwtProvider.createRefreshToken(userInfo.getUserId(), userInfo.getUserType());
 
         String redisKey = "refresh:" + userInfo.getUserType().name() + ":" + userInfo.getUserId();
         long refreshTtlMillis = jwtProvider.getRefreshTokenExpirationMillis();

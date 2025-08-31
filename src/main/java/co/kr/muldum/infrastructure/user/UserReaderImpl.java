@@ -15,55 +15,47 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserReaderImpl implements UserReader {
 
-    private final JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
 
-    @Override
-    public Optional<UserInfo> findByEmail(String email) {
-        return tryFindUser(email, "students", UserType.STUDENT)
-                .or(() -> tryFindUser(email, "teachers", UserType.TEACHER))
-                .or(() -> tryFindUser(email, "mentors", UserType.MENTOR));
+  @Override
+  public Optional<UserInfo> findByEmail(String email) {
+    try {
+      String query = "SELECT id, name, user_type FROM users WHERE email = ?";
+      return Optional.ofNullable(
+              jdbcTemplate.queryForObject(
+                      query,
+                      (rs, rowNum) -> UserInfo.builder()
+                              .userId(rs.getLong("id"))
+                              .name(rs.getString("name"))
+                              .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
+                              .teamId(null)
+                              .role(Role.MEMBER)
+                              .build(),
+                      email
+              )
+      );
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
     }
+  }
 
-    private Optional<UserInfo> tryFindUser(String email, String tableName, UserType userType) {
-        try {
-            String query = String.format("SELECT id, profile ->> 'name' as name FROM %s WHERE email = ?", tableName);
-            return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                    query,
-                    (rs, rowNum) -> UserInfo.builder()
-                        .userType(userType)
-                        .userId(rs.getLong("id"))
-                        .name(rs.getString("name"))
-                        .teamId(null)
-                        .role(Role.MEMBER)
-                        .build(),
-                    email
-                )
-            );
-        } catch (Exception e) {
-          // 학생에서 못 찾으면 선생님에서 찾기
-          try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(
-                            "SELECT id, profile ->> 'name' as name FROM teachers WHERE email = ?",
-                            (rs, rowNum) -> UserInfo.builder()
-                                    .userType(UserType.TEACHER)
-                                    .userId(rs.getLong("id"))
-                                    .name(rs.getString("name"))
-                                    .teamId(null)
-                                    .role(Role.MEMBER)
-                                    .build(),
-                            email
-                    )
-            );
-          } catch (Exception ex) {
-            return Optional.empty();
-          }
-        }
+  @Override
+  public UserInfo read(Class<?> clazz, Long id) {
+    try {
+      String query = "SELECT id, name, email, user_type, team_id FROM users WHERE id = ?";
+      return jdbcTemplate.queryForObject(
+              query,
+              (rs, rowNum) -> UserInfo.builder()
+                      .userId(rs.getLong("id"))
+                      .name(rs.getString("name"))
+                      .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
+                      .teamId(rs.getObject("team_id", Long.class))
+                      .role(Role.MEMBER)
+                      .build(),
+              id
+      );
+    } catch (EmptyResultDataAccessException e) {
+      throw new RuntimeException("User not found with id: " + id);
     }
-
-    @Override
-    public UserInfo read(Class<?> clazz, Long id) {
-        return null;
-    }
+  }
 }
