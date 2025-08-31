@@ -17,8 +17,7 @@ public class TeamspaceController {
     @PostMapping("/invite")
     @ResponseStatus(HttpStatus.CREATED)
     public TeamspaceInviteResponseDto inviteStudents(
-            @RequestParam Long teamId,
             @RequestBody TeamspaceInviteRequestDto requestDto) {
-        return teamspaceService.inviteStudents(teamId, requestDto);
+        return teamspaceService.inviteStudents(requestDto);
     }
 }
