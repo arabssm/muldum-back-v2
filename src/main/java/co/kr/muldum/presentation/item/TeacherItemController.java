@@ -1,5 +1,8 @@
 package co.kr.muldum.presentation.item;
 
+import co.kr.muldum.domain.item.dto.ApproveItemRequestDto;
+import co.kr.muldum.domain.item.dto.ItemActionResponseDto;
+import co.kr.muldum.domain.item.dto.RejectItemRequestDto;
 import co.kr.muldum.domain.item.dto.TeacherItemResponseDto;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
@@ -42,5 +45,31 @@ public class TeacherItemController {
         List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamId(teamId);
 
         return ResponseEntity.ok(items);
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<ItemActionResponseDto> rejectItems(
+            @RequestBody List<RejectItemRequestDto> rejectRequests,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("물품 거절 요청 - teacherId: {}, 거절할 물품 수: {}",
+                userDetails.getUserId(), rejectRequests.size());
+
+        ItemActionResponseDto response = teacherItemService.rejectItems(rejectRequests);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/submit")
+    public ResponseEntity<ItemActionResponseDto> approveItems(
+            @RequestBody List<ApproveItemRequestDto> approveRequests,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("물품 승인 요청 - teacherId: {}, 승인할 물품 수: {}",
+                userDetails.getUserId(), approveRequests.size());
+
+        ItemActionResponseDto response = teacherItemService.approveItems(approveRequests);
+
+        return ResponseEntity.ok(response);
     }
 }
