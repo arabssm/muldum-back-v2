@@ -1,5 +1,6 @@
 package co.kr.muldum.presentation.item;
 
+import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
@@ -52,5 +53,13 @@ public class ItemController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @GetMapping("/money")
+    public ResponseEntity<UsedBudgetResponseDto> getUsedBudget(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UsedBudgetResponseDto response = itemRequestService.getUsedBudget(userDetails.getUserId());
+        return ResponseEntity.ok(response);
     }
 }
