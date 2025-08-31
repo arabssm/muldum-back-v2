@@ -3,10 +3,7 @@ package co.kr.muldum.presentation.history;
 import co.kr.muldum.application.history.HistoryUseCase;
 import co.kr.muldum.application.history.dto.HistoryResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +19,10 @@ public class HistoryController {
             @RequestParam(required = false) Integer generation
     ) {
         return historyUseCase.getHistories(generation);
+    }
+
+    @GetMapping("/{teamId}")
+    public HistoryResponseDto getHistory(@PathVariable Long teamId) {
+        return historyUseCase.getHistory(teamId);
     }
 }
