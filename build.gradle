@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-jackson2:1.47.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'software.amazon.awssdk:s3:2.25.23'
     compileOnly 'com.diffblue.cover:cover-annotations:1.6.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
