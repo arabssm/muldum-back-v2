@@ -69,8 +69,14 @@ public class GoogleSheetImportService {
           continue;
         }
 
+          String name = Optional.ofNullable(profile.remove("name"))
+                  .map(Object::toString)
+                  .map(String::trim)
+                  .orElse(null);
+
         User user = User.builder()
                 .email(email)
+                .name(name)
                 .profile(profile)
                 .build();
 
