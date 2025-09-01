@@ -4,26 +4,23 @@ import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.RequestDetails;
-import co.kr.muldum.domain.item.model.enums.ItemSource;
-import co.kr.muldum.domain.item.model.enums.TeamType;
-import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
-import co.kr.muldum.domain.user.model.UserInfo;
+import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ItemRequestCreator {
 
     private final ItemRequestRepository itemRequestRepository;
-    private final ItemStatusDecisionService itemStatusDecisionService;
 
-    public CreateResult createItemRequest(TempItemRequestDto requestDto, UserInfo userInfo) {
+    public ItemRequest createTempItemRequest(TempItemRequestDto requestDto, Long userId, int teamId) {
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
-        ItemStatusDecisionService.StatusDecision statusDecision = itemStatusDecisionService.decideStatus(itemSource);
 
         ProductInfo productInfo = ProductInfo.builder()
                 .name(requestDto.getProductName())
@@ -38,20 +35,13 @@ public class ItemRequestCreator {
                 .build();
 
         ItemRequest itemRequest = ItemRequest.builder()
-                .teamId(userInfo.getTeamId().intValue())
-                .requesterUserId(userInfo.getUserId().intValue())
+                .teamId(teamId)
+                .requesterUserId(userId.intValue())
                 .productInfo(productInfo)
-                .status(statusDecision.status())
-                .teamType(TeamType.NETWORK)  // 이 줄 추가
+                .status(ItemStatus.INTEMP)
                 .requestDetails(requestDetails)
                 .build();
 
-        itemRequestRepository.save(itemRequest);
-
-        return new CreateResult(statusDecision.status(), statusDecision.message());
-    }
-
-
-    public record CreateResult(ItemStatus status, String message) {
+        return itemRequestRepository.save(itemRequest);
     }
 }

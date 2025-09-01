@@ -1,45 +1,25 @@
 package co.kr.muldum.domain.item.service;
 
-import co.kr.muldum.domain.item.validator.TeamValidator;
-import co.kr.muldum.domain.item.validator.ProductLinkValidator;
+import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.user.model.UserInfo;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class ItemValidationService {
 
-    private final TeamValidator teamValidator;
-    private final ProductLinkValidator productLinkValidator;
-
-    public ValidationResult validateUserTeam(UserInfo userInfo) {
-        TeamValidator.ValidationResult result = teamValidator.validateTeam(userInfo);
-        return new ValidationResult(result.isValid(), result.getErrorMessage());
+    public void validateTeamInfo(UserInfo userInfo) {
+        if (userInfo.getTeamId() == null) {
+            log.warn("물품 신청 실패 - teamId가 null입니다. userId={}", userInfo.getUserId());
+            throw new IllegalArgumentException("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.");
+        }
     }
 
-    public ValidationResult validateProductLink(String productLink, Long userId) {
-        ProductLinkValidator.ValidationResult result = productLinkValidator.validateProductLink(productLink, userId);
-        return new ValidationResult(result.isValid(), result.getErrorMessage());
-    }
-
-    @Getter
-    public static class ValidationResult {
-        private final boolean isValid;
-        private final String errorMessage;
-
-        public ValidationResult(boolean isValid, String errorMessage) {
-            this.isValid = isValid;
-            this.errorMessage = errorMessage;
-        }
-
-        public static ValidationResult success() {
-            return new ValidationResult(true, null);
-        }
-
-        public static ValidationResult fail(String errorMessage) {
-            return new ValidationResult(false, errorMessage);
+    public void validateProductLink(TempItemRequestDto requestDto) {
+        if (requestDto.getProductLink() == null || requestDto.getProductLink().isBlank()) {
+            log.warn("물품 신청 실패 - productLink가 비어있습니다");
+            throw new IllegalArgumentException("상품 링크가 유효하지 않습니다.");
         }
     }
 }

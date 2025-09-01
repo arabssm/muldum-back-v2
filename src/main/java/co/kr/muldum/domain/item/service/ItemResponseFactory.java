@@ -2,9 +2,9 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ItemResponseFactory {
 
     public ItemResponseDto createResponse(ItemStatus status, String message) {

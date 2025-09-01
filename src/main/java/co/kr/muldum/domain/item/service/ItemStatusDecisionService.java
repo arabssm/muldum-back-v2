@@ -7,17 +7,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemStatusDecisionService {
 
-    public StatusDecision decideStatus(ItemSource itemSource) {
+    public ItemStatus decideStatus(ItemSource itemSource) {
         if (itemSource == ItemSource.DEVICEMART || itemSource == ItemSource.ELEVENMARKET) {
-            return new StatusDecision(ItemStatus.INTEMP, "임시 신청이 완료되었습니다.");
+            return ItemStatus.INTEMP;
         } else {
-            return new StatusDecision(
-                    ItemStatus.REJECTED, 
-                    "허용되지 않은 쇼핑몰입니다. 디바이스마트(devicemart.co.kr) 또는 11번가(11st.co.kr)에서만 신청 가능합니다."
-            );
+            return ItemStatus.REJECTED;
         }
     }
 
-    public record StatusDecision(ItemStatus status, String message) {
+    public String getStatusMessage(ItemStatus status) {
+        return switch (status) {
+            case INTEMP -> "임시 신청이 완료되었습니다.";
+            case REJECTED -> "허용되지 않은 쇼핑몰입니다. 디바이스마트(devicemart.co.kr) 또는 11번가(11st.co.kr)에서만 신청 가능합니다.";
+            default -> "알 수 없는 상태입니다.";
+        };
     }
 }
