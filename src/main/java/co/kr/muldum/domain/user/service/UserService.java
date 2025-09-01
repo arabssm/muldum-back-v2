@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.user.service;
 
 import co.kr.muldum.domain.user.dto.UserIssueResponseDto;
+import co.kr.muldum.domain.user.dto.UserResponseDto;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,11 @@ public class UserService {
             log.error("team_id 업데이트 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException("team_id 업데이트 실패", e);
         }
+    }
+
+    public UserResponseDto getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .map(UserResponseDto::fromEntity)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. id=" + userId));
     }
 }
