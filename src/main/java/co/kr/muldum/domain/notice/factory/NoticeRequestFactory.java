@@ -28,9 +28,8 @@ public class NoticeRequestFactory {
             .orElse(Collections.emptyList())
             .stream()
             .filter(Objects::nonNull)
-            .map(CreateNoticeRequest.FileRequest::getUrl)
-            .filter(url -> url != null && !url.isBlank())
-            .map(FileData::new)
+            .map(fileReq -> new FileData(fileReq.getUrl()))
+            .filter(fileData -> fileData.getUrl() != null && !fileData.getUrl().isBlank())
             .toList();
 
     ContentData contentData = new ContentData(
