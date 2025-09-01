@@ -34,19 +34,23 @@ public class ItemListService {
         // price를 안전하게 파싱
         Integer price = null;
         try {
-            if (itemRequest.getProductInfo().getPrice() != null) {
+            if (itemRequest.getProductInfo() != null &&
+                    itemRequest.getProductInfo().getPrice() != null) {
                 price = Integer.parseInt(itemRequest.getProductInfo().getPrice());
             }
         } catch (NumberFormatException e) {
             log.warn("가격 파싱 오류 - itemId={}, price={}",
-                    itemRequest.getId(), itemRequest.getProductInfo().getPrice());
+                    itemRequest.getId(),
+                    itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getPrice() : "null");
             price = 0;
         }
 
         return ItemListResponseDto.builder()
                 .id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo().getName())
-                .quantity(itemRequest.getProductInfo().getQuantity())
+                .product_name(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getName() : null)
+                .quantity(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getQuantity() : 0)
                 .price(price)
                 .status(itemRequest.getStatus().name())
                 .type(itemRequest.getTeamType() != null ?

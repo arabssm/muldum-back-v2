@@ -11,8 +11,7 @@ import java.util.List;
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
     List<ItemRequest> findByTeamIdAndStatus(Integer teamId, ItemStatus itemStatus);
     List<ItemRequest> findByTeamId(Integer teamId);
-    List<ItemRequest> findByTeamIdAndStatus(int teamId, ItemStatus itemStatus);
     List<ItemRequest> findByStatus(ItemStatus itemStatus);
-    List<ItemRequest> findByRequesterUserIdAndStatus(int requesterUserId, ItemStatus itemStatus);
-    List<ItemRequest> findByTeamIdAndStatusNot(int teamId, ItemStatus excludeStatus);
+    List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
+    List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
 }

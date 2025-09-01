@@ -2,7 +2,7 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -75,32 +75,10 @@ public class ItemRequestService {
                 .toList();
     }
 
-    public List<TempItemListResponseDto> getTempItemRequests(Long userId) {
-        UserInfo userInfo = userReader.read(Student.class, userId);
-        log.debug("임시 물품 목록 조회 - teamId={}, userId={}", 
-                userInfo.getTeamId(), userInfo.getUserId());
-
-        List<ItemRequest> tempItems = itemRequestRepository
-                .findByTeamIdAndStatus(userInfo.getTeamId().intValue(), ItemStatus.INTEMP);
-
-        return tempItems.stream()
-                .map(this::convertToTempListDto)
-                .toList();
-    }
-
-    private TempItemListResponseDto convertToTempListDto(ItemRequest itemRequest) {
-        return TempItemListResponseDto.builder()
-                .id(itemRequest.getId())
-                .productName(itemRequest.getProductInfo().getName())
-                .quantity(itemRequest.getProductInfo().getQuantity())
-                .price(itemRequest.getProductInfo().getPrice())
-                .status(itemRequest.getStatus().name())
-                .type("network")
-                .build();
-    }
     public UsedBudgetResponseDto getUsedBudget(Long userId) {
-
-        UserInfo userInfo = userReader.read(Student.class, userId);
+        UserInfo userInfo = userReader.read(User.class, userId);
+        log.info("사용된 예산 조회 - teamId={}, userId={}",
+                userInfo.getTeamId(), userInfo.getUserId());
 
         List<ItemRequest> allItems = itemRequestRepository
                 .findByTeamId(userInfo.getTeamId().intValue());
@@ -111,7 +89,6 @@ public class ItemRequestService {
 
         long totalUsedBudget = 0L;
         for (ItemRequest item : validItems) {
-
             if (item.getProductInfo() != null
                     && item.getProductInfo().getPrice() != null
                     && item.getProductInfo().getQuantity() != null
