@@ -6,6 +6,7 @@ import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
+import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.domain.user.repository.UserRepository;
@@ -32,7 +33,7 @@ public class TeamspaceService {
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper(); // ✅ Jackson 객체 생성
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // 구글 시트 기반 팀 멤버 초대
     @Transactional
@@ -112,10 +113,14 @@ public class TeamspaceService {
             }
 
             // 2-5. 역할 확인 (없으면 기본 MEMBER)
-            String role = row.get("role");
-            if (role == null || role.isBlank()) {
-                role = "MEMBER";
-            }
+          String roleStr = row.get("role"); // row에서 가져온 값 (String)
+          Role role;
+
+          if (roleStr == null || roleStr.isBlank()) {
+            role = Role.MEMBER; // 기본값
+          } else {
+            role = Role.valueOf(roleStr); // 문자열을 enum으로 변환
+          }
 
             // 2-6. 팀-유저 관계 저장 (중복 방지)
             if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {

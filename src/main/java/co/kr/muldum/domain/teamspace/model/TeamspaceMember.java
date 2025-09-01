@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.teamspace.model;
 
+import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
     uniqueConstraints = {
             @UniqueConstraint(columnNames = {"team_id", "user_id"})
 })
-
 @Getter
 @NoArgsConstructor
 public class TeamspaceMember {
@@ -21,21 +21,18 @@ public class TeamspaceMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //팀 참조
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    // 유저 참조
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // 멤버 역할 (leader, member …)
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    // 생성/수정 시각
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -53,7 +50,7 @@ public class TeamspaceMember {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public TeamspaceMember(Team team, User user, String role) {
+    public TeamspaceMember(Team team, User user, Role role) {
         this.team = team;
         this.user = user;
         this.role = role;
