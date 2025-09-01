@@ -45,7 +45,7 @@ public class TeamspaceService {
 
         for (Map<String, String> row : rows) {
             // studentNumber 기준으로 유저 조회
-            User user = userRepository.findByStudentNumber(row.get("studentNumber"))
+            User user = userRepository.findById(Long.valueOf(row.get("studentNumber")))
                     .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
             // 중복 방지 후 멤버 저장
