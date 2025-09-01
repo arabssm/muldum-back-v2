@@ -26,7 +26,6 @@ public class FileStorageService {
 
   public String generatePreSignedUrlToUpload(String fileName, Long userId) {
     String encodedFileName = UUID.randomUUID() + "_" + fileName;
-    String objectName = userId + "/" + encodedFileName;
 
     try (S3Presigner presigner = S3Presigner.builder()
             .credentialsProvider(awsCredentialsProvider)
@@ -35,7 +34,7 @@ public class FileStorageService {
 
       PutObjectRequest putRequest = PutObjectRequest.builder()
               .bucket(s3Properties.getBucket())
-              .key(objectName)
+              .key(encodedFileName)
               .build();
 
       PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -49,13 +48,14 @@ public class FileStorageService {
               .toExternalForm();
 
       File file = File.create(
-              objectName,
+              presignedUrl.split("\\?")[0],
               FileMetadata.of(fileName, null, 0L),
               userId
       );
       fileRepository.save(file);
 
       return presignedUrl;
-    
+
+    }
   }
 }
