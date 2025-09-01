@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TempItemListResponseDto {
+public class ItemListResponseDto {
     private Long id;
     private String product_name;
     private Integer quantity;
-    private String price;
+    private Integer price;
     private String status;
     private String type;
 }
