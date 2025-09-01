@@ -3,7 +3,7 @@ package co.kr.muldum.domain.item.service;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.user.UserReader;
-import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class ItemRequestFacade {
     }
 
     private UserInfo readUserInfo(Long userId) {
-        return userReader.read(Student.class, userId);
+        return userReader.read(User.class, userId);
     }
 
     private void logUserInfo(UserInfo userInfo, String operation) {
