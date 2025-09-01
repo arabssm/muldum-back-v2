@@ -47,7 +47,7 @@ public class TeacherItemController {
         return ResponseEntity.ok(items);
     }
 
-    @PostMapping("/reject")
+    @PatchMapping("/reject")
     public ResponseEntity<ItemActionResponseDto> rejectItems(
             @RequestBody List<RejectItemRequestDto> rejectRequests,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -60,7 +60,7 @@ public class TeacherItemController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/submit")
+    @PatchMapping("/submit")
     public ResponseEntity<ItemActionResponseDto> approveItems(
             @RequestBody List<ApproveItemRequestDto> approveRequests,
             @AuthenticationPrincipal CustomUserDetails userDetails

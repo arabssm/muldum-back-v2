@@ -25,7 +25,7 @@ public class ItemRequestCreator {
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
 
         ProductInfo productInfo = ProductInfo.builder()
-                .name(requestDto.getProductName())
+                .name(requestDto.getProduct_name())
                 .quantity(requestDto.getQuantity())
                 .price(requestDto.getPrice())
                 .link(requestDto.getProductLink())

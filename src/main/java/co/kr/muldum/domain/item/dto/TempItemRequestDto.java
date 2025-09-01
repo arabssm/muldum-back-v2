@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TempItemRequestDto {
-    private String productName;
+    private String product_name;
     private Integer quantity;
     private String price;
     private String productLink;

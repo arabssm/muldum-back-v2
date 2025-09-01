@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class ApproveItemRequestDto {
-    private Long itemId;
+    private Long item_id;
 }
