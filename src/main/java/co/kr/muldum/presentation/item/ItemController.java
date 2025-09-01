@@ -1,9 +1,16 @@
 package co.kr.muldum.presentation.item;
 
+import co.kr.muldum.domain.item.dto.ItemListResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
+import co.kr.muldum.domain.item.service.ItemListService;
+import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
+import co.kr.muldum.domain.user.UserReader;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.security.CustomUserDetails;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +31,28 @@ import java.util.List;
 public class ItemController {
 
     private final ItemRequestService itemRequestService;
+    private final ItemListService itemListService;
+    private final ItemRequestFinalizer itemRequestFinalizer;
+    private final UserReader userReader;
+
+    @GetMapping
+    public ResponseEntity<List<ItemListResponseDto>> getTeamItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
+        List<ItemListResponseDto> items = itemListService.getTeamItemRequests(userInfo);
+
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/temp")
+    public ResponseEntity<List<TempItemListResponseDto>> getTempItemRequests(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<TempItemListResponseDto> items = itemRequestService.getTempItemRequests(userDetails.getUserId());
+        
+        return ResponseEntity.ok(items);
+    }
 
     @GetMapping("/temp")
     public ResponseEntity<List<TempItemListResponseDto>> getTempItemRequests(
@@ -35,24 +64,42 @@ public class ItemController {
     }
 
     @PostMapping("/temp")
-    public ResponseEntity<TempItemResponseDto> createTempItemRequest(
+    public ResponseEntity<ItemResponseDto> createTempItemRequest(
             @RequestBody TempItemRequestDto tempItemRequestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        TempItemResponseDto response = itemRequestService.createTempItemRequest(
+        ItemResponseDto response = itemRequestService.createTempItemRequest(
                 tempItemRequestDto,
                 userDetails.getUserId()
         );
 
+        return handleItemResponse(response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<ItemResponseDto> finalizeItemRequest(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
+        ItemRequestFinalizer.FinalizeResult result = itemRequestFinalizer.finalizeRequest(userInfo);
+
+        ItemResponseDto response = ItemResponseDto.builder()
+                .status(result.getStatus().name())
+                .message(result.getMessage())
+                .build();
+
+        return handleItemResponse(response);
+    }
+
+    // private 헬퍼 메서드로 응답 처리
+    private ResponseEntity<ItemResponseDto> handleItemResponse(ItemResponseDto response) {
         if ("REJECTED".equals(response.getStatus())) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(response);
         }
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/statuses")

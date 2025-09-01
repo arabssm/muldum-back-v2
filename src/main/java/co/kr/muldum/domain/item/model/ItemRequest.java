@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.item.model;
 
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.global.util.SnowflakeIdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,11 @@ public class ItemRequest {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ItemStatus status = ItemStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "team_type", nullable = false)
+    @Builder.Default
+    private TeamType teamType = TeamType.NETWORK;
 
     @Column(name = "reject_id")
     private Integer rejectId;
