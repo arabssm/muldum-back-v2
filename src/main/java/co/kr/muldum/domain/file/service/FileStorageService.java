@@ -1,52 +1,61 @@
 package co.kr.muldum.domain.file.service;
 
-import co.kr.muldum.domain.file.exception.FileSizeLimitExceededException;
 import co.kr.muldum.domain.file.model.File;
 import co.kr.muldum.domain.file.model.FileMetadata;
-import co.kr.muldum.domain.file.model.FileType;
 import co.kr.muldum.domain.file.repository.FileRepository;
-import co.kr.muldum.domain.user.model.UserType;
-import co.kr.muldum.global.config.FilePathConfig;
-import co.kr.muldum.global.util.FileUtil;
+import co.kr.muldum.global.properties.S3Properties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import java.util.Objects;
+import java.time.Duration;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class FileStorageService {
   private final FileRepository fileRepository;
-  private final FilePathConfig filePathConfig;
-  private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;
+  private final S3Properties s3Properties;
+  private final AwsCredentialsProvider awsCredentialsProvider;
 
-  public String upload(MultipartFile multipartFile, String type, Long ownerUserId, String ownerUserType) {
-    if(multipartFile.getSize() > MAX_FILE_SIZE){
-      throw new FileSizeLimitExceededException("업로드 할 수 있는 파일 크기가 초과되었습니다. (20MB)");
+  public String generatePreSignedUrlToUpload(String fileName, Long userId) {
+    String encodedFileName = UUID.randomUUID() + "_" + fileName;
+
+    try (S3Presigner presigner = S3Presigner.builder()
+            .credentialsProvider(awsCredentialsProvider)
+            .region(Region.AP_NORTHEAST_2)
+            .build()) {
+
+      PutObjectRequest putRequest = PutObjectRequest.builder()
+              .bucket(s3Properties.getBucket())
+              .key(encodedFileName)
+              .build();
+
+      PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+              .signatureDuration(Duration.ofMinutes(10))
+              .putObjectRequest(putRequest)
+              .build();
+
+      // Presigned URL 발급
+      String presignedUrl = presigner.presignPutObject(presignRequest)
+              .url()
+              .toExternalForm();
+
+      File file = File.create(
+              presignedUrl.split("\\?")[0],
+              FileMetadata.of(fileName, null, 0L),
+              userId
+      );
+      fileRepository.save(file);
+
+      return presignedUrl;
+
     }
-
-    FileType fileType = FileType.fromString(type);
-    String uploadDir = filePathConfig.getUploadDir() + fileType.getUploadSubDir();
-
-    String savedFileName = FileUtil.saveFile(multipartFile, uploadDir);
-    String webPath = "/uploads/" + type.toLowerCase() + "/" + savedFileName;
-
-    File file = File.builder()
-            .path(webPath)
-            .metadata(FileMetadata.of(
-                    Objects.requireNonNull(multipartFile.getOriginalFilename()),
-                    Objects.requireNonNull(multipartFile.getContentType()),
-                    multipartFile.getSize()
-            ))
-            .ownerUserId(ownerUserId)
-            .ownerUserType(UserType.valueOf(ownerUserType))
-            .build();
-
-    fileRepository.save(file);
-    return webPath;
   }
-
 }

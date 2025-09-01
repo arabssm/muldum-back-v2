@@ -2,10 +2,11 @@ package co.kr.muldum.global.security;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -30,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(); // 권한이 없다면 빈 리스트
+    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userType));
   }
 
   @Override
