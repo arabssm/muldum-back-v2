@@ -1,8 +1,14 @@
 package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.ItemResponseDto;
+import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
+import co.kr.muldum.domain.item.service.ItemListService;
+import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
+import co.kr.muldum.domain.user.UserReader;
+import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +27,19 @@ import org.springframework.web.bind.annotation.*;
 public class ItemController {
 
     private final ItemRequestService itemRequestService;
-    private final ItemResponseHandler itemResponseHandler;
+    private final ItemListService itemListService;
+    private final ItemRequestFinalizer itemRequestFinalizer;
+    private final UserReader userReader;
+
+    @GetMapping
+    public ResponseEntity<List<ItemListResponseDto>> getTeamItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserInfo userInfo = userReader.read(Student.class, userDetails.getUserId());
+        List<ItemListResponseDto> items = itemListService.getTeamItemRequests(userInfo);
+        
+        return ResponseEntity.ok(items);
+    }
 
     @PostMapping("/temp")
     public ResponseEntity<ItemResponseDto> createTempItemRequest(
@@ -43,5 +63,28 @@ public class ItemController {
         );
 
         return itemResponseHandler.handleItemResponse(response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<TempItemResponseDto> finalizeItemRequest(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserInfo userInfo = userReader.read(Student.class, userDetails.getUserId());
+        ItemRequestFinalizer.FinalizeResult result = itemRequestFinalizer.finalizeRequest(userInfo);
+        
+        TempItemResponseDto response = TempItemResponseDto.builder()
+                .status(result.getStatus().name())
+                .message(result.getMessage())
+                .build();
+
+        if ("REJECTED".equals(response.getStatus())) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }

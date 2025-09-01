@@ -51,5 +51,9 @@ public class ItemRequestFinalizer {
             this.status = status;
             this.message = message;
         }
+        
+        public static FinalizeResult of(ItemStatus status, String message) {
+            return new FinalizeResult(status, message);
+        }
     }
 }
