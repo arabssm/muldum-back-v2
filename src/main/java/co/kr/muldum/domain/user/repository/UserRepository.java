@@ -15,5 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     int updateNullTeamIdToZero();
 
     // 학번 기반으로 유저 조회 (팀스페이스 초대 시 사용 가능)
-    Optional<User> findByStudentId(String studentId);
+    Optional<User> findById(Long id);
 }
