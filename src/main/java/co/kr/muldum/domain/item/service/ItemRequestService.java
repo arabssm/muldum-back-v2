@@ -50,7 +50,7 @@ public class ItemRequestService {
     private TempItemListResponseDto convertToTempListDto(ItemRequest itemRequest) {
         return TempItemListResponseDto.builder()
                 .id(itemRequest.getId())
-                .productName(itemRequest.getProductInfo().getName())
+                .product_name(itemRequest.getProductInfo().getName())
                 .quantity(itemRequest.getProductInfo().getQuantity())
                 .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
