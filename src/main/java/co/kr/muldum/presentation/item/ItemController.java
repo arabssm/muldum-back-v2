@@ -1,8 +1,8 @@
 package co.kr.muldum.presentation.item;
 
-import co.kr.muldum.domain.item.dto.ItemListResponseDto;
-import co.kr.muldum.domain.item.dto.ItemResponseDto;
+import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
+import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.domain.item.service.ItemListService;
@@ -51,6 +51,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
+    @GetMapping("/temp")
+    public ResponseEntity<List<TempItemListResponseDto>> getTempItemRequests(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<TempItemListResponseDto> items = itemRequestService.getTempItemRequests(userDetails.getUserId());
+        
+        return ResponseEntity.ok(items);
+    }
+
     @PostMapping("/temp")
     public ResponseEntity<ItemResponseDto> createTempItemRequest(
             @RequestBody TempItemRequestDto tempItemRequestDto,
@@ -92,6 +101,14 @@ public class ItemController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(response);
         }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/money")
+    public ResponseEntity<UsedBudgetResponseDto> getUsedBudget(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UsedBudgetResponseDto response = itemRequestService.getUsedBudget(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 }
