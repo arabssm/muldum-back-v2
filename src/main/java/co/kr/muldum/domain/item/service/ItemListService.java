@@ -19,7 +19,7 @@ public class ItemListService {
     private final ItemRequestRepository itemRequestRepository;
 
     public List<ItemListResponseDto> getTeamItemRequests(UserInfo userInfo) {
-        log.debug("팀 물품 목록 조회 - teamId={}, userId={}", 
+        log.debug("팀 물품 목록 조회 - teamId={}, userId={}",
                 userInfo.getTeamId(), userInfo.getUserId());
 
         List<ItemRequest> itemRequests = itemRequestRepository
@@ -31,13 +31,26 @@ public class ItemListService {
     }
 
     private ItemListResponseDto convertToDto(ItemRequest itemRequest) {
+        // price를 안전하게 파싱
+        Integer price = null;
+        try {
+            if (itemRequest.getProductInfo().getPrice() != null) {
+                price = Integer.parseInt(itemRequest.getProductInfo().getPrice());
+            }
+        } catch (NumberFormatException e) {
+            log.warn("가격 파싱 오류 - itemId={}, price={}",
+                    itemRequest.getId(), itemRequest.getProductInfo().getPrice());
+            price = 0;
+        }
+
         return ItemListResponseDto.builder()
                 .id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo().getName())
                 .quantity(itemRequest.getProductInfo().getQuantity())
-                .price(Integer.parseInt(itemRequest.getProductInfo().getPrice()))
+                .price(price)
                 .status(itemRequest.getStatus().name())
-                .type(itemRequest.getTeamType().name().toLowerCase())
+                .type(itemRequest.getTeamType() != null ?
+                        itemRequest.getTeamType().name().toLowerCase() : "network")
                 .build();
     }
 }

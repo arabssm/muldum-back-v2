@@ -1,7 +1,7 @@
 package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -31,10 +31,6 @@ public class ItemRequestService {
         return itemRequestFacade.createTempItemRequest(requestDto, userId);
     }
 
-    public ItemResponseDto finalizeItemRequest(Long userId) {
-        return itemRequestFacade.finalizeItemRequest(userId);
-    }
-
     public List<TempItemListResponseDto> getTempItemRequests(Long userId) {
         UserInfo userInfo = userReader.read(User.class, userId);
         log.debug("임시 물품 목록 조회 - teamId={}, userId={}",
@@ -59,33 +55,10 @@ public class ItemRequestService {
                 .build();
     }
 
-    public List<TempItemListResponseDto> getTempItemRequests(Long userId) {
-        UserInfo userInfo = userReader.read(Student.class, userId);
-        log.debug("임시 물품 목록 조회 - teamId={}, userId={}", 
-                userInfo.getTeamId(), userInfo.getUserId());
-
-        List<ItemRequest> tempItems = itemRequestRepository
-                .findByTeamIdAndStatus(userInfo.getTeamId().intValue(), ItemStatus.INTEMP);
-
-        return tempItems.stream()
-                .map(this::convertToTempListDto)
-                .toList();
-    }
-
-    private TempItemListResponseDto convertToTempListDto(ItemRequest itemRequest) {
-        return TempItemListResponseDto.builder()
-                .id(itemRequest.getId())
-                .productName(itemRequest.getProductInfo().getName())
-                .quantity(itemRequest.getProductInfo().getQuantity())
-                .price(itemRequest.getProductInfo().getPrice())
-                .status(itemRequest.getStatus().name())
-                .type("network")
-                .build();
-    }
-
     public List<ItemStatusResponseDto> getApprovedItemStatuses(Long userId) {
-        UserInfo userInfo = userReader.read(Student.class, userId);
-        log.debug("APPROVED 상태 물품 목록 조회 - teamId={}, userId={}", userInfo.getTeamId(), userInfo.getUserId());
+        UserInfo userInfo = userReader.read(User.class, userId);
+        log.debug("APPROVED 상태 물품 목록 조회 - teamId={}, userId={}",
+                userInfo.getTeamId(), userInfo.getUserId());
 
         List<ItemRequest> approvedItems = itemRequestRepository
                 .findByTeamIdAndStatus(userInfo.getTeamId().intValue(), ItemStatus.APPROVED);
@@ -95,7 +68,8 @@ public class ItemRequestService {
                         .productName(item.getProductInfo().getName())
                         .quantity(item.getProductInfo().getQuantity())
                         .status(item.getStatus().name())
-                        .deliveryNumber(item.getDeliveryNumber())
+                        .deliveryNumber(item.getRequestDetails() != null ?
+                                item.getRequestDetails().getDeliveryInfo() : null)
                         .build())
                 .toList();
     }

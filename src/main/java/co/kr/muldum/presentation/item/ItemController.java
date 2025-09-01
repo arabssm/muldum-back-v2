@@ -3,7 +3,6 @@ package co.kr.muldum.presentation.item;
 import co.kr.muldum.domain.item.dto.ItemListResponseDto;
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.domain.item.service.ItemListService;
@@ -41,7 +40,6 @@ public class ItemController {
     ) {
         UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
         List<ItemListResponseDto> items = itemListService.getTeamItemRequests(userInfo);
-
         return ResponseEntity.ok(items);
     }
 
@@ -50,16 +48,6 @@ public class ItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         List<TempItemListResponseDto> items = itemRequestService.getTempItemRequests(userDetails.getUserId());
-        
-        return ResponseEntity.ok(items);
-    }
-
-    @GetMapping("/temp")
-    public ResponseEntity<List<TempItemListResponseDto>> getTempItemRequests(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        List<TempItemListResponseDto> items = itemRequestService.getTempItemRequests(userDetails.getUserId());
-        
         return ResponseEntity.ok(items);
     }
 
@@ -72,7 +60,6 @@ public class ItemController {
                 tempItemRequestDto,
                 userDetails.getUserId()
         );
-
         return handleItemResponse(response);
     }
 
@@ -91,22 +78,20 @@ public class ItemController {
         return handleItemResponse(response);
     }
 
-    // private 헬퍼 메서드로 응답 처리
-    private ResponseEntity<ItemResponseDto> handleItemResponse(ItemResponseDto response) {
-        if ("REJECTED".equals(response.getStatus())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/statuses")
     public ResponseEntity<List<ItemStatusResponseDto>> getApprovedItemStatuses(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         List<ItemStatusResponseDto> items = itemRequestService.getApprovedItemStatuses(userDetails.getUserId());
         return ResponseEntity.ok(items);
+    }
+
+    private ResponseEntity<ItemResponseDto> handleItemResponse(ItemResponseDto response) {
+        if ("REJECTED".equals(response.getStatus())) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 }

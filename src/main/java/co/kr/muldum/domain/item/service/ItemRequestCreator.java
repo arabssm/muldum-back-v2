@@ -4,6 +4,7 @@ import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.RequestDetails;
+import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
