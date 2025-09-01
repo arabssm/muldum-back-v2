@@ -1,5 +1,8 @@
 package co.kr.muldum.domain.item.service;
 
+import co.kr.muldum.domain.item.dto.ApproveItemRequestDto;
+import co.kr.muldum.domain.item.dto.ItemActionResponseDto;
+import co.kr.muldum.domain.item.dto.RejectItemRequestDto;
 import co.kr.muldum.domain.item.dto.TeacherItemResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -48,12 +51,78 @@ public class TeacherItemService {
                 .toList();
     }
 
+    @Transactional
+    public ItemActionResponseDto rejectItems(List<RejectItemRequestDto> rejectRequests) {
+        log.info("물품 거절 처리 시작 - 처리할 물품 수: {}", rejectRequests.size());
+
+        int processedCount = 0;
+        for (RejectItemRequestDto request : rejectRequests) {
+            try {
+                ItemRequest item = itemRequestRepository.findById(request.getItem_id())
+                        .orElse(null);
+
+                if (item != null) {
+                    item.updateStatus(ItemStatus.REJECTED);
+                    // 거절 사유 저장 (RequestDetails 업데이트)
+                    if (item.getRequestDetails() != null) {
+                        item.getRequestDetails().updateReason(request.getReason());
+                    }
+                    itemRequestRepository.save(item);
+                    processedCount++;
+                    log.info("물품 거절 완료 - itemId: {}, reason: {}", request.getItem_id(), request.getReason());
+                } else {
+                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItem_id());
+                }
+            } catch (Exception e) {
+                log.error("물품 거절 처리 중 오류 - itemId: {}, error: {}", request.getItem_id(), e.getMessage());
+            }
+        }
+
+        log.info("물품 거절 처리 완료 - 총 처리된 물품 수: {}/{}", processedCount, rejectRequests.size());
+
+        return ItemActionResponseDto.builder()
+                .status("REJECTED")
+                .message("거절 사유가 등록되었습니다.")
+                .build();
+    }
+
+    @Transactional
+    public ItemActionResponseDto approveItems(List<ApproveItemRequestDto> approveRequests) {
+        log.info("물품 승인 처리 시작 - 처리할 물품 수: {}", approveRequests.size());
+
+        int processedCount = 0;
+        for (ApproveItemRequestDto request : approveRequests) {
+            try {
+                ItemRequest item = itemRequestRepository.findById(request.getItem_id())
+                        .orElse(null);
+
+                if (item != null) {
+                    item.updateStatus(ItemStatus.APPROVED);
+                    itemRequestRepository.save(item);
+                    processedCount++;
+                    log.info("물품 승인 완료 - itemId: {}", request.getItem_id());
+                } else {
+                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItem_id());
+                }
+            } catch (Exception e) {
+                log.error("물품 승인 처리 중 오류 - itemId: {}, error: {}", request.getItem_id(), e.getMessage());
+            }
+        }
+
+        log.info("물품 승인 처리 완료 - 총 처리된 물품 수: {}/{}", processedCount, approveRequests.size());
+
+        return ItemActionResponseDto.builder()
+                .status("APPROVED")
+                .message("물품이 승인되었습니다.")
+                .build();
+    }
+
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
-                .teamId(itemRequest.getTeamId())
+                .team_id(itemRequest.getTeamId())
                 .type("NETWORK") // 고정값
-                .itemId(itemRequest.getId())
-                .productName(itemRequest.getProductInfo() != null ?
+                .item_id(itemRequest.getId())
+                .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
                 .quantity(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getQuantity() : null)

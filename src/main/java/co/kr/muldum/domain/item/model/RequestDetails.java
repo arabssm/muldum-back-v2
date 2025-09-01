@@ -13,4 +13,8 @@ public class RequestDetails {
     private String reason;
     private String deliveryInfo;
     private String approvalNotes;
+
+    public void updateReason(String reason) {
+        this.reason = reason;
+    }
 }
