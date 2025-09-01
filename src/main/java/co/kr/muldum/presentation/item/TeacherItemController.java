@@ -76,7 +76,7 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("운송장 번호 등록 요청 - teacherId: {}, itemId: {}",
-                userDetails.getUserId(), request.getItemId());
+                userDetails.getUserId(), request.getItem_id());
 
         DeliveryNumberResponseDto response = teacherItemService.registerDeliveryNumber(request);
 

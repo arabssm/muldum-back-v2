@@ -117,7 +117,7 @@ public class TeacherItemService {
 
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
-                .team_id(itemRequest.getTeam_id())
+                .team_id(itemRequest.getTeamId())
                 .type("NETWORK") // 고정값
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
@@ -137,15 +137,15 @@ public class TeacherItemService {
     @Transactional
     public DeliveryNumberResponseDto registerDeliveryNumber(DeliveryNumberRequestDto request) {
         log.info("운송장 번호 등록 시작 - itemId: {}, deliveryNumber: {}",
-                request.getItemId(), request.getDeliveryNumber());
+                request.getItem_id(), request.getDelivery_number());
 
-        ItemRequest item = itemRequestRepository.findById(request.getItemId())
-                .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + request.getItemId()));
+        ItemRequest item = itemRequestRepository.findById(request.getItem_id())
+                .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + request.getItem_id()));
 
         // RequestDetails의 deliveryInfo에 운송장 번호 저장
         RequestDetails updatedDetails = RequestDetails.builder()
                 .reason(item.getRequestDetails() != null ? item.getRequestDetails().getReason() : null)
-                .deliveryInfo(request.getDeliveryNumber())
+                .deliveryInfo(request.getDelivery_number())
                 .approvalNotes(item.getRequestDetails() != null ? item.getRequestDetails().getApprovalNotes() : null)
                 .build();
 
@@ -164,7 +164,7 @@ public class TeacherItemService {
 
         itemRequestRepository.save(updatedItem);
 
-        log.info("운송장 번호 등록 완료 - itemId: {}", request.getItemId());
+        log.info("운송장 번호 등록 완료 - itemId: {}", request.getItem_id());
 
         return DeliveryNumberResponseDto.builder()
                 .message("운송장 번호가 등록되었습니다.")

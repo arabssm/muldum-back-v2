@@ -8,12 +8,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
+import co.kr.muldum.domain.item.service.ItemListService;
+import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 
 import java.util.Arrays;
 import java.util.List;
+
+import co.kr.muldum.domain.user.UserReader;
+import co.kr.muldum.presentation.item.StudentItemController;
 import co.kr.muldum.global.security.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -25,11 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-@WebMvcTest(ItemController.class)
+@WebMvcTest(StudentItemController.class)
 class ItemControllerTest {
 
     @MockitoBean
@@ -60,7 +62,7 @@ class ItemControllerTest {
                 "umm"
         );
 
-        TempItemResponseDto responseDto = TempItemResponseDto.builder()
+        ItemResponseDto responseDto = ItemResponseDto.builder()
                 .status("INTEMP")
                 .message("임시 신청이 완료되었습니다.")
                 .build();
@@ -91,7 +93,7 @@ class ItemControllerTest {
         List<TempItemListResponseDto> responseList = Arrays.asList(
                 TempItemListResponseDto.builder()
                         .id(1L)
-                        .productName("상상소나무")
+                        .product_name("상상소나무")
                         .quantity(3)
                         .price("32000")
                         .status("INTEMP")
@@ -99,7 +101,7 @@ class ItemControllerTest {
                         .build(),
                 TempItemListResponseDto.builder()
                         .id(2L)
-                        .productName("테스트 제품")
+                        .product_name("테스트 제품")
                         .quantity(1)
                         .price("15000")
                         .status("INTEMP")

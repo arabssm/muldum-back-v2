@@ -14,12 +14,8 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     List<ItemRequest> findByTeamId(Integer teamId);
     List<ItemRequest> findByStatusIn(List<ItemStatus> statuses);
     List<ItemRequest> findByTeamIdAndStatusIn(Integer teamId, List<ItemStatus> statuses);
-    List<ItemRequest> findByTeamId(Integer teamId);
     List<ItemRequest> findByStatus(ItemStatus itemStatus);
     List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
     List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
 
-    List<ItemRequest> findByStatusIn(List<ItemStatus> pending);
-
-    List<ItemRequest> findByTeamIdAndStatusIn(Integer teamId, List<ItemStatus> pending);
 }

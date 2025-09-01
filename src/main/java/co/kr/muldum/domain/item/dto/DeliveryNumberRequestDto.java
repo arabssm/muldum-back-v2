@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class DeliveryNumberRequestDto {
-    private Long itemId;
-    private String deliveryNumber;
+    private Long item_id;
+    private String delivery_number;
 }

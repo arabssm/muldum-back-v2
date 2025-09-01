@@ -19,10 +19,10 @@ public class TeacherItemResponseDto {
 
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
-                .teamId(itemRequest.getTeamId())
+                .team_id(itemRequest.getTeamId())
                 .type("NETWORK") // 고정값
-                .itemId(itemRequest.getId())
-                .productName(itemRequest.getProductInfo() != null ?
+                .item_id(itemRequest.getId())
+                .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
                 .quantity(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getQuantity() : null)
@@ -38,10 +38,10 @@ public class TeacherItemResponseDto {
 
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
-                .teamId(itemRequest.getTeamId())
+                .team_id(itemRequest.getTeamId())
                 .type("NETWORK") // 고정값
-                .itemId(itemRequest.getId())
-                .productName(itemRequest.getProductInfo() != null ?
+                .item_id(itemRequest.getId())
+                .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
                 .quantity(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getQuantity() : null)
