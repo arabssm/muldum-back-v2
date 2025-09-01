@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
     List<ItemRequest> findByTeamIdAndStatus(int teamId, ItemStatus itemStatus);
+    List<ItemRequest> findByRequesterUserIdAndStatus(int requesterUserId, ItemStatus itemStatus);
+    List<ItemRequest> findByTeamIdAndStatusNot(int teamId, ItemStatus excludeStatus);
 }
