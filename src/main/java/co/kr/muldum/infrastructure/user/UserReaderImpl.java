@@ -39,23 +39,36 @@ public class UserReaderImpl implements UserReader {
     }
   }
 
-  @Override
-  public UserInfo read(Class<?> clazz, Long id) {
-    try {
-      String query = "SELECT id, name, email, user_type, team_id FROM users WHERE id = ?";
-      return jdbcTemplate.queryForObject(
-              query,
-              (rs, rowNum) -> UserInfo.builder()
-                      .userId(rs.getLong("id"))
-                      .name(rs.getString("name"))
-                      .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
-                      .teamId(rs.getObject("team_id", Long.class))
-                      .role(Role.MEMBER)
-                      .build(),
-              id
-      );
-    } catch (EmptyResultDataAccessException e) {
-      throw new RuntimeException("User not found with id: " + id);
+    @Override
+    public UserInfo read(Class<?> clazz, Long id) {
+        try {
+            // PostgreSQL JSON 추출 문법 사용
+            String query = "SELECT id, name, email, user_type, profile->>'team_id' as team_id FROM users WHERE id = ?";
+            return jdbcTemplate.queryForObject(
+                    query,
+                    (rs, rowNum) -> {
+                        String teamIdStr = rs.getString("team_id");
+                        Long teamId = null;
+                        if (teamIdStr != null && !teamIdStr.isEmpty() && !"null".equals(teamIdStr)) {
+                            try {
+                                teamId = Long.parseLong(teamIdStr);
+                            } catch (NumberFormatException e) {
+                                // 파싱 실패 시 null 유지
+                            }
+                        }
+
+                        return UserInfo.builder()
+                                .userId(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
+                                .teamId(teamId)
+                                .role(Role.MEMBER)
+                                .build();
+                    },
+                    id
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
     }
-  }
 }
