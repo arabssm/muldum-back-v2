@@ -7,13 +7,19 @@ import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper; // ✅ Jackson 추가
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +31,8 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper(); // ✅ Jackson 객체 생성
 
     // 구글 시트 기반 팀 멤버 초대
     @Transactional
@@ -43,29 +51,73 @@ public class TeamspaceService {
             // 2-1. 팀 이름 확인
             String teamName = row.get("team");
             if (teamName == null || teamName.isBlank()) {
-                throw new CustomException(ErrorCode.TEAM_NOT_FOUND); // 혹은 별도 ErrorCode 정의
+                throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
             }
 
-            // 2-2. 팀 조회 (없으면 예외 발생)
+            // 2-2. 팀 조회 (없으면 새 팀 생성)
             Team team = teamRepository.findByName(teamName)
-                    .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+                    .orElseGet(() -> teamRepository.save(
+                            Team.builder()
+                                    .name(teamName)
+                                    .config(new HashMap<>())
+                                    .build()
+                    ));
 
-            // 2-3. 유저 조회 (email 기준)
-            String email = row.get("email");
-            if (email == null || email.isBlank()) {
+            // 2-3. 유저 조회 (학번 + 이름 기준)
+            String studentId = row.get("studentId");
+            String studentName = row.get("name");
+
+            if (studentId == null || studentName == null) {
                 throw new CustomException(ErrorCode.UNREGISTERED_USER);
             }
 
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
+            User user = userRepository.findByStudentIdAndName(studentId, studentName)
+                    .orElseGet(() -> {
+                        try {
+                            JSONObject profile = new JSONObject();
+                            profile.put("studentId", studentId);
+                            profile.put("name", studentName);
+                            profile.put("teamId", team.getId());
 
-            // 2-4. role 확인
-            String role = row.get("role");
-            if (role == null || role.isBlank()) {
-                throw new CustomException(ErrorCode.INVALID_ROLE);
+                            // ✅ Jackson으로 Map 변환
+                            Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
+
+                            User newUser = User.builder()
+                                    .userType(UserType.STUDENT) // 기본 학생 타입
+                                    .name(studentName)
+                                    .email(studentId + "@bssm.hs.kr") // 학번 기반 이메일 생성
+                                    .profile(profileMap)
+                                    .build();
+
+                            return userRepository.save(newUser);
+                        } catch (JSONException | IOException e) {
+                            throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
+                        }
+                    });
+
+            // 2-4. 유저 프로필에 teamId 업데이트 (이미 존재하는 유저라도)
+            try {
+                JSONObject profile = user.getProfile() != null
+                        ? new JSONObject(user.getProfile())
+                        : new JSONObject();
+                profile.put("teamId", team.getId());
+
+                // ✅ Jackson으로 Map 변환
+                Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
+
+                user.setProfile(profileMap);
+                userRepository.save(user);
+            } catch (JSONException | IOException e) {
+                throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
             }
 
-            // 2-5. 중복 방지 후 멤버 저장
+            // 2-5. 역할 확인 (없으면 기본 MEMBER)
+            String role = row.get("role");
+            if (role == null || role.isBlank()) {
+                role = "MEMBER";
+            }
+
+            // 2-6. 팀-유저 관계 저장 (중복 방지)
             if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
                 teamspaceMemberRepository.save(new TeamspaceMember(team, user, role));
             }
