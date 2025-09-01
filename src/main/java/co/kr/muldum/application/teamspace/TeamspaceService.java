@@ -36,25 +36,42 @@ public class TeamspaceService {
             throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
         }
 
-        // 2. 팀 존재 여부 확인 (임시로 teamId = 1 고정)
-        Team team = teamRepository.findById(1L)
-                .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
-
-        // 3. 구글 시트에서 데이터 추출
+        // 2. 구글 시트에서 데이터 추출
         List<Map<String, String>> rows = googleSheetImportService.parseTeamInviteRows(googleSheetUrl);
 
         for (Map<String, String> row : rows) {
-            // studentNumber 기준으로 유저 조회
-            User user = userRepository.findById(Long.valueOf(row.get("studentNumber")))
+            // 2-1. 팀 이름 확인
+            String teamName = row.get("team");
+            if (teamName == null || teamName.isBlank()) {
+                throw new CustomException(ErrorCode.TEAM_NOT_FOUND); // 혹은 별도 ErrorCode 정의
+            }
+
+            // 2-2. 팀 조회 (없으면 예외 발생)
+            Team team = teamRepository.findByName(teamName)
+                    .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+
+            // 2-3. 유저 조회 (email 기준)
+            String email = row.get("email");
+            if (email == null || email.isBlank()) {
+                throw new CustomException(ErrorCode.UNREGISTERED_USER);
+            }
+
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
-            // 중복 방지 후 멤버 저장
+            // 2-4. role 확인
+            String role = row.get("role");
+            if (role == null || role.isBlank()) {
+                throw new CustomException(ErrorCode.INVALID_ROLE);
+            }
+
+            // 2-5. 중복 방지 후 멤버 저장
             if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
-                teamspaceMemberRepository.save(new TeamspaceMember(team, user, row.get("role")));
+                teamspaceMemberRepository.save(new TeamspaceMember(team, user, role));
             }
         }
 
-        // 4. 결과 반환
+        // 3. 결과 반환
         return new TeamspaceInviteResponseDto("success");
     }
 }
