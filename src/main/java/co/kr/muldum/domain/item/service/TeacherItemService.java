@@ -56,24 +56,23 @@ public class TeacherItemService {
         int processedCount = 0;
         for (RejectItemRequestDto request : rejectRequests) {
             try {
-                ItemRequest item = itemRequestRepository.findById(request.getItemId())
+                ItemRequest item = itemRequestRepository.findById(request.getItem_id())
                         .orElse(null);
 
                 if (item != null) {
                     item.updateStatus(ItemStatus.REJECTED);
                     // 거절 사유 저장 (RequestDetails 업데이트)
                     if (item.getRequestDetails() != null) {
-                        // RequestDetails에 거절 사유 추가하는 로직 필요
-                        // 현재 구조상 reason 필드 업데이트
+                        item.getRequestDetails().updateReason(request.getReason());
                     }
                     itemRequestRepository.save(item);
                     processedCount++;
-                    log.info("물품 거절 완료 - itemId: {}, reason: {}", request.getItemId(), request.getReason());
+                    log.info("물품 거절 완료 - itemId: {}, reason: {}", request.getItem_id(), request.getReason());
                 } else {
-                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItemId());
+                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItem_id());
                 }
             } catch (Exception e) {
-                log.error("물품 거절 처리 중 오류 - itemId: {}, error: {}", request.getItemId(), e.getMessage());
+                log.error("물품 거절 처리 중 오류 - itemId: {}, error: {}", request.getItem_id(), e.getMessage());
             }
         }
 
@@ -92,19 +91,19 @@ public class TeacherItemService {
         int processedCount = 0;
         for (ApproveItemRequestDto request : approveRequests) {
             try {
-                ItemRequest item = itemRequestRepository.findById(request.getItemId())
+                ItemRequest item = itemRequestRepository.findById(request.getItem_id())
                         .orElse(null);
 
                 if (item != null) {
                     item.updateStatus(ItemStatus.APPROVED);
                     itemRequestRepository.save(item);
                     processedCount++;
-                    log.info("물품 승인 완료 - itemId: {}", request.getItemId());
+                    log.info("물품 승인 완료 - itemId: {}", request.getItem_id());
                 } else {
-                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItemId());
+                    log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItem_id());
                 }
             } catch (Exception e) {
-                log.error("물품 승인 처리 중 오류 - itemId: {}, error: {}", request.getItemId(), e.getMessage());
+                log.error("물품 승인 처리 중 오류 - itemId: {}, error: {}", request.getItem_id(), e.getMessage());
             }
         }
 
@@ -118,10 +117,10 @@ public class TeacherItemService {
 
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
-                .teamId(itemRequest.getTeamId())
+                .team_id(itemRequest.getTeam_id())
                 .type("NETWORK") // 고정값
-                .itemId(itemRequest.getId())
-                .productName(itemRequest.getProductInfo() != null ?
+                .item_id(itemRequest.getId())
+                .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
                 .quantity(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getQuantity() : null)

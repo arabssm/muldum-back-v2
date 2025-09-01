@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -64,10 +64,10 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("INTEMP");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.INTEMP.name());
         assertThat(result.getMessage()).isEqualTo("임시 신청이 완료되었습니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -115,10 +115,10 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("INTEMP");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.INTEMP.name());
         assertThat(result.getMessage()).isEqualTo("임시 신청이 완료되었습니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -159,10 +159,10 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(savedItemRequest);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("REJECTED");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.REJECTED.name());
         assertThat(result.getMessage()).isEqualTo("허용되지 않은 쇼핑몰입니다. 디바이스마트(devicemart.co.kr) 또는 11번가(11st.co.kr)에서만 신청 가능합니다.");
 
         ArgumentCaptor<ItemRequest> itemRequestCaptor = ArgumentCaptor.forClass(ItemRequest.class);
@@ -194,10 +194,10 @@ class ItemRequestServiceTest {
         when(userReader.read(Student.class, userId)).thenReturn(userInfo);
 
         // When
-        TempItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
+        ItemResponseDto result = itemRequestService.createTempItemRequest(requestDto, userId);
 
         // Then
-        assertThat(result.getStatus()).isEqualTo("REJECTED");
+        assertThat(result.getStatus()).isEqualTo(ItemStatus.REJECTED.name());
         assertThat(result.getMessage()).isEqualTo("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.");
 
         // itemRequestRepository.save()가 호출되지 않았는지 확인

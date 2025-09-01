@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
@@ -24,11 +25,24 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(StudentItemController.class)
-class StudentItemControllerTest {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+@WebMvcTest(ItemController.class)
+class ItemControllerTest {
 
     @MockitoBean
     private ItemRequestService itemRequestService;
+
+    @MockitoBean
+    private ItemListService itemListService;
+
+    @MockitoBean
+    private ItemRequestFinalizer itemRequestFinalizer;
+
+    @MockitoBean
+    private UserReader userReader;
 
     @Autowired
     private MockMvc mockMvc;
