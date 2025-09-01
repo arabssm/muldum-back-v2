@@ -17,21 +17,24 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Column(name = "user_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
-  @Column(name = "user_type", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private UserType userType;
+    private String name;
 
-  private String name;
+    @Column(unique = true)
+    private String email;
 
-  @Column(unique = true)
-  private String email;
+    @Column(columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> profile;
 
-  @Column(columnDefinition = "jsonb")
-  @JdbcTypeCode(SqlTypes.JSON)
-  private Map<String, Object> profile;
+    public void setProfile(Map<String, Object> profile) {
+        this.profile = profile;
+    }
 }
