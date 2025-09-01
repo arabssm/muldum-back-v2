@@ -6,7 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
+import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,8 +42,8 @@ class ItemControllerTest {
                 "umm"
         );
 
-        TempItemResponseDto responseDto = TempItemResponseDto.builder()
-                .status("INTEMP")
+        ItemResponseDto responseDto = ItemResponseDto.builder()
+                .status(ItemStatus.INTEMP.name())
                 .message("임시 신청이 완료되었습니다.")
                 .build();
 
@@ -60,7 +61,7 @@ class ItemControllerTest {
                         .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.status").value("INTEMP"))
+                .andExpect(jsonPath("$.status").value(ItemStatus.INTEMP.name()))
                 .andExpect(jsonPath("$.message").value("임시 신청이 완료되었습니다."));
     }
 
