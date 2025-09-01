@@ -5,6 +5,7 @@ import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.user.model.UserInfo;
@@ -41,6 +42,7 @@ public class ItemRequestCreator {
                 .requesterUserId(userInfo.getUserId().intValue())
                 .productInfo(productInfo)
                 .status(statusDecision.status())
+                .teamType(TeamType.NETWORK)  // 이 줄 추가
                 .requestDetails(requestDetails)
                 .build();
 

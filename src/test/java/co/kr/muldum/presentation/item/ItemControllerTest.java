@@ -5,15 +5,15 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemResponseDto;
 import co.kr.muldum.domain.item.dto.ItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.domain.item.service.ItemListService;
 import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.user.UserReader;
-import co.kr.muldum.domain.user.model.Student;
+import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.security.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -116,7 +116,7 @@ class ItemControllerTest {
                         .build()
         );
 
-        when(userReader.read(Student.class, userId)).thenReturn(userInfo);
+        when(userReader.read(User.class, userId)).thenReturn(userInfo);
         when(itemListService.getTeamItemRequests(userInfo)).thenReturn(mockItems);
 
         // When & Then
@@ -153,7 +153,7 @@ class ItemControllerTest {
                 .teamId(teamId)
                 .build();
 
-        when(userReader.read(Student.class, userId)).thenReturn(userInfo);
+        when(userReader.read(User.class, userId)).thenReturn(userInfo);
         when(itemListService.getTeamItemRequests(userInfo)).thenReturn(Collections.emptyList());
 
         // When & Then
@@ -181,7 +181,7 @@ class ItemControllerTest {
         ItemRequestFinalizer.FinalizeResult result = 
                 ItemRequestFinalizer.FinalizeResult.of(ItemStatus.PENDING, "총 2개 물품이 성공적으로 신청되었습니다.");
 
-        when(userReader.read(Student.class, userId)).thenReturn(userInfo);
+        when(userReader.read(User.class, userId)).thenReturn(userInfo);
         when(itemRequestFinalizer.finalizeRequest(userInfo)).thenReturn(result);
 
         // When & Then
@@ -209,7 +209,7 @@ class ItemControllerTest {
         ItemRequestFinalizer.FinalizeResult result = 
                 ItemRequestFinalizer.FinalizeResult.of(ItemStatus.REJECTED, "임시 신청된 물품이 없습니다.");
 
-        when(userReader.read(Student.class, userId)).thenReturn(userInfo);
+        when(userReader.read(User.class, userId)).thenReturn(userInfo);
         when(itemRequestFinalizer.finalizeRequest(userInfo)).thenReturn(result);
 
         // When & Then
