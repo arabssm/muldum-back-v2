@@ -1,7 +1,8 @@
 package co.kr.muldum.application.teamspace;
 
-import co.kr.muldum.domain.user.model.Student;
-import co.kr.muldum.domain.user.repository.StudentRepository;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserType;
+import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.infrastructure.teamspace.GoogleSheetApiClient;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,11 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class GoogleSheetImportService {
-  private final StudentRepository studentRepository;
+  private final UserRepository userRepository;
   private final GoogleSheetApiClient googleSheetApiClient;
 
   @Transactional
-  public List<Student> importFromGoogleSheet(String googleSheetUrl) {
+  public List<User> importFromGoogleSheet(String googleSheetUrl) {
     try {
       String spreadsheetId = extractSpreadsheetId(googleSheetUrl);
 
@@ -41,7 +42,7 @@ public class GoogleSheetImportService {
       List<Object> headerRow = rows.getFirst();
       // headerRow 예: ["grade", "class", "studentId", "name", "email", ...]
 
-      List<Student> savedStudents = new ArrayList<>();
+      List<User> usersToSave = new ArrayList<>();
 
       // 두 번째 행부터 데이터
       for (int i = 1; i < rows.size(); i++) {
@@ -65,16 +66,27 @@ public class GoogleSheetImportService {
         Map<String, Object> profile = new HashMap<>(dataMap);
         profile.remove("email");
 
-        Student student = Student.builder()
+        if (userRepository.findByEmail(email).isPresent()) {
+          continue;
+        }
+
+          String name = Optional.ofNullable(profile.remove("name"))
+                  .map(Object::toString)
+                  .map(String::trim)
+                  .orElse(null);
+
+        User user = User.builder()
                 .email(email)
+                .name(name)
                 .profile(profile)
+                .userType(UserType.STUDENT)
                 .build();
 
-        studentRepository.save(student);
-        savedStudents.add(student);
+        usersToSave.add(user);
       }
 
-      return savedStudents;
+      return userRepository.saveAll(usersToSave);
+
     } catch (Exception e) {
       throw new RuntimeException("구글 시트 가져오기 실패", e);
     }

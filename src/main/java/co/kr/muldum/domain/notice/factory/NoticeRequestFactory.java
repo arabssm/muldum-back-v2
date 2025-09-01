@@ -5,8 +5,8 @@ import co.kr.muldum.domain.notice.exception.NotFoundException;
 import co.kr.muldum.domain.notice.model.ContentData;
 import co.kr.muldum.domain.notice.model.FileData;
 import co.kr.muldum.domain.notice.model.Notice;
-import co.kr.muldum.domain.user.model.Teacher;
-import co.kr.muldum.domain.user.repository.TeacherRepository;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,19 +18,18 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class NoticeRequestFactory {
-  private final TeacherRepository teacherRepository;
+  private final UserRepository userRepository;
 
   public Notice createNotice(CreateNoticeRequest createNoticeRequest, Long authorUserId) {
-    Teacher teacher = teacherRepository.findById(authorUserId)
+    User user = userRepository.findById(authorUserId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 교사입니다. " + authorUserId));
 
     List<FileData> fileDataList = Optional.ofNullable(createNoticeRequest.getFiles())
             .orElse(Collections.emptyList())
             .stream()
             .filter(Objects::nonNull)
-            .map(CreateNoticeRequest.FileRequest::getUrl)
-            .filter(url -> url != null && !url.isBlank())
-            .map(FileData::new)
+            .map(fileReq -> new FileData(fileReq.getUrl()))
+            .filter(fileData -> fileData.getUrl() != null && !fileData.getUrl().isBlank())
             .toList();
 
     ContentData contentData = new ContentData(
@@ -38,7 +37,7 @@ public class NoticeRequestFactory {
             fileDataList
     );
     return Notice.builder()
-            .teacher(teacher)
+            .user(user)
             .title(createNoticeRequest.getTitle())
             .contentData(contentData)
             .deadlineDate(createNoticeRequest.getDeadlineDate())

@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.file.model;
 
-import co.kr.muldum.domain.user.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,15 +29,18 @@ public class File {
   @Column(columnDefinition = "jsonb")
   private FileMetadata metadata;
 
-  @Column(name = "owner_user_type", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private UserType ownerUserType;
-
   @Column(name = "owner_user_id", nullable = false)
-  private Integer ownerUserId;
+  private Long ownerUserId;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
+  public static File create(String path, FileMetadata metadata, Long userId) {
+    return File.builder()
+            .path(path)
+            .metadata(metadata)
+            .ownerUserId(userId)
+            .build();
+  }
 }
