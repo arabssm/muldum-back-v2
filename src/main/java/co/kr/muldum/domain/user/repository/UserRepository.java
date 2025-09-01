@@ -13,7 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE users SET profile = jsonb_set(COALESCE(profile, '{}'), '{team_id}', '\"0\"') WHERE profile IS NULL OR profile->>'team_id' IS NULL", nativeQuery = true)
     int updateNullTeamIdToZero();
-}
 
     // 학번 기반으로 유저 조회 (팀스페이스 초대 시 사용 가능)
     Optional<User> findByStudentId(String studentId);
