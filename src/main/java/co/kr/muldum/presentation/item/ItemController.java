@@ -2,7 +2,8 @@ package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.ItemListResponseDto;
+import co.kr.muldum.domain.item.dto.TempItemResponseDto;
+import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.domain.item.service.ItemListService;
 import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
@@ -39,6 +40,15 @@ public class ItemController {
         UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
         List<ItemListResponseDto> items = itemListService.getTeamItemRequests(userInfo);
 
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/temp")
+    public ResponseEntity<List<TempItemListResponseDto>> getTempItemRequests(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<TempItemListResponseDto> items = itemRequestService.getTempItemRequests(userDetails.getUserId());
+        
         return ResponseEntity.ok(items);
     }
 
