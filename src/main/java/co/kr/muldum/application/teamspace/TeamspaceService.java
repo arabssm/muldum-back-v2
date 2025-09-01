@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class TeamspaceService {
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
 
-    // 구글 시트의 이메일 목록을 기반으로 팀 멤버 초대
+    // 구글 시트 기반 팀 멤버 초대
+    @Transactional
     public TeamspaceInviteResponseDto inviteStudents(TeamspaceInviteRequestDto requestDto) {
         String googleSheetUrl = requestDto.getGoogleSheetUrl();
 
@@ -34,23 +36,21 @@ public class TeamspaceService {
             throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
         }
 
-        // 2. 팀 존재 여부 확인
-        Team team = teamRepository.findById(1L)   // 👈 임시로 teamId를 1로 고정
+        // 2. 팀 존재 여부 확인 (임시로 teamId = 1 고정)
+        Team team = teamRepository.findById(1L)
                 .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
-        // 실제 구글 시트에서 이메일 추출
-        List<User> users = googleSheetImportService.importFromGoogleSheet(googleSheetUrl);
+        // 3. 구글 시트에서 데이터 추출
+        List<Map<String, String>> rows = googleSheetImportService.parseTeamInviteRows(googleSheetUrl);
 
-        for (User user : users) {
-            if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
-                teamspaceMemberRepository.save(new TeamspaceMember(team, user, "MEMBER"));
-            }
-        }
+        for (Map<String, String> row : rows) {
+            // studentNumber 기준으로 유저 조회
+            User user = userRepository.findByStudentNumber(row.get("studentNumber"))
+                    .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
-        // 3. 이메일 기반 멤버 추가
-        for (User user : users) {
+            // 중복 방지 후 멤버 저장
             if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
-                teamspaceMemberRepository.save(new TeamspaceMember(team, user, "MEMBER"));
+                teamspaceMemberRepository.save(new TeamspaceMember(team, user, row.get("role")));
             }
         }
 
