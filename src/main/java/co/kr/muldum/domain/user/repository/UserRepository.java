@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // studentNumber로 유저 조회
-    Optional<User> findByStudentNumber(String studentNumber);
+    // 이메일 기반으로 유저 조회
+    Optional<User> findByEmail(String email);
+
+    // 학번 기반으로 유저 조회 (팀스페이스 초대 시 사용 가능)
+    Optional<User> findByStudentId(String studentId);
 }
