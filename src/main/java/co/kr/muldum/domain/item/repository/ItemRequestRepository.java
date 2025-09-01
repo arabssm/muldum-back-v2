@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
     List<ItemRequest> findByTeamIdAndStatus(Integer teamId, ItemStatus itemStatus);
+
+    List<ItemRequest> findByTeamId(Integer teamId);
+    List<ItemRequest> findByStatusIn(List<ItemStatus> statuses);
+    List<ItemRequest> findByTeamIdAndStatusIn(Integer teamId, List<ItemStatus> statuses);
     List<ItemRequest> findByTeamId(Integer teamId);
     List<ItemRequest> findByStatus(ItemStatus itemStatus);
     List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
