@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.teamspace.model;
 
+import co.kr.muldum.domain.item.model.RequestDetails;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,8 +21,15 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 자동 생성
     private Long id;
 
+
     @Column(nullable = false)
     private String name;
+  @Column(nullable = false)
+  private String type;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "team_config", columnDefinition = "jsonb")
+    private TeamConfig teamConfig;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> config;

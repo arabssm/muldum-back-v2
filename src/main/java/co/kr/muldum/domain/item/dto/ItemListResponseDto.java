@@ -1,17 +1,19 @@
 package co.kr.muldum.domain.item.dto;
 
-import co.kr.muldum.domain.item.model.enums.ItemSource;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TempItemRequestDto {
+public class ItemListResponseDto {
+    private Long id;
     private String product_name;
     private Integer quantity;
-    private String price;
-    private String productLink;
-    private String reason;
+    private Integer price;
+    private String status;
+    private String type;
 }
