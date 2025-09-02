@@ -24,9 +24,6 @@ public class Team {
 
     @Column(nullable = false)
     private String name;
-  @Column(nullable = false)
-  private String type;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "team_config", columnDefinition = "jsonb")
     private TeamConfig teamConfig;
