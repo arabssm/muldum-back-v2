@@ -84,9 +84,8 @@ public class TeamspaceService {
                             Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
 
                             User newUser = User.builder()
-                                    .userType(UserType.STUDENT) // 기본 학생 타입
+                                    .userType(UserType.STUDENT)
                                     .name(studentName)
-                                    .email(studentId + "@bssm.hs.kr") // 학번 기반 이메일 생성
                                     .profile(profileMap)
                                     .build();
 
