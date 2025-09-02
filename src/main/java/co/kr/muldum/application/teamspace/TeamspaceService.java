@@ -12,7 +12,7 @@ import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper; // ✅ Jackson 추가
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -31,102 +31,62 @@ public class TeamspaceService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
-
     private final GoogleSheetImportService googleSheetImportService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // 구글 시트 기반 팀 멤버 초대
     @Transactional
     public TeamspaceInviteResponseDto inviteStudents(TeamspaceInviteRequestDto requestDto) {
         String googleSheetUrl = requestDto.getGoogleSheetUrl();
 
-        // 1. URL 검증
         if (googleSheetUrl == null || googleSheetUrl.isBlank()) {
             throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
         }
 
-        // 2. 구글 시트에서 데이터 추출
         List<Map<String, String>> rows = googleSheetImportService.parseTeamInviteRows(googleSheetUrl);
 
         for (Map<String, String> row : rows) {
-            // 2-1. 팀 이름 확인
             String teamName = row.get("team");
-            if (teamName == null || teamName.isBlank()) {
-                throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
-            }
-
-            // 2-2. 팀 조회 (없으면 새 팀 생성)
-            Team team = teamRepository.findByName(teamName)
-                    .orElseGet(() -> teamRepository.save(
-                            Team.builder()
-                                    .name(teamName)
-                                    .config(new HashMap<>())
-                                    .build()
-                    ));
-
-            // 2-3. 유저 조회 (학번 + 이름 기준)
             String studentId = row.get("studentId");
             String studentName = row.get("name");
+            String roleStr = row.get("role");
 
-            if (studentId == null || studentName == null) {
-                throw new CustomException(ErrorCode.UNREGISTERED_USER);
+            if (teamName == null || studentId == null || studentName == null) {
+                continue; // 데이터 불완전하면 스킵
             }
 
-            User user = userRepository.findByStudentIdAndName(studentId, studentName)
-                    .orElseGet(() -> {
-                        try {
-                            JSONObject profile = new JSONObject();
-                            profile.put("studentId", studentId);
-                            profile.put("name", studentName);
-                            profile.put("teamId", team.getId());
+            // 팀 조회 or 생성
+            Team team = teamRepository.findByName(teamName)
+                    .orElseGet(() -> teamRepository.save(
+                            Team.builder().name(teamName).config(new HashMap<>()).build()
+                    ));
 
-                            Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
+            // studentId → grade, class, number
+            if (studentId.length() != 4) continue;
+            String grade = studentId.substring(0, 1);
+            String classNum = studentId.substring(1, 2);
+            String number = String.valueOf(Integer.parseInt(studentId.substring(2))); // "09" → 9
 
-                            User newUser = User.builder()
-                                    .userType(UserType.STUDENT)
-                                    .name(studentName)
-                                    .profile(profileMap)
-                                    .build();
+            // DB에서 찾기
+            userRepository.findByGradeClassNumberAndName(grade, classNum, number, studentName)
+                    .ifPresent(user -> {
+                        // teamId 추가
+                        Map<String, Object> profile = new HashMap<>(user.getProfile());
+                        profile.put("teamId", team.getId());
+                        user.setProfile(profile);
+                        userRepository.save(user);
 
-                            return userRepository.save(newUser);
-                        } catch (JSONException | IOException e) {
-                            throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
+                        // 역할 처리
+                        Role role = (roleStr == null || roleStr.isBlank()) ? Role.MEMBER : Role.valueOf(roleStr);
+
+                        // 팀-유저 관계 없으면 추가
+                        if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
+                            teamspaceMemberRepository.save(new TeamspaceMember(team, user, role));
                         }
                     });
-
-            // 2-4. 유저 프로필에 teamId 업데이트 (이미 존재하는 유저라도)
-            try {
-                JSONObject profile = user.getProfile() != null
-                        ? new JSONObject(user.getProfile())
-                        : new JSONObject();
-                profile.put("teamId", team.getId());
-
-                Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
-
-                user.setProfile(profileMap);
-                userRepository.save(user);
-            } catch (JSONException | IOException e) {
-                throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
-            }
-
-            // 2-5. 역할 확인 (없으면 기본 MEMBER)
-          String roleStr = row.get("role"); // row에서 가져온 값 (String)
-          Role role;
-
-          if (roleStr == null || roleStr.isBlank()) {
-            role = Role.MEMBER; // 기본값
-          } else {
-            role = Role.valueOf(roleStr); // 문자열을 enum으로 변환
-          }
-
-            // 2-6. 팀-유저 관계 저장 (중복 방지)
-            if (!teamspaceMemberRepository.existsByTeamAndUser(team, user)) {
-                teamspaceMemberRepository.save(new TeamspaceMember(team, user, role));
-            }
         }
 
-        // 3. 결과 반환
         return new TeamspaceInviteResponseDto("success");
     }
+
 }

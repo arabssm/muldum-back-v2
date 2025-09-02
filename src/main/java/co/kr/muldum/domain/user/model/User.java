@@ -1,10 +1,7 @@
 package co.kr.muldum.domain.user.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -14,6 +11,7 @@ import java.util.Map;
 @Entity
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -27,6 +25,7 @@ public class User {
 
     private String name;
 
+    @Setter
     @Column(unique = true)
     private String email;
 
@@ -34,7 +33,4 @@ public class User {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> profile;
 
-    public void setProfile(Map<String, Object> profile) {
-        this.profile = profile;
-    }
 }
