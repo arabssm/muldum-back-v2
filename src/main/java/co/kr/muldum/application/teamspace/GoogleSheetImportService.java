@@ -99,47 +99,45 @@ public class GoogleSheetImportService {
     }
     throw new IllegalArgumentException("Invalid Google Sheet URL");
   }
-    // 팀 초대용 시트 파싱 (User 저장 X)
-    @Transactional(readOnly = true)
-    public List<Map<String, String>> parseTeamInviteRows(String googleSheetUrl) {
-        try {
-            String spreadsheetId = extractSpreadsheetId(googleSheetUrl);
-
-            List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
-            if (sheetNames.isEmpty()) {
-                throw new IllegalArgumentException("스프레드시트에 시트가 없습니다.");
-            }
-
-            // 첫 번째 시트 전체 읽기
-            String firstSheetName = sheetNames.getFirst();
-            String range = String.format("%s!A1:ZZ", firstSheetName);
-            List<List<Object>> rows = googleSheetApiClient.readSheet(spreadsheetId, range);
-            if (rows.isEmpty()) {
-                return List.of();
-            }
-
-            // 헤더 행 (예: ["Team", "Student Number", "Name", "Role"])
-            List<Object> headerRow = rows.getFirst();
-            List<Map<String, String>> result = new ArrayList<>();
-
-            // 데이터 행
-            for (int i = 1; i < rows.size(); i++) {
-                List<Object> row = rows.get(i);
-                if (row == null || row.isEmpty()) continue;
-
-                Map<String, String> dataMap = new HashMap<>();
-                for (int col = 0; col < headerRow.size() && col < row.size(); col++) {
-                    String key = headerRow.get(col).toString().trim();
-                    String value = row.get(col).toString().trim();
-                    dataMap.put(key, value);
-                }
-                result.add(dataMap);
-            }
-
-            return result;
-
-        } catch (Exception e) {
-            throw new RuntimeException("구글 시트 파싱 실패", e);
+    // GoogleSheetImportService.java
+    public Map<String, Object> parseTeamInviteRows(String googleSheetUrl) {
+        String spreadsheetId = extractSpreadsheetId(googleSheetUrl);
+        List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
+        if (sheetNames.isEmpty()) {
+            throw new IllegalArgumentException("스프레드시트에 시트가 없습니다.");
         }
+
+        String sheetName = sheetNames.get(0); // 실제 사용한 시트 이름
+        String range = String.format("%s!A1:ZZ", sheetName);
+        List<List<Object>> rows = googleSheetApiClient.readSheet(spreadsheetId, range);
+        if (rows.isEmpty()) {
+            return Map.of("sheetName", sheetName, "rows", List.of());
+        }
+
+        List<Object> headerRow = rows.get(0);
+        List<Map<String, String>> result = new ArrayList<>();
+
+        for (int i = 1; i < rows.size(); i++) {
+            List<Object> row = rows.get(i);
+            if (row == null || row.isEmpty()) continue;
+
+            Map<String, String> dataMap = new HashMap<>();
+            for (int col = 0; col < headerRow.size() && col < row.size(); col++) {
+                dataMap.put(headerRow.get(col).toString().trim(), row.get(col).toString().trim());
+            }
+            result.add(dataMap);
+        }
+
+        return Map.of("sheetName", sheetName, "rows", result);
     }
+
+    public String getSheetName(String googleSheetUrl) {
+        String spreadsheetId = extractSpreadsheetId(googleSheetUrl);
+        List<String> sheetNames = googleSheetApiClient.getSheetNames(spreadsheetId);
+        if (sheetNames.isEmpty()) {
+            throw new IllegalArgumentException("스프레드시트에 시트가 없습니다.");
+        }
+        return sheetNames.get(0);
+    }
+
 }
