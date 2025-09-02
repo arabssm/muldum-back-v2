@@ -9,7 +9,8 @@ public enum ErrorCode {
     INVALID_GOOGLE_SHEET_URL(HttpStatus.BAD_REQUEST, "잘못된 구글 시트 URL입니다."),
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "팀을 찾을 수 없습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-    INVALID_ROLE(HttpStatus.BAD_REQUEST, "잘못된 역할입니다.");
+    INVALID_ROLE(HttpStatus.BAD_REQUEST, "잘못된 역할입니다."),
+    NOT_FOUND_COLUMN(HttpStatus.NOT_FOUND, "컬럼이 일치하지 않거나 찾을 수 없습니다.");
 
   private final HttpStatus status;
     private final String message;
