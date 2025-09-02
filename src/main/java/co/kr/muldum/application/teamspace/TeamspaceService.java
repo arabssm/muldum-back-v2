@@ -12,7 +12,7 @@ import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper; // ✅ Jackson 추가
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -31,6 +31,7 @@ public class TeamspaceService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
+
     private final GoogleSheetImportService googleSheetImportService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -80,7 +81,6 @@ public class TeamspaceService {
                             profile.put("name", studentName);
                             profile.put("teamId", team.getId());
 
-                            // ✅ Jackson으로 Map 변환
                             Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
 
                             User newUser = User.builder()
@@ -102,7 +102,6 @@ public class TeamspaceService {
                         : new JSONObject();
                 profile.put("teamId", team.getId());
 
-                // ✅ Jackson으로 Map 변환
                 Map<String, Object> profileMap = objectMapper.readValue(profile.toString(), Map.class);
 
                 user.setProfile(profileMap);
