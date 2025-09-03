@@ -3,11 +3,10 @@ package co.kr.muldum.application.teamspace.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Builder
-public class TeamspaceResponseDto {
+public class TeamspaceMemberDto {
 
-    private List<TeamspaceTeamDto> content;
+    private Long userId;
+    private String userName;
 }

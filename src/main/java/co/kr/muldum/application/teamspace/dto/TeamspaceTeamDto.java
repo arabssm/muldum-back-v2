@@ -7,7 +7,9 @@ import java.util.List;
 
 @Getter
 @Builder
-public class TeamspaceResponseDto {
+public class TeamspaceTeamDto {
 
-    private List<TeamspaceTeamDto> content;
+    private Long teamId;
+    private String teamName;
+    private List<TeamspaceMemberDto> members;
 }

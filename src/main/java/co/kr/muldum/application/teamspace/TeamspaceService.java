@@ -1,8 +1,6 @@
 package co.kr.muldum.application.teamspace;
 
-import co.kr.muldum.application.teamspace.dto.TeamspaceInviteRequestDto;
-import co.kr.muldum.application.teamspace.dto.TeamspaceInviteResponseDto;
-import co.kr.muldum.application.teamspace.dto.TeamspaceResponseDto;
+import co.kr.muldum.application.teamspace.dto.*;
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
@@ -109,30 +107,30 @@ public class TeamspaceService {
     public TeamspaceResponseDto getTeamspace(Long userId) {
 
         var user = userRepository.findById(userId)
-                .orElseThrow(()->new CustomException(ErrorCode.UNREGISTERED_USER));
+                .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
         List<Team> teams = teamspaceMemberRepository.findTeamsByUserAndType(user, TeamType.NETWORK);
 
-        List<TeamspaceResponseDto.TeamDto> teamDtos = teams.stream()
+        List<TeamspaceTeamDto> teamDtos = teams.stream()
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
-                    List<TeamspaceResponseDto.MemberDto> memberDtos = members.stream()
-                            .map(member -> TeamspaceResponseDto.MemberDto.builder()
+                    List<TeamspaceMemberDto> memberDtos = members.stream()
+                            .map(member -> TeamspaceMemberDto.builder()
                                     .userId(member.getUser().getId())
                                     .userName(member.getUser().getName())
                                     .build())
                             .toList();
 
-                    return TeamspaceResponseDto.TeamDto.builder()
+                    return TeamspaceTeamDto.builder()
                             .teamId(team.getId())
                             .teamName(team.getName())
-                            .member(memberDtos)
+                            .members(memberDtos)
                             .build();
                 })
                 .toList();
+
         return TeamspaceResponseDto.builder()
                 .content(teamDtos)
                 .build();
     }
-
 }
