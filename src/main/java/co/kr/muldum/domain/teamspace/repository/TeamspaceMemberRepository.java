@@ -18,8 +18,8 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     Optional<TeamspaceMember> findByTeamAndUser(Team team, User user);
 
     //팀 조회
-    @EntityGraph(attributePaths = "users")
+    @EntityGraph(attributePaths = "user")
     List<TeamspaceMember> findByTeam(Team team);
 
-    List<Team> findTeamsByUserAndTeamType(User user, TeamType teamType);
+    List<Team> findDistinctByUserAndTeam_Type(User user, TeamType teamType);
 }
