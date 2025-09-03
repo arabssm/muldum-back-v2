@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("tch/teamspace/invite")
+@RequestMapping("tch/student/invite")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('TEACHER')")
 public class GoogleSheetImportController {
