@@ -7,25 +7,26 @@ import co.kr.muldum.application.teamspace.dto.TeamspaceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('TEACHER')")
 public class TeamspaceController {
 
     private final TeamspaceService teamspaceService;
 
     @PostMapping("/tch/team/invite")
+    @PreAuthorize("hasRole('TEACHER')")
     @ResponseStatus(HttpStatus.CREATED)
     public TeamspaceInviteResponseDto inviteStudents(
             @RequestBody TeamspaceInviteRequestDto requestDto) {
         return teamspaceService.inviteStudents(requestDto);
     }
 
-    @GetMapping("/ara/network/teamspace")
+    @GetMapping("/ara/teamspace/network")
     @PreAuthorize("permitAll()")
-    public TeamspaceResponseDto getTeamspace() {
-        return teamspaceService.getTeamspace();
+    public TeamspaceResponseDto getTeamspace(@AuthenticationPrincipal(expression = "id") Long userId) {
+        return teamspaceService.getTeamspace(userId);
     }
 }
