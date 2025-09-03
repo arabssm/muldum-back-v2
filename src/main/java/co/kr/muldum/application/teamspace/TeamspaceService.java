@@ -104,12 +104,10 @@ public class TeamspaceService {
     }
 
     @Transactional(readOnly = true)
-    public TeamspaceResponseDto getTeamspace(Long userId) {
+    public TeamspaceResponseDto getTeamspace() {
 
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
-
-        List<Team> teams = teamspaceMemberRepository.findTeamsByUserAndTeamType(user, TeamType.NETWORK);
+        // NETWORK 타입의 모든 팀 조회
+        List<Team> teams = teamRepository.findByType(TeamType.NETWORK);
 
         List<TeamspaceTeamDto> teamDtos = teams.stream()
                 .map(team -> {

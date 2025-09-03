@@ -25,8 +25,7 @@ public class TeamspaceController {
     }
 
     @GetMapping("/ara/teamspace/network")
-    @PreAuthorize("permitAll()")
-    public TeamspaceResponseDto getTeamspace(@AuthenticationPrincipal(expression = "id") Long userId) {
-        return teamspaceService.getTeamspace(userId);
+    public TeamspaceResponseDto getTeamspace() {
+        return teamspaceService.getTeamspace();
     }
 }
