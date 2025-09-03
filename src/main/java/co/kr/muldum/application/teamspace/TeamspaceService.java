@@ -131,4 +131,33 @@ public class TeamspaceService {
                 .teams(teamDtos)
                 .build();
     }
+
+    // 전공동아리 팀 조회
+    @Transactional(readOnly = true)
+    public TeamspaceResponseDto getMajorTeams() {
+        // MAJOR 타입 팀 조회
+        List<Team> teams = teamRepository.findByType(TeamType.MAJOR);
+
+        List<TeamspaceTeamDto> teamDtos = teams.stream()
+                .map(team -> {
+                    List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
+                    List<TeamspaceMemberDto> memberDtos = members.stream()
+                            .map(member -> TeamspaceMemberDto.builder()
+                                    .userId(member.getUser().getId())
+                                    .userName(member.getUser().getName())
+                                    .build())
+                            .toList();
+
+                    return TeamspaceTeamDto.builder()
+                            .teamId(team.getId())
+                            .teamName(team.getName())
+                            .members(memberDtos)
+                            .build();
+                })
+                .toList();
+
+        return TeamspaceResponseDto.builder()
+                .teams(teamDtos)
+                .build();
+    }
 }
