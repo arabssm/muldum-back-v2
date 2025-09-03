@@ -13,4 +13,5 @@ public class S3Properties {
   private String bucket;
   private String accessKey;
   private String secretKey;
+  private String region;
 }
