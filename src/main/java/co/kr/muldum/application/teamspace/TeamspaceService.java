@@ -130,7 +130,7 @@ public class TeamspaceService {
                 .toList();
 
         return TeamspaceResponseDto.builder()
-                .content(teamDtos)
+                .teams(teamDtos)
                 .build();
     }
 }
