@@ -4,6 +4,8 @@ import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember, Long> {
@@ -12,4 +14,8 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     boolean existsByTeamAndUser(Team team, User user);
 
     Optional<TeamspaceMember> findByTeamAndUser(Team team, User user);
+
+    //팀 조회
+    List<TeamspaceMember> findByTeam(Team team);
+
 }
