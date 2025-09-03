@@ -8,12 +8,19 @@ import co.kr.muldum.domain.notice.exception.NotFoundException;
 import co.kr.muldum.domain.notice.factory.NoticeRequestFactory;
 import co.kr.muldum.domain.notice.model.Notice;
 import co.kr.muldum.domain.notice.repository.NoticeRepository;
+import co.kr.muldum.global.properties.S3Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.access.AccessDeniedException;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +32,9 @@ public class NoticeCommandService {
   private final NoticeRequestFactory noticeRequestFactory;
   private final FileBookRepository fileBookRepository;
   private final FileRepository fileRepository;
+  private final S3Client s3Client;
+  private final S3Properties s3Properties;
+
 
   @Transactional
   public Long createNotice(CreateNoticeRequest createNoticeRequest, Long authorUserId) {
@@ -69,6 +79,16 @@ public class NoticeCommandService {
     fileBookRepository.deleteAllByNoticeId(noticeId);
     fileBookRepository.flush();
 
+    for (File file : files) {
+      String fileUrl = file.getPath(); // 전체 URL
+      String key = extractKeyFromUrl(fileUrl);
+
+      s3Client.deleteObject(DeleteObjectRequest.builder()
+              .bucket(s3Properties.getBucket())
+              .key(key)
+              .build());
+    }
+
     if (!files.isEmpty()) {
       fileRepository.deleteAllByFiles(files);
       fileRepository.flush();
@@ -86,4 +106,18 @@ public class NoticeCommandService {
             .toList();
     fileBookRepository.saveAll(fileBooks);
   }
+
+  private String extractKeyFromUrl(String fileUrl) {
+    try {
+      URI uri = new URI(fileUrl);
+      String path = uri.getPath(); // /folder/my%20file.txt
+      if (path.startsWith("/")) {
+        path = path.substring(1);
+      }
+      return URLDecoder.decode(path, StandardCharsets.UTF_8);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("잘못된 S3 URL 형식: " + fileUrl, e);
+    }
+  }
+
 }
