@@ -109,7 +109,7 @@ public class TeamspaceService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
 
-        List<Team> teams = teamspaceMemberRepository.findTeamsByUserAndType(user, TeamType.NETWORK);
+        List<Team> teams = teamspaceMemberRepository.findTeamsByUserAndTeamType(user, TeamType.NETWORK);
 
         List<TeamspaceTeamDto> teamDtos = teams.stream()
                 .map(team -> {

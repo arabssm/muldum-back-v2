@@ -21,5 +21,5 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     @EntityGraph(attributePaths = "users")
     List<TeamspaceMember> findByTeam(Team team);
 
-    List<Team> findTeamsByUserAndType(User user, TeamType teamType);
+    List<Team> findTeamsByUserAndTeamType(User user, TeamType teamType);
 }
