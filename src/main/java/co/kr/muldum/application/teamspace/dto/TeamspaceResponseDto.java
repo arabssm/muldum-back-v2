@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class TeamspaceResponseDto {
 
-    private List<TeamspaceTeamDto> content;
+    private List<TeamspaceTeamDto> teams;
 }
