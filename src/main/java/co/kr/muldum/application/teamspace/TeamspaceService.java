@@ -2,9 +2,11 @@ package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.application.teamspace.dto.*;
 import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.model.TeamSpace;
 import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
+import co.kr.muldum.domain.teamspace.repository.TeamSpaceRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.repository.UserRepository;
@@ -26,14 +28,15 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+    private final TeamSpaceRepository teamSpaceRepository;
 
     private TeamType getTeamTypeFromSheetName(String sheetName) {
         if (sheetName == null) {
             throw new CustomException(ErrorCode.INVALID_GOOGLE_SHEET_URL);
         }
 
-        String normalized = sheetName.trim();  // 공백 제거
-        System.out.println("현재 시트 이름: " + normalized); // 실제 이름 디버깅
+        String normalized = sheetName.trim();
+        System.out.println("현재 시트 이름: " + normalized);
 
         if (normalized.equalsIgnoreCase("네트워크")) {
             return TeamType.NETWORK;
@@ -66,13 +69,6 @@ public class TeamspaceService {
             if (teamName == null || studentId == null || studentName == null) continue;
 
             Team team = teamRepository.findByName(teamName)
-                    .map(existing -> {
-                        if (existing.getType() == null) {
-                            existing.setType(teamType);
-                            return teamRepository.save(existing);
-                        }
-                        return existing;
-                    })
                     .orElseGet(() -> teamRepository.save(
                             Team.builder()
                                     .name(teamName)
@@ -80,7 +76,14 @@ public class TeamspaceService {
                                     .config(new HashMap<>())
                                     .build()
                     ));
-
+                    if (!teamSpaceRepository.existsById(team.getId())) {
+                        TeamSpace teamSpace = new TeamSpace();
+                        teamSpace.setId(team.getId());
+                        teamSpace.setBannerPath("");
+                        teamSpace.setLogoPath("");
+                        teamSpace.setContent("");
+                        teamSpaceRepository.save(teamSpace);
+                    }
             if (studentId.length() != 4) continue;
             String grade = studentId.substring(0, 1);
             String classNum = studentId.substring(1, 2);

@@ -26,4 +26,5 @@ public class FileController {
     String url = fileStorageService.generatePreSignedUrlToUpload(fileName, CustomUserDetails.getUserId());
     return ResponseEntity.ok(url);
   }
+
 }
