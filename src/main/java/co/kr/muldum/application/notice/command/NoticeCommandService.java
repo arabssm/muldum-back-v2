@@ -116,7 +116,7 @@ public class NoticeCommandService {
       }
       return URLDecoder.decode(path, StandardCharsets.UTF_8);
     } catch (Exception e) {
-      throw new IllegalArgumentException("잘못된 S3 URL 형식: " + fileUrl, e);
+      throw new IllegalArgumentException("잘못된 S3 URL 형식: " + e);
     }
   }
 
