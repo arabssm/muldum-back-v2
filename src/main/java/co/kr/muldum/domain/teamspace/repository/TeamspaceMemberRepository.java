@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.teamspace.repository;
 
 import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,5 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     //팀 조회
     List<TeamspaceMember> findByTeam(Team team);
 
+    List<Team> findTeamsByUserAndType(User user, TeamType teamType);
 }

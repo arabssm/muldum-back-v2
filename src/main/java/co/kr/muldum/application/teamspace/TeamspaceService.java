@@ -106,13 +106,16 @@ public class TeamspaceService {
     }
 
     @Transactional(readOnly = true)
-    public TeamspaceResponseDto getTeamspace() {
-        List<Team> teams = teamRepository.findAll();
+    public TeamspaceResponseDto getTeamspace(Long userId) {
+
+        var user = userRepository.findById(userId)
+                .orElseThrow(()->new CustomException(ErrorCode.UNREGISTERED_USER));
+
+        List<Team> teams = teamspaceMemberRepository.findTeamsByUserAndType(user, TeamType.NETWORK);
 
         List<TeamspaceResponseDto.TeamDto> teamDtos = teams.stream()
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
-
                     List<TeamspaceResponseDto.MemberDto> memberDtos = members.stream()
                             .map(member -> TeamspaceResponseDto.MemberDto.builder()
                                     .userId(member.getUser().getId())
@@ -127,7 +130,6 @@ public class TeamspaceService {
                             .build();
                 })
                 .toList();
-
         return TeamspaceResponseDto.builder()
                 .content(teamDtos)
                 .build();
