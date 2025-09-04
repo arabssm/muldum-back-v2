@@ -6,6 +6,7 @@ import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
@@ -52,7 +53,8 @@ public class ItemRequestService {
                 .quantity(itemRequest.getProductInfo().getQuantity())
                 .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
-                .type("network")
+                .type(TeamType.NETWORK)
+                .reason(itemRequest.getRequestDetails().getReason())
                 .build();
     }
 
