@@ -54,7 +54,8 @@ public class ItemRequestService {
                 .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
                 .type(TeamType.NETWORK)
-                .reason(itemRequest.getRequestDetails().getReason())
+                .reason(itemRequest.getRequestDetails().getReason() != null ?
+                        itemRequest.getRequestDetails().getReason() : "")
                 .build();
     }
 
