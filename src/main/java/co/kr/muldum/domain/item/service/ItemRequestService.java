@@ -12,6 +12,7 @@ import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +21,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ItemRequestService {
-
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ItemRequestService.class);
 
     private final ItemRequestFacade itemRequestFacade;
     private final ItemRequestRepository itemRequestRepository;

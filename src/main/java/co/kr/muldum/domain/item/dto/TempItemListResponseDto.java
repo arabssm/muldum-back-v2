@@ -1,5 +1,6 @@
 package co.kr.muldum.domain.item.dto;
 
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,6 @@ public class TempItemListResponseDto {
     private Integer quantity;
     private String price;
     private String status;
-    private String type;
+    private TeamType type;
+    private String reason;
 }
