@@ -6,12 +6,14 @@ import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +22,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ItemRequestService {
-
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ItemRequestService.class);
 
     private final ItemRequestFacade itemRequestFacade;
     private final ItemRequestRepository itemRequestRepository;
@@ -53,7 +53,9 @@ public class ItemRequestService {
                 .quantity(itemRequest.getProductInfo().getQuantity())
                 .price(itemRequest.getProductInfo().getPrice())
                 .status(itemRequest.getStatus().name())
-                .type("network")
+                .type(TeamType.NETWORK)
+                .reason(itemRequest.getRequestDetails().getReason() != null ?
+                        itemRequest.getRequestDetails().getReason() : "")
                 .build();
     }
 
