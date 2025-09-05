@@ -20,12 +20,22 @@ public class TeacherItemService {
 
     private final ItemRequestRepository itemRequestRepository;
 
-    public List<TeacherItemResponseDto> getAllPendingAndApprovedItems() {
+    public List<TeacherItemResponseDto> getAllPendingItems() {
         log.info("모든 팀의 PENDING, APPROVED 물품 조회 시작");
 
-        List<ItemRequest> items = itemRequestRepository.findByStatusIn(
-                List.of(ItemStatus.PENDING, ItemStatus.APPROVED)
-        );
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.PENDING);
+
+        log.info("조회된 물품 수: {}", items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
+    public List<TeacherItemResponseDto> getAllApprovedItems() {
+        log.info("모든 팀의 PENDING, APPROVED 물품 조회 시작");
+
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.APPROVED);
 
         log.info("조회된 물품 수: {}", items.size());
 
@@ -131,6 +141,8 @@ public class TeacherItemService {
                 .reason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
+                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
+                        itemRequest.getDeliveryNumber() : null)
                 .build();
     }
 
