@@ -22,12 +22,23 @@ public class TeacherItemController {
     private final TeacherItemService teacherItemService;
 
     @GetMapping
-    public ResponseEntity<List<TeacherItemResponseDto>> getAllPendingAndApprovedItems(
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllPendingItems(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
 
-        List<TeacherItemResponseDto> items = teacherItemService.getAllPendingAndApprovedItems();
+        List<TeacherItemResponseDto> items = teacherItemService.getAllPendingItems();
+
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
+
+        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItems();
 
         return ResponseEntity.ok(items);
     }

@@ -16,6 +16,7 @@ public class TeacherItemResponseDto {
     private String productLink;
     private String reason;
     private String status;
+    private String deliveryNumber;
 
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
@@ -33,6 +34,8 @@ public class TeacherItemResponseDto {
                 .reason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
+                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
+                        itemRequest.getDeliveryNumber() : null)
                 .build();
     }
 
@@ -52,6 +55,8 @@ public class TeacherItemResponseDto {
                 .reason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
+                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
+                        itemRequest.getDeliveryNumber() : null)
                 .build();
     }
 }
