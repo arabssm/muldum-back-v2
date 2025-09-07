@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.teamspace.model;
 
-import co.kr.muldum.domain.item.model.RequestDetails;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
