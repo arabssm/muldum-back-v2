@@ -1,11 +1,7 @@
 package co.kr.muldum.domain.teamspace.model;
 
-import co.kr.muldum.domain.item.model.RequestDetails;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -15,7 +11,6 @@ import java.util.Map;
 @Entity
 @Table(name = "teams")
 @Getter
-@Setter
 @NoArgsConstructor // JPA 기본 생성자
 public class Team {
 
