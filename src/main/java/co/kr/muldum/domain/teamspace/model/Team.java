@@ -15,6 +15,7 @@ import java.util.Map;
 @Entity
 @Table(name = "teams")
 @Getter
+@Setter
 @NoArgsConstructor // JPA 기본 생성자
 public class Team {
 
