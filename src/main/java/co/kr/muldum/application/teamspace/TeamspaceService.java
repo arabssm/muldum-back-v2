@@ -73,13 +73,19 @@ public class TeamspaceService {
                         }
                         return existing;
                     })
-                    .orElseGet(() -> teamRepository.save(
-                            Team.builder()
-                                    .name(teamName)
-                                    .type(teamType)
-                                    .config(new HashMap<>())
-                                    .build()
-                    ));
+                    .orElseGet(() -> {
+                      Map<String, Object> defaultConfig = new HashMap<>();
+                      defaultConfig.put("backgroundImagePath",
+                              "https://your-bucket.s3.ap-northeast-2.amazonaws.com/defaults/white-background.png");
+                      //TODO: s3에 흰 배경 업로드 후 path 매핑
+                      return teamRepository.save(
+                              Team.builder()
+                                      .name(teamName)
+                                      .type(teamType)
+                                      .config(defaultConfig)
+                                      .build()
+                      );
+                    });
 
             if (studentId.length() != 4) continue;
             String grade = studentId.substring(0, 1);
