@@ -65,4 +65,9 @@ public class Team {
         this.content = content;
         updateTimestamp();
     }
+
+    public void changeType(TeamType type) {
+        this.type = type;
+        updateTimestamp();
+    }
 }
