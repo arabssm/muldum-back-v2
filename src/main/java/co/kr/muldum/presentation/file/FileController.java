@@ -18,12 +18,12 @@ public class FileController {
   @GetMapping("/presigned")
   public ResponseEntity<String> getPresignedUrl(
           @RequestParam("fileName") String fileName,
-          @AuthenticationPrincipal CustomUserDetails CustomUserDetails
+          @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
     if(fileName == null){
       throw new FileNotAttachedException("파일이 첨부되지 않았습니다.");
     }
-    String url = fileStorageService.generatePreSignedUrlToUpload(fileName, CustomUserDetails.getUserId());
+    String url = fileStorageService.generatePreSignedUrlToUpload(fileName, customUserDetails.getUserId());
     return ResponseEntity.ok(url);
   }
 }
