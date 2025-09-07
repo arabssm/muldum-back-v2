@@ -27,6 +27,9 @@ public class Team {
     @Column(nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TeamType type;
@@ -45,8 +48,9 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, Map<String, Object> config,TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Team(String name, String content, Map<String, Object> config,TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
+        this.content = content;
         this.config = config;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
