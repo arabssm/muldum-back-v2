@@ -15,7 +15,6 @@ import java.util.Map;
 @Entity
 @Table(name = "teams")
 @Getter
-@Setter
 @NoArgsConstructor // JPA 기본 생성자
 public class Team {
 
@@ -38,6 +37,9 @@ public class Team {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> config;
 
+    @Column(columnDefinition = "text")
+    private String content;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -45,15 +47,21 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, Map<String, Object> config,TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Team(String name, Map<String, Object> config, TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
         this.name = name;
         this.config = config;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
         this.type = type;
+        this.content = content;
     }
 
     public void updateTimestamp() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+        updateTimestamp();
     }
 }
