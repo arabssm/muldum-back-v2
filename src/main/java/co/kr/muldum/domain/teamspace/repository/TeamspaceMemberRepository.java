@@ -12,6 +12,9 @@ import java.util.Optional;
 
 public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember, Long> {
 
+    // 팀ID와 유저ID로 멤버 존재 여부 확인
+    boolean existsByTeam_IdAndUser_Id(Long teamId, Long userId);
+
     // 팀과 유저 기준으로 멤버가 이미 존재하는지 확인
     boolean existsByTeamAndUser(Team team, User user);
 
