@@ -22,7 +22,7 @@ public class TeamController {
             @PathVariable("team_id") Long teamId,
             @RequestBody @Valid TeamPageUpdateRequest request
     ) {
-        Long currentUserId = getCurrentUserId(); // TODO: SecurityContext에서 가져오기
+        Long currentUserId = getCurrentUserId();
         teamService.updateTeamPage(teamId, request.content(), currentUserId);
         return ResponseEntity.ok(new TeamPageUpdateResponse("팀 페이지가 성공적으로 수정되었습니다."));
     }
@@ -30,12 +30,11 @@ public class TeamController {
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return 0L; // 또는 예외 던지기
+            return 0L;
         }
         Object principal = authentication.getPrincipal();
-        // CustomUserDetails should be replaced with the project's actual UserDetails implementation
         if (principal instanceof CustomUserDetails customUserDetails) {
-            return customUserDetails.getUserId(); // 커스텀 유저 객체에서 ID 추출
+            return customUserDetails.getUserId();
         }
         return 0L;
     }
