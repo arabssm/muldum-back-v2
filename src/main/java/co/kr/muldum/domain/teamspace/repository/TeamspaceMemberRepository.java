@@ -22,4 +22,6 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     List<TeamspaceMember> findByTeam(Team team);
 
     List<Team> findDistinctByUserAndTeam_Type(User user, TeamType teamType);
+
+    boolean existsByTeam_IdAndUser_Id(Long teamId, Long userId);
 }
