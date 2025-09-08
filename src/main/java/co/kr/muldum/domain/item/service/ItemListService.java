@@ -53,8 +53,7 @@ public class ItemListService {
                         itemRequest.getProductInfo().getQuantity() : 0)
                 .price(price)
                 .status(itemRequest.getStatus().name())
-                .type(itemRequest.getTeamType() != null ?
-                        itemRequest.getTeamType().name().toLowerCase() : "network")
+                .type(itemRequest.getTeamType().name())
                 .build();
     }
 }
