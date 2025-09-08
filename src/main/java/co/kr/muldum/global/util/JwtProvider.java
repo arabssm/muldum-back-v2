@@ -70,7 +70,7 @@ public class JwtProvider {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
 
-      tokenRepository.findById(String.valueOf(userId))
+      tokenRepository.findById(userId)
               .ifPresentOrElse(
                       token -> token.updateToken(refreshToken), // update
                       () -> tokenRepository.save(new RefreshToken(userId, refreshToken, userType)) // insert
