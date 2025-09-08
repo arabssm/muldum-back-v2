@@ -13,10 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshToken {
-  private String refreshToken;
   @Id
   private Long id;
+  @Column(name = "refresh_token", nullable = false, unique = true)
+  private String refreshToken;
   @Enumerated(EnumType.STRING)
+  @Column(name = "user_type", nullable = false)
   private UserType userType;
 
+  public void updateToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }
