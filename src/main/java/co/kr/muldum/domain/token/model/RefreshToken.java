@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshToken {
-  @Id
   private String refreshToken;
+  @Id
   private Long id;
   @Enumerated(EnumType.STRING)
   private UserType userType;
