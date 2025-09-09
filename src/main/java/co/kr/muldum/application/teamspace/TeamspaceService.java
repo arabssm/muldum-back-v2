@@ -10,6 +10,7 @@ import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+
+    @Value("${team.default-banner-image}")
+    private String defaultTeamBannerImage;
 
     private TeamType getTeamTypeFromSheetName(String sheetName) {
         if (sheetName == null) {
@@ -75,9 +79,7 @@ public class TeamspaceService {
                     })
                     .orElseGet(() -> {
                       Map<String, Object> defaultConfig = new HashMap<>();
-                      defaultConfig.put("backgroundImagePath",
-                              "https://your-bucket.s3.ap-northeast-2.amazonaws.com/defaults/white-background.png");
-                      //TODO: s3에 흰 배경 업로드 후 path 매핑
+                      defaultConfig.put("backgroundImagePath", defaultTeamBannerImage);
                       return teamRepository.save(
                               Team.builder()
                                       .name(teamName)
