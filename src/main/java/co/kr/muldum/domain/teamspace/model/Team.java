@@ -16,13 +16,12 @@ import java.util.Map;
 @Table(name = "teams")
 @Getter
 @Setter
-@NoArgsConstructor // JPA 기본 생성자
+@NoArgsConstructor
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(nullable = false)
     private String name;
