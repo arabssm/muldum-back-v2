@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -24,18 +22,17 @@ public class FileUploadService {
     Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundException("팀을 찾을 수 없습니다."));
 
-    //유저의 팀 아이디와 요청한 팀 아이디가 다르면 예외 발생
-    // 권한 체크: 팀원 여부 확인 (레포지토리에 메서드 추가 필요)
-    if (!teamspaceMemberRepository.existsByTeamIdAndUserId(team.getId(), userId)) {
-      throw new AccessDeniedException("팀원만 배너를 수정할 수 있습니다.");
-    }
+    //유저의 팀 아이디와 요청한 팀 아이디 검증
+    validateTeamMember(team.getId(), userId);
 
     String url = teamBannerRequest.getUrl();
+    team.updateBackgroundImage(url);
 
-    Map<String, Object> config = new HashMap<>(team.getConfig());
-    config.put("backgroundImagePath", url);
-
-    team.setConfig(config);
     teamRepository.save(team);
+  }
+  private void validateTeamMember(Long teamId, Long userId) {
+    if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
+      throw new AccessDeniedException("팀원만 배너를 수정할 수 있습니다.");
+    }
   }
 }
