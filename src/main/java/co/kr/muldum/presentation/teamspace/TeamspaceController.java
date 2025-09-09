@@ -23,7 +23,7 @@ public class TeamspaceController {
         return teamspaceService.inviteStudents(requestDto);
     }
 
-    @GetMapping("/ara/teamspace/network")
+    @GetMapping("/teamspace/network")
     public TeamspaceResponseDto getTeamspace() {
         return teamspaceService.getTeamspace();
     }
