@@ -33,7 +33,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers("/ara/files/**").authenticated()
                 .requestMatchers("/ara/**").permitAll()
                     .requestMatchers("/user/issue").permitAll()
                 .anyRequest().authenticated()
