@@ -57,4 +57,10 @@ public class Team {
       newConfig.put("backgroundImagePath", url);
       this.config = newConfig;
     }
+
+    public void updateIconImage(String url) {
+      Map<String, Object> newConfig = new HashMap<>(this.config);
+      newConfig.put("iconImagePath", url);
+      this.config = newConfig;
+    }
 }
