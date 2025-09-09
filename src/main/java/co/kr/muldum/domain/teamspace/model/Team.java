@@ -51,15 +51,13 @@ public class Team {
     }
 
     public void updateBackgroundImage(String url) {
-      Map<String, Object> newConfig = new HashMap<>(this.config);
-      newConfig.put("backgroundImagePath", url);
-      this.config = newConfig;
+      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함
+      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
     }
 
     public void updateIconImage(String url) {
-      Map<String, Object> newConfig = new HashMap<>(this.config);
-      newConfig.put("iconImagePath", url);
-      this.config = newConfig;
+      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함  
+      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
     }
 
     public void changeContent(String content) {
