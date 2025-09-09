@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember, Long> {
 
-    boolean existsByTeam_IdAndUser_Id(Long teamId, Long userId);
+    boolean existsByTeamIdAndUserId(Long teamId, Long userId);
 
     boolean existsByTeamAndUser(Team team, User user);
 
