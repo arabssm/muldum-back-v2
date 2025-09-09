@@ -6,9 +6,8 @@ import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import co.kr.muldum.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +23,7 @@ public class TeamPageQueryService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) auth.getPrincipal(); // 도메인에 맞게 Principal→userId 매핑
+        Long userId = SecurityUtil.getCurrentUserId();
         boolean isMember = teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, userId);
         if (!isMember) {
             throw new CustomException(ErrorCode.FORBIDDEN);
