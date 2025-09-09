@@ -23,7 +23,7 @@ public class TeamPageQueryService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        if (!teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, SecurityUtil.getCurrentUserId())) {
+        if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, SecurityUtil.getCurrentUserId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
