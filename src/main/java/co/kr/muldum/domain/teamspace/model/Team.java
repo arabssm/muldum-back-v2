@@ -6,19 +6,19 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
 @Table(name = "teams")
 @Getter
 @Setter
-@NoArgsConstructor // JPA 기본 생성자
+@NoArgsConstructor
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(nullable = false)
     private String name;
@@ -54,8 +54,16 @@ public class Team {
         this.content = content;
     }
 
-    public void updateTimestamp() {
-        this.updatedAt = LocalDateTime.now();
+    public void updateBackgroundImage(String url) {
+      Map<String, Object> newConfig = new HashMap<>(this.config);
+      newConfig.put("backgroundImagePath", url);
+      this.config = newConfig;
+    }
+
+    public void updateIconImage(String url) {
+      Map<String, Object> newConfig = new HashMap<>(this.config);
+      newConfig.put("iconImagePath", url);
+      this.config = newConfig;
     }
 
     public void changeContent(String content) {

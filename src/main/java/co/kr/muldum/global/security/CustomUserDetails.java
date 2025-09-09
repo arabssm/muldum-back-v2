@@ -1,12 +1,17 @@
 package co.kr.muldum.global.security;
 
+import co.kr.muldum.domain.user.model.Role;
+import co.kr.muldum.domain.user.model.UserType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -31,6 +36,13 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
+    if (UserType.SUPER.name().equals(userType)) {
+      Stream<GrantedAuthority> userTypeRoles = Arrays.stream(UserType.values())
+          .map(type -> new SimpleGrantedAuthority("ROLE_" + type.name()));
+      Stream<GrantedAuthority> roleEnumRoles = Arrays.stream(Role.values())
+          .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()));
+      return Stream.concat(userTypeRoles, roleEnumRoles).collect(Collectors.toList());
+    }
     return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userType));
   }
 

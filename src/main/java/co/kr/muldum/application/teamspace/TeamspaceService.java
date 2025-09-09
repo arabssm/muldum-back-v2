@@ -11,6 +11,7 @@ import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+
+    @Value("${team.default-banner-image}")
+    private String defaultTeamBannerImage;
 
     private TeamType getTeamTypeFromSheetName(String sheetName) {
         if (sheetName == null) {
@@ -90,7 +94,7 @@ public class TeamspaceService {
             userRepository.findByGradeClassNumberAndName(grade, classNum, number, studentName)
                     .ifPresent(user -> {
                         Map<String, Object> profile = new HashMap<>(user.getProfile());
-                        profile.put("teamId", team.getId());
+                        profile.put("team_id", team.getId());
                         user.setProfile(profile);
                         userRepository.save(user);
 
