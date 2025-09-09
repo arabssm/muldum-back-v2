@@ -89,7 +89,7 @@ public class TeamspaceService {
             userRepository.findByGradeClassNumberAndName(grade, classNum, number, studentName)
                     .ifPresent(user -> {
                         Map<String, Object> profile = new HashMap<>(user.getProfile());
-                        profile.put("teamId", team.getId());
+                        profile.put("team_id", team.getId());
                         user.setProfile(profile);
                         userRepository.save(user);
 

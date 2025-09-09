@@ -40,18 +40,18 @@ public class OAuthLoginService {
 
         String email = userInfoDto.getEmail().trim().toLowerCase();
 
-        String requiredDomain = "bssm.hs.kr";
-        if (userInfoDto.getHd() != null && !userInfoDto.getHd().equalsIgnoreCase(requiredDomain)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
-        }
-        if (userInfoDto.getHd() == null && !email.endsWith("@" + requiredDomain)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
-        }
-
-        if (Boolean.FALSE.equals(userInfoDto.getEmail_verified())) {
-            log.warn("Email not verified: {}", email);
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
-        }
+//        String requiredDomain = "bssm.hs.kr";
+//        if (userInfoDto.getHd() != null && !userInfoDto.getHd().equalsIgnoreCase(requiredDomain)) {
+//            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+//        }
+//        if (userInfoDto.getHd() == null && !email.endsWith("@" + requiredDomain)) {
+//            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+//        }
+//
+//        if (Boolean.FALSE.equals(userInfoDto.getEmail_verified())) {
+//            log.warn("Email not verified: {}", email);
+//            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+//        }
 
         UserInfo userInfo = userReader.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNREGISTERED_USER));
