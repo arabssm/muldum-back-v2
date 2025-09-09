@@ -1,6 +1,6 @@
 package co.kr.muldum.domain.teamspace.model;
 
-public enum File {
+public enum FileType {
   BANNER,
   ICON
 }
