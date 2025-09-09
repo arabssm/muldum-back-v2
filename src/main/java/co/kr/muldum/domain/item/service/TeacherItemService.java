@@ -4,6 +4,7 @@ import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +90,7 @@ public class TeacherItemService {
         log.info("물품 거절 처리 완료 - 총 처리된 물품 수: {}/{}", processedCount, rejectRequests.size());
 
         return ItemActionResponseDto.builder()
-                .status("REJECTED")
+                .status(ItemStatus.REJECTED)
                 .message("거절 사유가 등록되었습니다.")
                 .build();
     }
@@ -120,7 +121,7 @@ public class TeacherItemService {
         log.info("물품 승인 처리 완료 - 총 처리된 물품 수: {}/{}", processedCount, approveRequests.size());
 
         return ItemActionResponseDto.builder()
-                .status("APPROVED")
+                .status(ItemStatus.APPROVED)
                 .message("물품이 승인되었습니다.")
                 .build();
     }
@@ -128,7 +129,7 @@ public class TeacherItemService {
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type("NETWORK") // 고정값
+                .type(TeamType.NETWORK) // 고정값
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)

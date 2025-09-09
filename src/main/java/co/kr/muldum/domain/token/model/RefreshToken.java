@@ -14,9 +14,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RefreshToken {
   @Id
-  private String refreshToken;
   private Long id;
+  @Column(name = "refresh_token", nullable = false, unique = true)
+  private String refreshToken;
   @Enumerated(EnumType.STRING)
+  @Column(name = "user_type", nullable = false)
   private UserType userType;
 
+  public void updateToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }

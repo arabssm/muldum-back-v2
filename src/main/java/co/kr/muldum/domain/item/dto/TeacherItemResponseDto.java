@@ -1,6 +1,7 @@
 package co.kr.muldum.domain.item.dto;
 
 import co.kr.muldum.domain.item.model.ItemRequest;
+import co.kr.muldum.domain.item.model.enums.TeamType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class TeacherItemResponseDto {
     private Integer team_id;
-    private String type;
+    private TeamType type;
     private Long item_id;
     private String product_name;
     private Integer quantity;
@@ -21,7 +22,7 @@ public class TeacherItemResponseDto {
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type("NETWORK") // 고정값
+                .type(TeamType.NETWORK) // 고정값
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
@@ -42,7 +43,7 @@ public class TeacherItemResponseDto {
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type("NETWORK") // 고정값
+                .type(TeamType.NETWORK) // 고정값
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
