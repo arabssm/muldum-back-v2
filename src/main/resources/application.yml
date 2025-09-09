@@ -44,3 +44,5 @@ oauth:
 google:
   sheets:
     credentials-path: ${GOOGLE_SHEETS_KEY_FILE_PATH}
+team:
+  default-banner-image: ${DEFAULT_TEAM_BANNER_IMAGE}

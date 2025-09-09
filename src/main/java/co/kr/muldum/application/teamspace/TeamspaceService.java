@@ -10,6 +10,7 @@ import co.kr.muldum.domain.user.model.Role;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+
+    @Value("${team.default-banner-image}")
+    private String defaultTeamBannerImage;
 
     private TeamType getTeamTypeFromSheetName(String sheetName) {
         if (sheetName == null) {
@@ -73,13 +77,17 @@ public class TeamspaceService {
                         }
                         return existing;
                     })
-                    .orElseGet(() -> teamRepository.save(
-                            Team.builder()
-                                    .name(teamName)
-                                    .type(teamType)
-                                    .config(new HashMap<>())
-                                    .build()
-                    ));
+                    .orElseGet(() -> {
+                      Map<String, Object> defaultConfig = new HashMap<>();
+                      defaultConfig.put("backgroundImagePath", defaultTeamBannerImage);
+                      return teamRepository.save(
+                              Team.builder()
+                                      .name(teamName)
+                                      .type(teamType)
+                                      .config(defaultConfig)
+                                      .build()
+                      );
+                    });
 
             if (studentId.length() != 4) continue;
             String grade = studentId.substring(0, 1);
