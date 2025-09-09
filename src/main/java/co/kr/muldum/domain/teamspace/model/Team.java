@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -52,7 +53,9 @@ public class Team {
         this.type = type;
     }
 
-    public void updateTimestamp() {
-        this.updatedAt = LocalDateTime.now();
+    public void updateBackgroundImage(String url) {
+      Map<String, Object> newConfig = new HashMap<>(this.config);
+      newConfig.put("backgroundImagePath", url);
+      this.config = newConfig;
     }
 }
