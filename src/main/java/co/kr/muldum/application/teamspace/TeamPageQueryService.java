@@ -23,14 +23,18 @@ public class TeamPageQueryService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, SecurityUtil.getCurrentUserId())) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
+        validateTeamMembership(teamId);
 
         return TeamPageQueryResponseDto.builder()
                 .teamId(team.getId())
                 .teamName(team.getName())
                 .content(team.getContent())
                 .build();
+    }
+
+    private void validateTeamMembership(Long teamId) {
+        if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, SecurityUtil.getCurrentUserId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
     }
 }
