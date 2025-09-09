@@ -9,8 +9,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Table(name = "teams")
@@ -38,9 +36,6 @@ public class Team {
     @Column(name = "team_settings", columnDefinition = "jsonb")
     private TeamSettings teamSettings;
 
-    @Column(columnDefinition = "text")
-    private String content;
-
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -50,11 +45,14 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, String content, Map<String, Object> config, TeamType type) {
+    public Team(String name, String content, TeamSettings teamSettings, TeamType type) {
         this.name = name;
         this.content = content;
-        this.config = config;
+        this.teamSettings = teamSettings;
         this.type = type;
+    }
+
+    public void changeContent(String content) {
         this.content = content;
     }
 }
