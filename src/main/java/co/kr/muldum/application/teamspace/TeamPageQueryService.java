@@ -21,7 +21,7 @@ public class TeamPageQueryService {
     @Transactional(readOnly = true)
     public TeamPageQueryResponseDto getTeamPage(Long teamId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
         validateTeamMembership(teamId);
 
