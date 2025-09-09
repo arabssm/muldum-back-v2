@@ -18,7 +18,7 @@ public class TeamController {
 
     @PatchMapping("/{team_id}")
     public ResponseEntity<MessageResponse> updateTeamPage(
-            @PathVariable("team_id") Long teamId,
+            @PathVariable("team-id") Long teamId,
             @RequestBody @Valid TeamPageUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
