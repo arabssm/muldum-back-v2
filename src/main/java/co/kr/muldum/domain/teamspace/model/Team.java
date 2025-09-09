@@ -32,7 +32,8 @@ public class Team {
     private TeamConfig teamConfig;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> config;
+    @Column(name = "config", columnDefinition = "jsonb")
+    private TeamSettings config;
 
     @Column(columnDefinition = "text")
     private String content;
@@ -44,7 +45,7 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, Map<String, Object> config, TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
+    public Team(String name, TeamSettings config, TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
         this.name = name;
         this.config = config;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
