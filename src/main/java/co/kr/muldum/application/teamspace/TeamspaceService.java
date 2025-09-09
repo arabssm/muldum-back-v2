@@ -2,6 +2,7 @@ package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.application.teamspace.dto.*;
 import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.model.TeamSettings;
 import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
@@ -77,7 +78,7 @@ public class TeamspaceService {
                             Team.builder()
                                     .name(teamName)
                                     .type(teamType)
-                                    .config(new HashMap<>())
+                                    .config(TeamSettings.builder().build())
                                     .build()
                     ));
 
