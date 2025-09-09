@@ -23,9 +23,7 @@ public class TeamPageQueryService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        Long userId = SecurityUtil.getCurrentUserId();
-        boolean isMember = teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, userId);
-        if (!isMember) {
+        if (!teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, SecurityUtil.getCurrentUserId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
