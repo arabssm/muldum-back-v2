@@ -1,10 +1,7 @@
 package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,11 +35,11 @@ public class Team {
     private TeamType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "team_config", columnDefinition = "jsonb")
-    private TeamConfig teamConfig;
+    @Column(name = "team_settings", columnDefinition = "jsonb")
+    private TeamSettings teamSettings;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> config;
+    @Column(columnDefinition = "text")
+    private String content;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -58,5 +55,6 @@ public class Team {
         this.content = content;
         this.config = config;
         this.type = type;
+        this.content = content;
     }
 }

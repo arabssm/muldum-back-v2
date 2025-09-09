@@ -2,6 +2,7 @@ package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.application.teamspace.dto.*;
 import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.model.TeamSettings;
 import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
@@ -77,17 +78,13 @@ public class TeamspaceService {
                         }
                         return existing;
                     })
-                    .orElseGet(() -> {
-                      Map<String, Object> defaultConfig = new HashMap<>();
-                      defaultConfig.put("backgroundImagePath", defaultTeamBannerImage);
-                      return teamRepository.save(
-                              Team.builder()
-                                      .name(teamName)
-                                      .type(teamType)
-                                      .config(defaultConfig)
-                                      .build()
-                      );
-                    });
+                    .orElseGet(() -> teamRepository.save(
+                            Team.builder()
+                                    .name(teamName)
+                                    .type(teamType)
+                                    .teamSettings(TeamSettings.builder().build())
+                                    .build()
+                    ));
 
             if (studentId.length() != 4) continue;
             String grade = studentId.substring(0, 1);

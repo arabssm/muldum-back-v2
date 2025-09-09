@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember, Long> {
 
@@ -19,6 +20,12 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     List<TeamspaceMember> findByTeam(Team team);
 
     List<Team> findDistinctByUserAndTeam_Type(User user, TeamType teamType);
-
     boolean existsByTeamIdAndUserId(Long teamId, Long userId);
+
+    boolean existsByTeamAndUser(Team team, User user);
+
+    Optional<TeamspaceMember> findByTeamAndUser(Team team, User user);
+
+    @EntityGraph(attributePaths = "user")
+    List<TeamspaceMember> findByTeam(Team team);
 }
