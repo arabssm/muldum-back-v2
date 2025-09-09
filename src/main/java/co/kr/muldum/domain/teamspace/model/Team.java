@@ -69,4 +69,8 @@ public class Team {
         this.type = type;
         updateTimestamp();
     }
+
+    public void updateTimestamp() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
