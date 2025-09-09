@@ -29,7 +29,7 @@ public class TeamspaceController {
     }
 
     // 전공동아리 팀 조회
-    @GetMapping("/ara/teamspace/major")
+    @GetMapping("/teamspace/major")
     public TeamspaceResponseDto getMajorTeams() {
         return teamspaceService.getMajorTeams();
     }
