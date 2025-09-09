@@ -19,8 +19,8 @@ public class TeamPageController {
 
     // 팀 페이지 조회
     @PreAuthorize("@teamspaceAuth.hasMembership(authentication, #teamId)")
-    @GetMapping("/{team_id}")
-    public ResponseEntity<TeamPageQueryResponseDto> getTeamPage(@PathVariable("team_id") Long teamId) {
+    @GetMapping("/{team-id}")
+    public ResponseEntity<TeamPageQueryResponseDto> getTeamPage(@PathVariable("team-id") Long teamId) {
         // 조회만
         return ResponseEntity.ok(teamPageQueryService.getTeamPage(teamId));
     }
