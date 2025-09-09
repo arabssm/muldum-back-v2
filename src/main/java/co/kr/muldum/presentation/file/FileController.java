@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("ara/files")
+@RequestMapping("files")
 public class FileController {
 
   private final FileStorageService fileStorageService;
