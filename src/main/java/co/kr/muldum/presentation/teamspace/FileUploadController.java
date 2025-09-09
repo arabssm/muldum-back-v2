@@ -3,6 +3,7 @@ package co.kr.muldum.presentation.teamspace;
 import co.kr.muldum.application.teamspace.FileUploadService;
 import co.kr.muldum.application.teamspace.dto.TeamBannerRequest;
 import co.kr.muldum.global.security.CustomUserDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +19,7 @@ public class FileUploadController {
   @PatchMapping("/network/team/{team-id}/banner")
   public ResponseEntity<String> uploadTeamNetwork(
           @PathVariable("team-id") Long teamId,
-          @RequestBody TeamBannerRequest teamBannerRequest,
+          @Valid @RequestBody TeamBannerRequest teamBannerRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
     fileUploadService.uploadTeamFile(teamId, teamBannerRequest, customUserDetails.getUserId());
