@@ -1,10 +1,7 @@
 package co.kr.muldum.domain.teamspace.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -31,11 +28,11 @@ public class Team {
     private TeamType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "team_config", columnDefinition = "jsonb")
-    private TeamConfig teamConfig;
+    @Column(name = "team_settings", columnDefinition = "jsonb")
+    private TeamSettings teamSettings;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> config;
+    @Column(columnDefinition = "text")
+    private String content;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -44,23 +41,36 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, Map<String, Object> config,TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Team(String name, TeamSettings teamSettings, TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
         this.name = name;
-        this.config = config;
+        this.teamSettings = teamSettings;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
         this.type = type;
+        this.content = content;
     }
 
     public void updateBackgroundImage(String url) {
-      Map<String, Object> newConfig = new HashMap<>(this.config);
-      newConfig.put("backgroundImagePath", url);
-      this.config = newConfig;
+      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함
+      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
     }
 
     public void updateIconImage(String url) {
-      Map<String, Object> newConfig = new HashMap<>(this.config);
-      newConfig.put("iconImagePath", url);
-      this.config = newConfig;
+      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함  
+      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+        updateTimestamp();
+    }
+
+    public void changeType(TeamType type) {
+        this.type = type;
+        updateTimestamp();
+    }
+
+    public void updateTimestamp() {
+        this.updatedAt = LocalDateTime.now();
     }
 }
