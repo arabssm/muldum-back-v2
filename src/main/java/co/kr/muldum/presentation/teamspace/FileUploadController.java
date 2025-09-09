@@ -15,9 +15,9 @@ public class FileUploadController {
 
   private final FileUploadService fileUploadService;
 
-  @PatchMapping("/network/team/{teamId}/banner")
+  @PatchMapping("/network/team/{team-id}/banner")
   public ResponseEntity<String> uploadTeamNetwork(
-          @PathVariable Long teamId,
+          @PathVariable("team-id") Long teamId,
           @RequestBody TeamBannerRequest teamBannerRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
