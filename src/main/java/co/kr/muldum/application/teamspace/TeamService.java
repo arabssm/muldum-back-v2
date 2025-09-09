@@ -23,7 +23,7 @@ public class TeamService {
 
         boolean isMember = teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, currentUserId);
         if (!isMember) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
+            throw new CustomException(ErrorCode.NOT_TEAM_MEMBER);
         }
 
         team.changeContent(content);
