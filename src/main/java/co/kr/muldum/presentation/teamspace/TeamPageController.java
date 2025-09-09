@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/teamspace/network/team")
+@RequestMapping("/ara/teamspace/network/team")
 public class TeamPageController {
 
     private final TeamPageQueryService teamPageQueryService;
