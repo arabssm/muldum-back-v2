@@ -1,7 +1,7 @@
 package co.kr.muldum.presentation.teamspace;
 
 import co.kr.muldum.application.teamspace.FileUploadService;
-import co.kr.muldum.application.teamspace.dto.TeamBannerRequest;
+import co.kr.muldum.application.teamspace.dto.TeamFileRequest;
 import co.kr.muldum.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,20 @@ public class FileUploadController {
   @PatchMapping("/network/team/{team-id}/banner")
   public ResponseEntity<String> uploadTeamNetwork(
           @PathVariable("team-id") Long teamId,
-          @Valid @RequestBody TeamBannerRequest teamBannerRequest,
+          @Valid @RequestBody TeamFileRequest teamFileRequest,
           @AuthenticationPrincipal CustomUserDetails customUserDetails
   ) {
-    fileUploadService.uploadTeamFile(teamId, teamBannerRequest, customUserDetails.getUserId());
+    fileUploadService.uploadTeamBanner(teamId, teamFileRequest, customUserDetails.getUserId());
     return ResponseEntity.ok("파일 업로드 성공");
+  }
+
+  @PatchMapping("/network/team/{team-id}/icon")
+  public ResponseEntity<String> uploadTeamIcon(
+          @PathVariable("team-id") Long teamId,
+          @Valid @RequestBody TeamFileRequest teamFileRequest,
+          @AuthenticationPrincipal CustomUserDetails customUserDetails
+  ) {
+    fileUploadService.uploadTeamIcon(teamId, teamFileRequest, customUserDetails.getUserId());
+    return ResponseEntity.ok("아이콘이 성공적으로 수정됐습니다.");
   }
 }
