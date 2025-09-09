@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class TeamController {
     private final TeamService teamService;
 
-    @PatchMapping("/{team_id}")
+    @PatchMapping("/{team-id}")
     public ResponseEntity<MessageResponse> updateTeamPage(
             @PathVariable("team-id") Long teamId,
             @RequestBody @Valid TeamPageUpdateRequest request,
