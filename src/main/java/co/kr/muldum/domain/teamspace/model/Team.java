@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -16,7 +19,8 @@ import java.util.Map;
 @Table(name = "teams")
 @Getter
 @Setter
-@NoArgsConstructor // JPA 기본 생성자
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Team {
 
     @Id
@@ -41,23 +45,19 @@ public class Team {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> config;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, String content, Map<String, Object> config,TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Team(String name, String content, Map<String, Object> config, TeamType type) {
         this.name = name;
         this.content = content;
         this.config = config;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
         this.type = type;
-    }
-
-    public void updateTimestamp() {
-        this.updatedAt = LocalDateTime.now();
     }
 }
