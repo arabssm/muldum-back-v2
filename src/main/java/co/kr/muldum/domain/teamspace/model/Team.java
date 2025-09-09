@@ -28,10 +28,6 @@ public class Team {
     private TeamType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "team_config", columnDefinition = "jsonb")
-    private TeamConfig teamConfig;
-
-    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "config", columnDefinition = "jsonb")
     private TeamSettings config;
 
