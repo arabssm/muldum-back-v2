@@ -55,4 +55,32 @@ public class Team {
     public void changeContent(String content) {
         this.content = content;
     }
+
+    public void updateBackgroundImage(String backgroundImageUrl) {
+        if (this.config == null) {
+            this.config = TeamSettings.builder().build();
+        }
+        this.config = TeamSettings.builder()
+                .theme(this.config.getTheme())
+                .notificationsEnabled(this.config.isNotificationsEnabled())
+                .language(this.config.getLanguage())
+                .maxMembers(this.config.getMaxMembers())
+                .backgroundImageUrl(backgroundImageUrl)
+                .iconImageUrl(this.config.getIconImageUrl())
+                .build();
+    }
+
+    public void updateIconImage(String iconImageUrl) {
+        if (this.config == null) {
+            this.config = TeamSettings.builder().build();
+        }
+        this.config = TeamSettings.builder()
+                .theme(this.config.getTheme())
+                .notificationsEnabled(this.config.isNotificationsEnabled())
+                .language(this.config.getLanguage())
+                .maxMembers(this.config.getMaxMembers())
+                .backgroundImageUrl(this.config.getBackgroundImageUrl())
+                .iconImageUrl(iconImageUrl)
+                .build();
+    }
 }
