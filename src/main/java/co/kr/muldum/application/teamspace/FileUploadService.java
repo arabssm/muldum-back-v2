@@ -4,10 +4,10 @@ import co.kr.muldum.application.teamspace.dto.TeamFileRequest;
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
-import co.kr.muldum.global.exception.TeamNotFoundException;
+import co.kr.muldum.global.exception.CustomException;
+import co.kr.muldum.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 
@@ -20,31 +20,25 @@ public class FileUploadService {
   @Transactional
   public void uploadTeamBanner(Long teamId, TeamFileRequest teamFileRequest, Long userId) {
     Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new TeamNotFoundException("팀을 찾을 수 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
     validateTeamMember(team.getId(), userId);
-
-    String url = teamFileRequest.getUrl();
-    team.updateBackgroundImage(url);
 
     teamRepository.save(team);
   }
 
   public void uploadTeamIcon(Long teamId, TeamFileRequest teamFileRequest, Long userId) {
     Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new TeamNotFoundException("팀을 찾을 수 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
     validateTeamMember(team.getId(), userId);
-
-    String url = teamFileRequest.getUrl();
-    team.updateIconImage(url);
 
     teamRepository.save(team);
   }
 
   private void validateTeamMember(Long teamId, Long userId) {
     if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
-      throw new AccessDeniedException("팀원만 배너를 수정할 수 있습니다.");
+      throw new CustomException(ErrorCode.NOT_TEAM_MEMBER);
     }
   }
 }
