@@ -9,13 +9,13 @@ public class TeamPageQueryResponseDto {
     private final Long teamId;
     private final String teamName;
     private final String content;
-    private final TeamSettings teamSettings;
+    private final TeamSettings config;
 
     @Builder
-    public TeamPageQueryResponseDto(Long teamId, String teamName, String content, TeamSettings teamSettings) {
+    public TeamPageQueryResponseDto(Long teamId, String teamName, String content, TeamSettings config) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.content = content;
-        this.teamSettings = teamSettings;
+        this.config = config;
     }
 }
