@@ -24,7 +24,7 @@ public class TeamPageQueryService {
                 .teamId(team.getId())
                 .teamName(team.getName())
                 .content(team.getContent())
-                .config(team.getTeamSettings())
+                .config(team.getConfig())
                 .build();
     }
 }

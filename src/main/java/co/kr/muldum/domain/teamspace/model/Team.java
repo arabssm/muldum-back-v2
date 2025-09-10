@@ -33,8 +33,8 @@ public class Team {
     private TeamType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "team_settings", columnDefinition = "jsonb")
-    private TeamSettings teamSettings;
+    @Column(name = "config", columnDefinition = "jsonb")
+    private TeamSettings config;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -45,10 +45,10 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, String content, TeamSettings teamSettings, TeamType type) {
+    public Team(String name, String content, TeamSettings config, TeamType type) {
         this.name = name;
         this.content = content;
-        this.teamSettings = teamSettings;
+        this.config = config;
         this.type = type;
     }
 
