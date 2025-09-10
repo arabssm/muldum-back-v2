@@ -66,6 +66,7 @@ public class Team {
                 .language(this.config.getLanguage())
                 .maxMembers(this.config.getMaxMembers())
                 .backgroundImageUrl(backgroundImageUrl)
+                .backgroundImagePath(this.config.getBackgroundImagePath())
                 .iconImageUrl(this.config.getIconImageUrl())
                 .build();
     }
@@ -80,6 +81,7 @@ public class Team {
                 .language(this.config.getLanguage())
                 .maxMembers(this.config.getMaxMembers())
                 .backgroundImageUrl(this.config.getBackgroundImageUrl())
+                .backgroundImagePath(this.config.getBackgroundImagePath())
                 .iconImageUrl(iconImageUrl)
                 .build();
     }
