@@ -82,7 +82,7 @@ public class TeamspaceService {
                             Team.builder()
                                     .name(teamName)
                                     .type(teamType)
-                                    .teamSettings(TeamSettings.builder().build())
+                                    .config(TeamSettings.builder().build())
                                     .build()
                     ));
 

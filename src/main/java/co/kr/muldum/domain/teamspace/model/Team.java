@@ -4,16 +4,18 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Table(name = "teams")
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Team {
 
     @Id
@@ -23,54 +25,64 @@ public class Team {
     @Column(nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TeamType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "team_settings", columnDefinition = "jsonb")
-    private TeamSettings teamSettings;
+    @Column(name = "config", columnDefinition = "jsonb")
+    private TeamSettings config;
 
-    @Column(columnDefinition = "text")
-    private String content;
-
-    @Column(name = "created_at", nullable = false)
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = true)
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, TeamSettings teamSettings, TeamType type, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
+    public Team(String name, String content, TeamSettings config, TeamType type) {
         this.name = name;
-        this.teamSettings = teamSettings;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
-        this.type = type;
         this.content = content;
-    }
-
-    public void updateBackgroundImage(String url) {
-      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함
-      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
-    }
-
-    public void updateIconImage(String url) {
-      // TeamSettings는 immutable이므로 새로운 객체를 생성해야 함  
-      // 추후 TeamSettings에 setter나 builder 메서드 추가 필요
+        this.config = config;
+        this.type = type;
     }
 
     public void changeContent(String content) {
         this.content = content;
-        updateTimestamp();
     }
 
-    public void changeType(TeamType type) {
-        this.type = type;
-        updateTimestamp();
+    public void updateBackgroundImage(String backgroundImageUrl) {
+        if (this.config == null) {
+            this.config = TeamSettings.builder().build();
+        }
+        this.config = TeamSettings.builder()
+                .theme(this.config.getTheme())
+                .notificationsEnabled(this.config.isNotificationsEnabled())
+                .language(this.config.getLanguage())
+                .maxMembers(this.config.getMaxMembers())
+                .backgroundImageUrl(backgroundImageUrl)
+                .backgroundImagePath(this.config.getBackgroundImagePath())
+                .iconImageUrl(this.config.getIconImageUrl())
+                .build();
     }
 
-    public void updateTimestamp() {
-        this.updatedAt = LocalDateTime.now();
+    public void updateIconImage(String iconImageUrl) {
+        if (this.config == null) {
+            this.config = TeamSettings.builder().build();
+        }
+        this.config = TeamSettings.builder()
+                .theme(this.config.getTheme())
+                .notificationsEnabled(this.config.isNotificationsEnabled())
+                .language(this.config.getLanguage())
+                .maxMembers(this.config.getMaxMembers())
+                .backgroundImageUrl(this.config.getBackgroundImageUrl())
+                .backgroundImagePath(this.config.getBackgroundImagePath())
+                .iconImageUrl(iconImageUrl)
+                .build();
     }
 }
