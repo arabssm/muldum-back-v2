@@ -15,5 +15,8 @@ public class TeamSettings {
     private boolean notificationsEnabled;
     private String language;
     private int maxMembers;
+    private String backgroundImageUrl;
+    private String backgroundImagePath;
+    private String iconImageUrl;
     
 }
