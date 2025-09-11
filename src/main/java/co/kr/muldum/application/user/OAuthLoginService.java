@@ -10,6 +10,7 @@ import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
 import co.kr.muldum.infrastructure.user.oauth.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value; // 추가
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ public class OAuthLoginService {
     private final UserReader userReader;
     private final JwtProvider jwtProvider;
     private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${security.oauth.google.allowed-extra-email:}")
+    private String allowedExtraEmail;
 
     public LoginResponseDto loginWithGoogle(String authorizationCode) {
         TokenResponse token = googleOAuthClient.exchangeCodeForToken(authorizationCode);
@@ -40,17 +44,27 @@ public class OAuthLoginService {
 
         String email = userInfoDto.getEmail().trim().toLowerCase();
 
-        String requiredDomain = "bssm.hs.kr";
-        if (userInfoDto.getHd() != null && !userInfoDto.getHd().equalsIgnoreCase(requiredDomain)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
-        }
-        if (userInfoDto.getHd() == null && !email.endsWith("@" + requiredDomain)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+        boolean isWhitelisted = false;
+        if (allowedExtraEmail != null && !allowedExtraEmail.isBlank()) {
+            isWhitelisted = email.equals(allowedExtraEmail.trim().toLowerCase());
         }
 
-        if (Boolean.FALSE.equals(userInfoDto.getEmail_verified())) {
-            log.warn("Email not verified: {}", email);
-            throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+        if (!isWhitelisted) {
+
+            if (Boolean.FALSE.equals(userInfoDto.getEmail_verified())) {
+                log.warn("Email not verified: {}", email);
+                throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+            }
+
+            String requiredDomain = "bssm.hs.kr";
+            if (userInfoDto.getHd() != null && !userInfoDto.getHd().equalsIgnoreCase(requiredDomain)) {
+                throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+            }
+            if (userInfoDto.getHd() == null && !email.endsWith("@" + requiredDomain)) {
+                throw new CustomException(ErrorCode.UNAUTHORIZED_DOMAIN);
+            }
+        } else {
+            log.info("Email is whitelisted. Skipping ALL checks: {}", email);
         }
 
         UserInfo userInfo = userReader.findByEmail(email)

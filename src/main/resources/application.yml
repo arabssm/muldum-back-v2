@@ -38,6 +38,7 @@ oauth:
     redirect-uri: ${GOOGLE_REDIRECT_URI}
     token-url: ${GOOGLE_TOKEN_URL}
     user-info-url: ${GOOGLE_USER_INFO_URL}
+    allowed-extra-email: ${GOOGLE_ALLOWED_EXTRA_EMAIL:}
   kakao:
     user-info-uri: https://kapi.kakao.com/v2/user/me
 
