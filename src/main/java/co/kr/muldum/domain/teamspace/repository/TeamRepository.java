@@ -2,6 +2,7 @@ package co.kr.muldum.domain.teamspace.repository;
 
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.model.TeamType;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,5 +18,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Optional<Long> findMaxId();
 
     // 팀 타입으로 팀 목록 조회
+    @Query("SELECT t FROM Team t where t.type=?1 order by t.id ASC")
     List<Team> findByType(TeamType type);
 }
