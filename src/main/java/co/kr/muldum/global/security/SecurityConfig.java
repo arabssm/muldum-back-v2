@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/ara/**").permitAll()
                     .requestMatchers("/user/issue").permitAll()
+                    .requestMatchers("/teamspace/network").permitAll()
+                    .requestMatchers("/teamspace/major").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
