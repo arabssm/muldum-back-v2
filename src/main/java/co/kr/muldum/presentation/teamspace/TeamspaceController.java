@@ -23,13 +23,13 @@ public class TeamspaceController {
         return teamspaceService.inviteStudents(requestDto);
     }
 
-    @GetMapping("/teamspace/network")
+    @GetMapping("/ara/teamspace/network")
     public TeamspaceResponseDto getTeamspace() {
         return teamspaceService.getTeamspace();
     }
 
     // 전공동아리 팀 조회
-    @GetMapping("/teamspace/major")
+    @GetMapping("/ara/teamspace/major")
     public TeamspaceResponseDto getMajorTeams() {
         return teamspaceService.getMajorTeams();
     }
