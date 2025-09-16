@@ -33,7 +33,7 @@ public class NoticeAraController {
     return ResponseEntity.ok(notices);
   }
 
-  @GetMapping("/{notice_id}")
+  @GetMapping("/{notice_id:[0-9]+}")  // 숫자만 매칭하도록 정규식 추가
   public ResponseEntity<NoticeDetailResponse> getDetailNotice(
           @PathVariable("notice_id") Long noticeId
   ){
