@@ -24,6 +24,7 @@ public class SecurityConfig {
     public SecurityConfig(JwtTokenResolver jwtTokenResolver) {
         this.jwtTokenResolver = jwtTokenResolver;
     }
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
@@ -32,9 +33,10 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()  // 최우선으로 이동
+                .requestMatchers("/health").permitAll()       // /health도 추가
                 .requestMatchers("/ara/**").permitAll()
-                    .requestMatchers("/user/issue").permitAll()
+                .requestMatchers("/user/issue").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

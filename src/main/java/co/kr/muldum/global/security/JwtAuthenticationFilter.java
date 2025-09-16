@@ -31,9 +31,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         log.info("[JwtFilter] Checking path: {}", path);
         
+        // actuator와 health를 명시적으로 제외
         boolean skip = path != null && (
+            path.startsWith("/actuator") ||
+            path.equals("/health") ||
             path.startsWith("/ara/") ||
-            path.startsWith("/actuator/") ||
             path.startsWith("/user/issue")
         );
         
