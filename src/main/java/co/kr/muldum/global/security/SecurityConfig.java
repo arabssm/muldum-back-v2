@@ -33,8 +33,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()  // 최우선으로 이동
-                .requestMatchers("/health").permitAll()       // /health도 추가
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/ara/**").permitAll()
                 .requestMatchers("/user/issue").permitAll()
                 .anyRequest().authenticated()
