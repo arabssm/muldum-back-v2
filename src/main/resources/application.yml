@@ -47,3 +47,13 @@ google:
     credentials-path: ${GOOGLE_SHEETS_KEY_FILE_PATH}
 team:
   default-banner-image: ${DEFAULT_TEAM_BANNER_IMAGE}
+
+# Actuator 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

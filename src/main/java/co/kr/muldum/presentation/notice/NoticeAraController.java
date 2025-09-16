@@ -20,11 +20,6 @@ public class NoticeAraController {
 
   private final NoticeQueryService noticeQueryService;
 
-  @GetMapping("/health")
-  public ResponseEntity<String> getHealth() {
-    return ResponseEntity.ok("OK");
-  }
-
   @GetMapping
   public ResponseEntity<Page<NoticeSimpleResponse>> getAllNoticeList(
           @PageableDefault(size = 10) Pageable pageable
@@ -33,7 +28,7 @@ public class NoticeAraController {
     return ResponseEntity.ok(notices);
   }
 
-  @GetMapping("/{notice_id:[0-9]+}")  // 숫자만 매칭하도록 정규식 추가
+  @GetMapping("/{notice_id}")
   public ResponseEntity<NoticeDetailResponse> getDetailNotice(
           @PathVariable("notice_id") Long noticeId
   ){
