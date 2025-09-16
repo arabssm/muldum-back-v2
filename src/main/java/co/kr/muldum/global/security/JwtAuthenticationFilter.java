@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         String path = request.getServletPath();
-        log.info("[JwtFilter] Checking path: {}", path);  // 디버그 로그 추가
+        log.info("[JwtFilter] Checking path: {}", path);
         
         boolean skip = path != null && (
             path.startsWith("/ara/") ||
