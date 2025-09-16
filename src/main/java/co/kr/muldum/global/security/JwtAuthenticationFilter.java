@@ -27,12 +27,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;
         }
+        
         String path = request.getServletPath();
-        return path != null && (
+        log.info("[JwtFilter] Checking path: {}", path);  // 디버그 로그 추가
+        
+        boolean skip = path != null && (
             path.startsWith("/ara/") ||
             path.startsWith("/actuator/") ||
-                    path.startsWith("/user/issue")
+            path.startsWith("/user/issue")
         );
+        
+        log.info("[JwtFilter] Should skip filter for path {}: {}", path, skip);
+        return skip;
     }
 
     @Override
@@ -40,13 +46,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+
+        log.info("[JwtFilter] Processing request: {}", request.getServletPath());
+
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || authHeader.isBlank()) {
+            log.info("[JwtFilter] No Authorization header, proceeding");
             filterChain.doFilter(request, response);
             return;
         }
 
         if (!authHeader.startsWith("Bearer ")) {
+            log.warn("[JwtFilter] Invalid Authorization header format");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -60,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             } else {
+                log.warn("[JwtFilter] Invalid token");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }

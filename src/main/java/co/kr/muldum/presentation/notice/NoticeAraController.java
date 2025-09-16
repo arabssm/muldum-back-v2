@@ -20,6 +20,11 @@ public class NoticeAraController {
 
   private final NoticeQueryService noticeQueryService;
 
+  @GetMapping("/health")
+  public ResponseEntity<String> getHealth() {
+    return ResponseEntity.ok("OK");
+  }
+
   @GetMapping
   public ResponseEntity<Page<NoticeSimpleResponse>> getAllNoticeList(
           @PageableDefault(size = 10) Pageable pageable
