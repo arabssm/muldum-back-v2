@@ -13,14 +13,6 @@ services:
     networks:
       - app-network
 
-  redis:
-    image: redis:latest
-    container_name: muldum-redis
-    ports:
-      - "6379:6379"
-    networks:
-      - app-network
-
   app:
     build:
       context: .
@@ -28,7 +20,6 @@ services:
     container_name: muldum-app-v2
     depends_on:
       - postgres
-      - redis
     env_file:
       - .env
     environment:
@@ -37,8 +28,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
 
       # JWT
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
