@@ -1,0 +1,56 @@
+#-------------------------------------------------------------------------------#
+#            Discover all capabilities of Qodana in our documentation           #
+#             https://www.jetbrains.com/help/qodana/about-qodana.html           #
+#-------------------------------------------------------------------------------#
+
+name: Qodana
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2025.2
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          # In pr-mode: 'true' Qodana checks only changed files
+          pr-mode: false
+          use-caches: true
+          post-pr-comment: true
+          use-annotations: true
+          # Upload Qodana results (SARIF, other artifacts, logs) as an artifact to the job
+          upload-result: false
+          # quick-fixes available in Ultimate and Ultimate Plus plans
+          push-fixes: 'none'
+      - name: Package files
+        run: |
+          mkdir -p deploy
+          cp build/libs/muldum-0.0.1-SNAPSHOT.jar deploy/
+          cp appspec.yml deploy/
+          cp -r scripts deploy/
+          cd deploy && zip -r ../muldum-deploy.zip . && cd ..
+
+      - name: Upload to S3
+        run: aws s3 cp muldum-deploy.zip s3://${{ secrets.AWS_BUCKET_NAME }}/muldum-deploy.zip
+
+      - name: Create CodeDeploy Deployment
+        run: aws deploy create-deployment \
+          --application-name ${{ secrets.AWS_CODE_DEPLOY_APPLICATION }} \
+          --deployment-group-name ${{ secrets.AWS_CODE_DEPLOY_GROUP }} \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},key=muldum-deploy.zip,bundleType=zip
