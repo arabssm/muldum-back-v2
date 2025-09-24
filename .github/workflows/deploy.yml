@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3. gradlew 권한 부여
+      # 3. gradlew 실행 권한
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -28,9 +28,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
-      # 5. 빌드 산출물 확인
-      - name: Check build output
-        run: ls -al ./build/libs
+      # 5. JAR 이름 통일 (app.jar로 변경)
+      - name: Rename build output
+        run: mv ./build/libs/*SNAPSHOT.jar ./app.jar
 
       # 6. .env 파일 생성
       - name: Generate .env file
@@ -55,7 +55,7 @@ jobs:
           echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
           echo "DEFAULT_TEAM_BANNER_IMAGE=${{ secrets.DEFAULT_TEAM_BANNER_IMAGE }}" >> .env
 
-      # 7. EC2에 파일 복사 (빌드된 app.jar + 설정 파일들)
+      # 7. EC2에 파일 복사
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -63,14 +63,14 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: |
-            ./build/libs/app.jar
-            ./Dockerfile
+            ./app.jar
             ./compose.yaml
-            .env
+            ./.env
+            ./Dockerfile
             ./wait-for-it.sh
           target: /home/ubuntu/app/
 
-      # 8. EC2 초기 세팅 (docker, docker compose 설치)
+      # 8. EC2 환경 설정
       - name: Setup EC2 Environment
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -78,7 +78,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            set -xe
             cd /home/ubuntu
             if [ ! -d "setup.sh" ]; then
               git clone https://github.com/HyunwooKiim/setup.sh.git
@@ -87,7 +86,7 @@ jobs:
             chmod +x setup.sh
             ./setup.sh
 
-      # 9. EC2 배포 (docker compose 실행)
+      # 9. EC2에서 Docker Compose 실행
       - name: Deploy Application
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -95,7 +94,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            set -xe
             cd /home/ubuntu/app
             echo ">>> Building docker image"
             docker compose build --no-cache
