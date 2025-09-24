@@ -64,10 +64,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: |
             ./build/libs/app.jar
-            ./Dockerfile
-            ./compose.yaml
-            ./.env
-            ./wait-for-it.sh
           target: /home/ubuntu/app/
 
       # 8. SSH로 EC2 접속 후 setup.sh 실행 + docker compose 실행
