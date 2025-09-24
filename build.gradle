@@ -8,6 +8,10 @@ plugins {
 group = 'co.kr'
 version = '0.0.1-SNAPSHOT'
 
+bootJar {
+	archiveFileName = 'app.jar'
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
