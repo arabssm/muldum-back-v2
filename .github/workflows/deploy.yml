@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  AWS_CODE_DEPLOY_APPLICATION: muldumaradeploy
+  AWS_CODE_DEPLOY_GROUP: muldumaradeploygroup
+
 jobs:
   build:
     runs-on: ubuntu-latest
