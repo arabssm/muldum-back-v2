@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3. 빌드 권한 부여
+      # 3. gradlew 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -66,28 +66,36 @@ jobs:
             ./build/libs/app.jar
             ./Dockerfile
             ./compose.yaml
-            ./.env
+            .env
             ./wait-for-it.sh
           target: /home/ubuntu/app/
 
-      # 8. SSH로 EC2 접속 후 setup.sh 실행 + docker compose 실행
-      - name: Setup EC2 and Deploy
+      # 8. EC2 초기 세팅 (docker, docker compose 설치)
+      - name: Setup EC2 Environment
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -xe
             cd /home/ubuntu
-            # 1. setup.sh 저장소 클론 및 실행
             if [ ! -d "setup.sh" ]; then
               git clone https://github.com/HyunwooKiim/setup.sh.git
             fi
             cd setup.sh
             chmod +x setup.sh
             ./setup.sh
-            
-            # 2. app 디렉토리로 이동 후 docker compose 실행
+
+      # 9. EC2 배포 (docker compose 실행)
+      - name: Deploy Application
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -xe
             cd /home/ubuntu/app
             echo ">>> Building docker image"
             docker compose build --no-cache
