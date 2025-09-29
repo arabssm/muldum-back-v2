@@ -55,6 +55,9 @@ jobs:
           echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
           echo "DEFAULT_TEAM_BANNER_IMAGE=${{ secrets.DEFAULT_TEAM_BANNER_IMAGE }}" >> .env
 
+          # Google Sheets key 파일 경로
+          echo "GOOGLE_SHEETS_KEY_FILE_PATH=./club-2025-1deb98e262f6.json" >> .env
+
       # 7. EC2로 파일 전송 (app.jar + 필요한 파일들)
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -86,7 +89,19 @@ jobs:
             chmod +x setup.sh
             ./setup.sh
 
-      # 9. docker compose 실행
+      # 9. Google Sheets key 파일 S3에서 다운로드
+      - name: Download Google Sheets key from S3
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+            echo ">>> Downloading Google Sheets key from S3"
+            aws s3 cp s3://${{ secrets.AWS_BUCKET_NAME }}/club-2025-1deb98e262f6.json ./club-2025-1deb98e262f6.json
+
+      # 10. docker compose 실행
       - name: Deploy Application
         uses: appleboy/ssh-action@v1.0.0
         with:
