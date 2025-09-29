@@ -13,7 +13,7 @@ WORKDIR /app
 # ===== app files =====
 # wait-for-it 스크립트와 JAR 복사 (실행 JAR 이름에 맞게 조정 가능)
 COPY wait-for-it.sh /wait-for-it.sh
-COPY build/libs/*SNAPSHOT.jar /app/app.jar
+COPY build/libs/app.jar /app/app.jar
 RUN chmod +x /wait-for-it.sh
 
 # ===== runtime env (선택) =====
