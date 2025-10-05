@@ -65,13 +65,6 @@ public class OAuthLoginService {
             
             log.info("[OAuth] Generated JWT tokens for user: {}", userInfo.getUserId());
 
-            // 5. Redis에 Refresh Token 저장
-            String redisKey = "refresh:" + userInfo.getUserType().name() + ":" + userInfo.getUserId();
-            long refreshTtlMillis = jwtProvider.getRefreshTokenExpirationMillis();
-            redisTemplate.opsForValue().set(redisKey, refreshToken, refreshTtlMillis, TimeUnit.MILLISECONDS);
-            
-            log.info("[OAuth] Saved refresh token to Redis: {}", redisKey);
-
             // 6. 로그인 응답 생성
             LoginResponseDto response = LoginResponseDto.of(userInfo, accessToken, refreshToken);
             log.info("[OAuth] Login successful for user: {}", email);
