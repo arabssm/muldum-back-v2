@@ -107,9 +107,22 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo ">>> Move to app directory"
             cd /home/ubuntu/app
+            
+            echo ">>> Setting permissions"
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/app
+            sudo chmod -R 755 /home/ubuntu/app
+            
+            echo ">>> Loading env file"
+            export $(grep -v '^#' .env | xargs)
+            
             echo ">>> Building docker image"
-            docker compose build --no-cache
+            sudo docker compose build --no-cache
+            
             echo ">>> Restarting containers"
-            docker compose down
-            docker compose up -d
+            sudo docker compose down
+            sudo docker compose up -d
+            
+            echo ">>> Deployment done!"
+
