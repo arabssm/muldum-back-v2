@@ -60,7 +60,7 @@ public class TeacherImportService {
                 return List.of();
             }
 
-            List<Object> firstRow = rows.get(0);
+            List<Object> firstRow = rows.getFirst();
             boolean hasHeader = firstRow.size() >= 2 &&
                     firstRow.get(0).toString().trim().equalsIgnoreCase("name") &&
                     firstRow.get(1).toString().trim().equalsIgnoreCase("email");
