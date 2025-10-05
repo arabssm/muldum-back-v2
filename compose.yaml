@@ -12,7 +12,8 @@ services:
       - "5432:5432"
     networks:
       - app-network
-
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
   app:
     build:
       context: .
