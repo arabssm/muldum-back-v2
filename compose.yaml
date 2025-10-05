@@ -13,7 +13,7 @@ services:
     networks:
       - app-network
     volumes:
-      - /var/lib/postgres_data:/var/lib/postgresql/data
+      - /srv/docker/postgres_data:/var/lib/postgresql/data
   app:
     build:
       context: .
