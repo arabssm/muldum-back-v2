@@ -44,7 +44,7 @@ public class FileUploadService {
     }
 
     private void validateTeamMember(Long teamId, Long userId) {
-        if (!teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
+        if (!teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, userId)) {
             throw new AccessDeniedException("팀원만 배너를 수정할 수 있습니다.");
         }
     }
