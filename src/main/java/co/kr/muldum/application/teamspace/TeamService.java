@@ -21,7 +21,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
-        boolean isMember = teamspaceMemberRepository.existsByTeamIdAndUserId(teamId, currentUserId);
+        boolean isMember = teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, currentUserId);
         if (!isMember) {
             throw new CustomException(ErrorCode.NOT_TEAM_MEMBER);
         }
