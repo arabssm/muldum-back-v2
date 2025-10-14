@@ -1,76 +1,61 @@
-version: "3.9"
-
 services:
-  muldum-app-v2:
-    build: .
-    container_name: muldum-app-v2
-    env_file:
-      - .env
-    volumes:
-      - ./club-2025-1deb98e262f6.json:/app/club-2025-1deb98e262f6.json
-    ports:
-      - "8080:8080"
-    depends_on:
-      - muldum-postgres
   postgres:
     image: postgres:latest
     container_name: muldum-postgres
+    restart: always
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     networks:
       - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: muldum-app-v2
+    restart: always
     depends_on:
       - postgres
     env_file:
       - .env
+    volumes:
+      - ./club-2025-1deb98e262f6.json:/app/club-2025-1deb98e262f6.json
     environment:
-      # Spring DB/Redis 연결
-      - SPRING_PROFILES_ACTIVE=default
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
 
-      # JWT
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
-      # Google Sheets
-      - GOOGLE_SHEETS_KEY_FILE_PATH=${GOOGLE_SHEETS_KEY_FILE_PATH}
-      - SHEETS_S3_URI=${SHEETS_S3_URI}
+      GOOGLE_SHEETS_KEY_FILE_PATH: ${GOOGLE_SHEETS_KEY_FILE_PATH}
+      SHEETS_S3_URI: ${SHEETS_S3_URI}
 
-      # AWS (S3 다운로드용)
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_BUCKET_REGION=${AWS_BUCKET_REGION}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_BUCKET_REGION: ${AWS_BUCKET_REGION}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
 
-      # OAuth (앱에서 필요하다면)
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - GOOGLE_USER_INFO_URL=${GOOGLE_USER_INFO_URL}
-      - GOOGLE_TOKEN_URL=${GOOGLE_TOKEN_URL}
-      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_USER_INFO_URL: ${GOOGLE_USER_INFO_URL}
+      GOOGLE_TOKEN_URL: ${GOOGLE_TOKEN_URL}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
 
     ports:
       - "8080:8080"
-
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
-
 
 volumes:
   postgres_data:
