@@ -1,6 +1,14 @@
 version: "3.9"
 
 services:
+  muldum-app-v2:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - muldum-postgres
   postgres:
     image: postgres:latest
     container_name: muldum-postgres
