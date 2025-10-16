@@ -60,6 +60,36 @@ public class TeacherItemService {
                 .toList();
     }
 
+    public List<TeacherItemResponseDto> getItemsByTeamIdNotApproved(Integer teamId) {
+        log.info("팀별 승인 안된 물품 조회 시작 - teamId: {}", teamId);
+
+        List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
+                teamId,
+                ItemStatus.PENDING
+        );
+
+        log.info("팀 {}의 승인 안된 물품 수: {}", teamId, items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
+    public List<TeacherItemResponseDto> getItemsByTeamIdApproved(Integer teamId) {
+        log.info("팀별 승인 상태 물품 조회 시작 - teamId: {}", teamId);
+
+        List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
+                teamId,
+                ItemStatus.APPROVED
+        );
+
+        log.info("팀 {}의 승인된 물품 수: {}", teamId, items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
     @Transactional
     public ItemActionResponseDto rejectItems(List<RejectItemRequestDto> rejectRequests) {
         log.info("물품 거절 처리 시작 - 처리할 물품 수: {}", rejectRequests.size());

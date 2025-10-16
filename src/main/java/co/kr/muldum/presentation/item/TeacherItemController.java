@@ -55,6 +55,30 @@ public class TeacherItemController {
         return ResponseEntity.ok(items);
     }
 
+    @GetMapping("/{teamId}/not-approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamIdNotApproved(
+            @PathVariable Integer teamId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 팀별 물품 중 승인 필요 물품 조회 요청");
+
+        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdNotApproved(teamId);
+
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/{teamId}/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamIdApproved(
+            @PathVariable Integer teamId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 팀별 물품 중 승인된 물품 조회 요청");
+
+        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdApproved(teamId);
+
+        return ResponseEntity.ok(items);
+    }
+
     @PatchMapping("/reject")
     public ResponseEntity<ItemActionResponseDto> rejectItems(
             @RequestBody List<RejectItemRequestDto> rejectRequests,
