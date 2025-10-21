@@ -4,9 +4,12 @@ import co.kr.muldum.application.teamspace.TeamspaceService;
 import co.kr.muldum.application.teamspace.dto.TeamspaceInviteRequestDto;
 import co.kr.muldum.application.teamspace.dto.TeamspaceInviteResponseDto;
 import co.kr.muldum.application.teamspace.dto.TeamspaceResponseDto;
+import co.kr.muldum.application.teamspace.dto.TeamspaceWithItemResponseDto;
+import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +29,12 @@ public class TeamspaceController {
     @GetMapping("/ara/teamspace/network")
     public TeamspaceResponseDto getTeamspace() {
         return teamspaceService.getTeamspace();
+    }
+
+    @GetMapping("/tch/teamspace/network/item")
+    @PreAuthorize("hasRole('TEACHER')")
+    public TeamspaceWithItemResponseDto getTeamspaceWithItem(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return teamspaceService.getTeamspaceWithItem(userDetails.getUserId());
     }
 
     // 전공동아리 팀 조회

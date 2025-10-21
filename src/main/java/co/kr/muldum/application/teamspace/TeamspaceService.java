@@ -1,13 +1,20 @@
 package co.kr.muldum.application.teamspace;
 
 import co.kr.muldum.application.teamspace.dto.*;
+import co.kr.muldum.domain.item.model.ItemRequest;
+import co.kr.muldum.domain.item.model.View;
+import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.item.repository.ViewRepository;
 import co.kr.muldum.domain.teamspace.model.Team;
 import co.kr.muldum.domain.teamspace.model.TeamSettings;
 import co.kr.muldum.domain.teamspace.model.TeamType;
 import co.kr.muldum.domain.teamspace.model.TeamspaceMember;
 import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
+import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.Role;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.domain.user.repository.UserRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
@@ -16,9 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +37,9 @@ public class TeamspaceService {
     private final TeamRepository teamRepository;
     private final TeamspaceMemberRepository teamspaceMemberRepository;
     private final GoogleSheetImportService googleSheetImportService;
+    private final ItemRequestRepository itemRequestRepository;
+    private final ViewRepository viewRepository;
+    private final UserReader userReader;
 
     @Value("${team.default-banner-image}")
     private String defaultTeamBannerImage;
@@ -134,6 +146,52 @@ public class TeamspaceService {
 
         return TeamspaceResponseDto.builder()
                 .teams(teamDtos)
+                .build();
+    }
+
+    @Transactional
+    public TeamspaceWithItemResponseDto getTeamspaceWithItem(Long userId) {
+        UserInfo userInfo = userReader.read(User.class, userId);
+
+        List<Team> teams = teamRepository.findByType(TeamType.NETWORK);
+        // Assuming there is only one network team for now
+        Team team = teams.stream().findFirst().orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+
+        List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(team.getId().intValue());
+        List<Long> itemRequestIds = itemRequests.stream().map(ItemRequest::getId).toList();
+
+        Optional<View> latestView = viewRepository.findTopByViewerAndViewedItemIdInOrderByWatchedAtDesc(userInfo.getUserId(), itemRequestIds);
+        Optional<ItemRequest> latestItemRequest = itemRequests.stream().max(java.util.Comparator.comparing(ItemRequest::getCreatedAt));
+
+        boolean hasNewItems = false;
+        if (latestItemRequest.isPresent()) {
+            if (latestView.isPresent()) {
+                if (latestItemRequest.get().getCreatedAt().isAfter(latestView.get().getWatchedAt())) {
+                    hasNewItems = true;
+                }
+            } else {
+                hasNewItems = true;
+            }
+            viewRepository.save(View.builder()
+                    .viewer(userInfo.getUserId())
+                    .viewedItemId(latestItemRequest.get().getId())
+                    .watchedAt(LocalDateTime.now())
+                    .build());
+        }
+
+        List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
+        List<TeamspaceMemberDto> memberDtos = members.stream()
+                .map(member -> TeamspaceMemberDto.builder()
+                        .userId(member.getUser().getId())
+                        .userName(member.getUser().getName())
+                        .build())
+                .toList();
+
+        return TeamspaceWithItemResponseDto.builder()
+                .teamId(team.getId())
+                .teamName(team.getName())
+                .members(memberDtos)
+                .hasNewItems(hasNewItems)
                 .build();
     }
 
