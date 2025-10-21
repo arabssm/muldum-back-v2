@@ -8,6 +8,5 @@ import lombok.Getter;
 public class TeamspaceMemberDto {
 
     private Long userId;
-    private String role;
-    private String studentName;
+    private String userName;
 }
