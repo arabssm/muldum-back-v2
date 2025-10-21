@@ -16,7 +16,7 @@ public class  SnowflakeIdGenerator {
             .toEpochMilli() / 1000 / 60;
 
     private static final int TEAM_ID_BITS = 12;
-    private static final int SEQUENCE_BITS = 7;
+    private static final int SEQUENCE_BITS = 10;
 
     private static final long MAX_TEAM_ID = (1L << TEAM_ID_BITS) - 1;
     private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
