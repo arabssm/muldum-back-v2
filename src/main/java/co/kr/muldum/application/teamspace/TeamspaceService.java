@@ -229,7 +229,13 @@ public class TeamspaceService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다. ID: " + teamId));
 
+        if (team.getType() != TeamType.NETWORK) {
+            throw new IllegalArgumentException("NETWORK 타입의 팀만 삭제할 수 있습니다.");
+        }
+
         teamspaceMemberRepository.deleteByTeam(team);
+        List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(teamId.intValue());
+        itemRequestRepository.deleteAll(itemRequests);
         userRepository.removeTeamIdFromProfile(teamId);
         teamRepository.delete(team);
     }
