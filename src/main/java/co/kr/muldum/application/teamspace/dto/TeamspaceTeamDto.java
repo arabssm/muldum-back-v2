@@ -10,10 +10,9 @@ import java.util.List;
 @Builder
 public class TeamspaceTeamDto {
 
-    @JsonProperty("teamid")
     private Long teamId;
     private String teamName;
     @JsonProperty("class")
     private Integer classNum;
-    private List<TeamspaceMemberDto> member;
+    private List<TeamspaceMemberDto> members;
 }
