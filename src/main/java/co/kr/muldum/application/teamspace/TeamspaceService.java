@@ -118,7 +118,7 @@ public class TeamspaceService {
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
 
-                    // 해당 반에 속한 멤버들만 필터링
+                    // 해당 반에 속한 멤버들만 필터링하고 LEADER 우선 정렬
                     List<TeamspaceMemberDto> memberDtos = members.stream()
                             .filter(member -> {
                                 Map<String, Object> profile = member.getUser().getProfile();
@@ -126,15 +126,19 @@ public class TeamspaceService {
                                 String memberClass = (String) profile.get("class");
                                 return classId.equals(memberClass);
                             })
-                            .map(member -> {
-                                Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = (String) profile.get("studentId");
-                                return TeamspaceMemberDto.builder()
-                                        .userId(member.getUser().getId())
-                                        .role(member.getRole().name())
-                                        .studentName(studentId + member.getUser().getName())
-                                        .build();
+                            .sorted((m1, m2) -> {
+                                // LEADER를 먼저 정렬
+                                if (m1.getRole() == Role.LEADER && m2.getRole() != Role.LEADER) {
+                                    return -1;
+                                } else if (m1.getRole() != Role.LEADER && m2.getRole() == Role.LEADER) {
+                                    return 1;
+                                }
+                                return 0;
                             })
+                            .map(member -> TeamspaceMemberDto.builder()
+                                    .userId(member.getUser().getId())
+                                    .userName(member.getUser().getName())
+                                    .build())
                             .toList();
 
                     // 해당 반에 멤버가 있는 팀만 반환
@@ -154,14 +158,14 @@ public class TeamspaceService {
                             .teamId(team.getId())
                             .teamName(team.getName())
                             .classNum(teamClass)
-                            .member(memberDtos)
+                            .members(memberDtos)
                             .build();
                 })
                 .filter(dto -> dto != null)  // null인 팀 제외
                 .toList();
 
         return TeamspaceResponseDto.builder()
-                .content(teamDtos)
+                .teams(teamDtos)
                 .build();
     }
 
@@ -175,29 +179,32 @@ public class TeamspaceService {
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
                     List<TeamspaceMemberDto> memberDtos = members.stream()
-                            .map(member -> {
-                                Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = profile != null ? (String) profile.get("studentId") : "";
-                                String memberClass = profile != null ? (String) profile.get("class") : null;
-                                return TeamspaceMemberDto.builder()
-                                        .userId(member.getUser().getId())
-                                        .role(member.getRole().name())
-                                        .studentName(studentId + member.getUser().getName())
-                                        .build();
+                            .sorted((m1, m2) -> {
+                                // LEADER를 먼저 정렬
+                                if (m1.getRole() == Role.LEADER && m2.getRole() != Role.LEADER) {
+                                    return -1;
+                                } else if (m1.getRole() != Role.LEADER && m2.getRole() == Role.LEADER) {
+                                    return 1;
+                                }
+                                return 0;
                             })
+                            .map(member -> TeamspaceMemberDto.builder()
+                                    .userId(member.getUser().getId())
+                                    .userName(member.getUser().getName())
+                                    .build())
                             .toList();
 
                     return TeamspaceTeamDto.builder()
                             .teamId(team.getId())
                             .teamName(team.getName())
                             .classNum(null)  // 전공동아리는 반 정보 없음
-                            .member(memberDtos)
+                            .members(memberDtos)
                             .build();
                 })
                 .toList();
 
         return TeamspaceResponseDto.builder()
-                .content(teamDtos)
+                .teams(teamDtos)
                 .build();
     }
 }
