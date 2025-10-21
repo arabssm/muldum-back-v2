@@ -17,4 +17,6 @@ public interface TeamspaceMemberRepository extends JpaRepository<TeamspaceMember
     @EntityGraph(attributePaths = "user")
     List<TeamspaceMember> findByTeam(Team team);
 
+    void deleteByTeam(Team team);
+
 }
