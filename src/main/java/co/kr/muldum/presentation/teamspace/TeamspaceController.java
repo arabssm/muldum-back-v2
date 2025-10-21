@@ -43,8 +43,8 @@ public class TeamspaceController {
     }
 
     @GetMapping("/ara/teamspace/network")
-    public TeamspaceResponseDto getTeamspace() {
-        return teamspaceService.getTeamspace();
+    public TeamspaceResponseDto getTeamspace(@RequestParam(value = "class", required = false) String classId) {
+        return teamspaceService.getTeamspace(classId);
     }
 
     @GetMapping("/tch/teamspace/network/item")
