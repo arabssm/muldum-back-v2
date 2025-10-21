@@ -223,4 +223,14 @@ public class TeamspaceService {
                 .teams(teamDtos)
                 .build();
     }
+
+    @Transactional
+    public void deleteTeam(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다. ID: " + teamId));
+
+        teamspaceMemberRepository.deleteByTeam(team);
+        userRepository.removeTeamIdFromProfile(teamId);
+        teamRepository.delete(team);
+    }
 }
