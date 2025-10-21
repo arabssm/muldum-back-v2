@@ -150,49 +150,48 @@ public class TeamspaceService {
     }
 
     @Transactional
-    public TeamspaceWithItemResponseDto getTeamspaceWithItem(Long userId) {
+    public List<TeamspaceWithItemResponseDto> getTeamspaceWithItem(Long userId) {
         UserInfo userInfo = userReader.read(User.class, userId);
-
         List<Team> teams = teamRepository.findByType(TeamType.NETWORK);
-        // Assuming there is only one network team for now
-        Team team = teams.stream().findFirst().orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
-        List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(team.getId().intValue());
-        List<Long> itemRequestIds = itemRequests.stream().map(ItemRequest::getId).toList();
+        return teams.stream().map(team -> {
+            List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(team.getId().intValue());
+            List<Long> itemRequestIds = itemRequests.stream().map(ItemRequest::getId).toList();
 
-        Optional<View> latestView = viewRepository.findTopByViewerAndViewedItemIdInOrderByWatchedAtDesc(userInfo.getUserId(), itemRequestIds);
-        Optional<ItemRequest> latestItemRequest = itemRequests.stream().max(java.util.Comparator.comparing(ItemRequest::getCreatedAt));
+            Optional<View> latestView = viewRepository.findTopByViewerAndViewedItemIdInOrderByWatchedAtDesc(userInfo.getUserId(), itemRequestIds);
+            Optional<ItemRequest> latestItemRequest = itemRequests.stream().max(java.util.Comparator.comparing(ItemRequest::getCreatedAt));
 
-        boolean hasNewItems = false;
-        if (latestItemRequest.isPresent()) {
-            if (latestView.isPresent()) {
-                if (latestItemRequest.get().getCreatedAt().isAfter(latestView.get().getWatchedAt())) {
+            boolean hasNewItems = false;
+            if (latestItemRequest.isPresent()) {
+                if (latestView.isPresent()) {
+                    if (latestItemRequest.get().getCreatedAt().isAfter(latestView.get().getWatchedAt())) {
+                        hasNewItems = true;
+                    }
+                } else {
                     hasNewItems = true;
                 }
-            } else {
-                hasNewItems = true;
+                viewRepository.save(View.builder()
+                        .viewer(userInfo.getUserId())
+                        .viewedItemId(latestItemRequest.get().getId())
+                        .watchedAt(LocalDateTime.now())
+                        .build());
             }
-            viewRepository.save(View.builder()
-                    .viewer(userInfo.getUserId())
-                    .viewedItemId(latestItemRequest.get().getId())
-                    .watchedAt(LocalDateTime.now())
-                    .build());
-        }
 
-        List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
-        List<TeamspaceMemberDto> memberDtos = members.stream()
-                .map(member -> TeamspaceMemberDto.builder()
-                        .userId(member.getUser().getId())
-                        .userName(member.getUser().getName())
-                        .build())
-                .toList();
+            List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
+            List<TeamspaceMemberDto> memberDtos = members.stream()
+                    .map(member -> TeamspaceMemberDto.builder()
+                            .userId(member.getUser().getId())
+                            .userName(member.getUser().getName())
+                            .build())
+                    .toList();
 
-        return TeamspaceWithItemResponseDto.builder()
-                .teamId(team.getId())
-                .teamName(team.getName())
-                .members(memberDtos)
-                .hasNewItems(hasNewItems)
-                .build();
+            return TeamspaceWithItemResponseDto.builder()
+                    .teamId(team.getId())
+                    .teamName(team.getName())
+                    .members(memberDtos)
+                    .hasNewItems(hasNewItems)
+                    .build();
+        }).toList();
     }
 
     // 전공동아리 팀 조회

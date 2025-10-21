@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class TeamspaceController {
@@ -33,7 +35,9 @@ public class TeamspaceController {
 
     @GetMapping("/tch/teamspace/network/item")
     @PreAuthorize("hasRole('TEACHER')")
-    public TeamspaceWithItemResponseDto getTeamspaceWithItem(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<TeamspaceWithItemResponseDto> getTeamspaceWithItem(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         return teamspaceService.getTeamspaceWithItem(userDetails.getUserId());
     }
 
