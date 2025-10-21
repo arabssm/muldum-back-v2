@@ -41,4 +41,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 기본 키 기반 조회
     Optional<User> findById(Long id);
+
+    @Modifying
+    @Query(value = """
+    UPDATE users
+    SET profile = profile - 'team_id'
+    WHERE (profile->>'team_id') = CAST(:teamId AS text)
+       OR (profile->'team_id')::bigint = :teamId
+""", nativeQuery = true)
+    void removeTeamIdFromProfile(@Param("teamId") Long teamId);
+
 }
