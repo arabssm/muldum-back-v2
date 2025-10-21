@@ -10,7 +10,6 @@ import co.kr.muldum.infrastructure.user.oauth.dto.GoogleUserInfoDto;
 import co.kr.muldum.infrastructure.user.oauth.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -23,7 +22,6 @@ public class OAuthLoginService {
     private final GoogleOAuthClient googleOAuthClient;
     private final UserReader userReader;
     private final JwtProvider jwtProvider;
-    private final RedisTemplate<String, String> redisTemplate;
 
     public LoginResponseDto loginWithGoogle(String authorizationCode) {
         try {
