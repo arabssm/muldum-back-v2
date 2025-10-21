@@ -121,7 +121,7 @@ public class TeamspaceService {
     }
 
     @Transactional(readOnly = true)
-    public TeamspaceResponseDto getTeamspace() {
+    public TeamspaceResponseDto getTeamspace(String classId) {
 
         // NETWORK 타입의 모든 팀 조회
         List<Team> teams = teamRepository.findByType(TeamType.NETWORK);
@@ -129,19 +129,57 @@ public class TeamspaceService {
         List<TeamspaceTeamDto> teamDtos = teams.stream()
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
+
+                    // classId가 null이면 전체 조회, 있으면 해당 반만 필터링
                     List<TeamspaceMemberDto> memberDtos = members.stream()
+                            .filter(member -> {
+                                // classId가 null이면 필터링하지 않음
+                                if (classId == null) {
+                                    return true;
+                                }
+                                Map<String, Object> profile = member.getUser().getProfile();
+                                if (profile == null) return false;
+                                String memberClass = (String) profile.get("class");
+                                return classId.equals(memberClass);
+                            })
+                            .sorted((m1, m2) -> {
+                                // LEADER를 먼저 정렬
+                                if (m1.getRole() == Role.LEADER && m2.getRole() != Role.LEADER) {
+                                    return -1;
+                                } else if (m1.getRole() != Role.LEADER && m2.getRole() == Role.LEADER) {
+                                    return 1;
+                                }
+                                return 0;
+                            })
                             .map(member -> TeamspaceMemberDto.builder()
                                     .userId(member.getUser().getId())
                                     .userName(member.getUser().getName())
                                     .build())
                             .toList();
 
+                    // 해당 반에 멤버가 있는 팀만 반환
+                    if (memberDtos.isEmpty()) {
+                        return null;
+                    }
+
+                    // 팀의 반 정보 설정
+                    Integer teamClass = null;
+                    if (classId != null) {
+                        try {
+                            teamClass = Integer.parseInt(classId);
+                        } catch (NumberFormatException e) {
+                            // classId가 숫자가 아닌 경우 null 유지
+                        }
+                    }
+
                     return TeamspaceTeamDto.builder()
                             .teamId(team.getId())
                             .teamName(team.getName())
+                            .classNum(teamClass)
                             .members(memberDtos)
                             .build();
                 })
+                .filter(dto -> dto != null)  // null인 팀 제외
                 .toList();
 
         return TeamspaceResponseDto.builder()
@@ -204,6 +242,15 @@ public class TeamspaceService {
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
                     List<TeamspaceMemberDto> memberDtos = members.stream()
+                            .sorted((m1, m2) -> {
+                                // LEADER를 먼저 정렬
+                                if (m1.getRole() == Role.LEADER && m2.getRole() != Role.LEADER) {
+                                    return -1;
+                                } else if (m1.getRole() != Role.LEADER && m2.getRole() == Role.LEADER) {
+                                    return 1;
+                                }
+                                return 0;
+                            })
                             .map(member -> TeamspaceMemberDto.builder()
                                     .userId(member.getUser().getId())
                                     .userName(member.getUser().getName())
@@ -213,6 +260,7 @@ public class TeamspaceService {
                     return TeamspaceTeamDto.builder()
                             .teamId(team.getId())
                             .teamName(team.getName())
+                            .classNum(null)  // 전공동아리는 반 정보 없음
                             .members(memberDtos)
                             .build();
                 })
@@ -221,5 +269,21 @@ public class TeamspaceService {
         return TeamspaceResponseDto.builder()
                 .teams(teamDtos)
                 .build();
+    }
+
+    @Transactional
+    public void deleteTeam(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다. ID: " + teamId));
+
+        if (team.getType() != TeamType.NETWORK) {
+            throw new IllegalArgumentException("NETWORK 타입의 팀만 삭제할 수 있습니다.");
+        }
+
+        teamspaceMemberRepository.deleteByTeam(team);
+        List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(teamId.intValue());
+        itemRequestRepository.deleteAll(itemRequests);
+        userRepository.removeTeamIdFromProfile(teamId);
+        teamRepository.delete(team);
     }
 }
