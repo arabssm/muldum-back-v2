@@ -23,7 +23,7 @@ public class ItemRequestFinalizer {
                 userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
 
         List<ItemRequest> tempRequests = itemRequestRepository
-                .findByRequesterUserIdAndStatus(userInfo.getUserId().intValue(), ItemStatus.INTEMP);
+                .findByTeamIdAndStatus(userInfo.getTeamId().intValue(), ItemStatus.INTEMP);
 
         if (tempRequests.isEmpty()) {
             return new FinalizeResult(ItemStatus.REJECTED, "임시 신청된 물품이 없습니다.");
