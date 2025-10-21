@@ -24,7 +24,7 @@ public class TeamspaceController {
     }
 
     @GetMapping("/ara/teamspace/network")
-    public TeamspaceResponseDto getTeamspace(@RequestParam("class") String classId) {
+    public TeamspaceResponseDto getTeamspace(@RequestParam(value = "class", required = false) String classId) {
         return teamspaceService.getTeamspace(classId);
     }
 

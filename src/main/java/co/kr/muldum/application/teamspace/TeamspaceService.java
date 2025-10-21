@@ -118,9 +118,13 @@ public class TeamspaceService {
                 .map(team -> {
                     List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
 
-                    // 해당 반에 속한 멤버들만 필터링하고 LEADER 우선 정렬
+                    // classId가 null이면 전체 조회, 있으면 해당 반만 필터링
                     List<TeamspaceMemberDto> memberDtos = members.stream()
                             .filter(member -> {
+                                // classId가 null이면 필터링하지 않음
+                                if (classId == null) {
+                                    return true;
+                                }
                                 Map<String, Object> profile = member.getUser().getProfile();
                                 if (profile == null) return false;
                                 String memberClass = (String) profile.get("class");
@@ -146,12 +150,14 @@ public class TeamspaceService {
                         return null;
                     }
 
-                    // 팀의 반 정보는 첫 번째 멤버의 반 정보를 사용
+                    // 팀의 반 정보 설정
                     Integer teamClass = null;
-                    try {
-                        teamClass = Integer.parseInt(classId);
-                    } catch (NumberFormatException e) {
-                        // classId가 숫자가 아닌 경우 null 유지
+                    if (classId != null) {
+                        try {
+                            teamClass = Integer.parseInt(classId);
+                        } catch (NumberFormatException e) {
+                            // classId가 숫자가 아닌 경우 null 유지
+                        }
                     }
 
                     return TeamspaceTeamDto.builder()
