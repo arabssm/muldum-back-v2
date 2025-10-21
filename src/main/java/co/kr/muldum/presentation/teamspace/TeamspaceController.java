@@ -24,8 +24,8 @@ public class TeamspaceController {
     }
 
     @GetMapping("/ara/teamspace/network")
-    public TeamspaceResponseDto getTeamspace() {
-        return teamspaceService.getTeamspace();
+    public TeamspaceResponseDto getTeamspace(@RequestParam("class") String classId) {
+        return teamspaceService.getTeamspace(classId);
     }
 
     // 전공동아리 팀 조회
