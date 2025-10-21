@@ -1,5 +1,6 @@
 package co.kr.muldum.application.teamspace.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +10,10 @@ import java.util.List;
 @Builder
 public class TeamspaceTeamDto {
 
+    @JsonProperty("teamid")
     private Long teamId;
     private String teamName;
-    private List<TeamspaceMemberDto> members;
+    @JsonProperty("class")
+    private Integer classNum;
+    private List<TeamspaceMemberDto> member;
 }
