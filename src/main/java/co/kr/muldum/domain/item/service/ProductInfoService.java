@@ -33,16 +33,19 @@ public class ProductInfoService {
                     .timeout(5000)
                     .get();
 
-            Element nameEl = doc.selectFirst(".right_item_title");
-            Element priceEl = doc.selectFirst(".right_item_price");
+            // 상품명
+            Element titleEl = doc.selectFirst("li.goods_name > h3");
+            // 가격
+            Element priceEl = doc.selectFirst("strong.sell_price");
 
-            if (nameEl == null || priceEl == null)
+            if (titleEl == null || priceEl == null)
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
 
-            String name = nameEl.text().trim();
+            String title = titleEl.text();
             String price = normalizePrice(priceEl.text());
 
-            return new ProductInfoResponseDto(name, price);
+            return new ProductInfoResponseDto(title, price);
+
         } catch (IOException e) {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
@@ -61,7 +64,7 @@ public class ProductInfoService {
             if (nameEl == null || priceEl == null)
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
 
-            String name = nameEl.text().trim();
+            String name = nameEl.text();
             String price = normalizePrice(priceEl.text());
 
             return new ProductInfoResponseDto(name, price);
