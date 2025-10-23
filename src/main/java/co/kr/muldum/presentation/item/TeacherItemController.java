@@ -25,6 +25,20 @@ public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
 
+    @GetMapping("/xlsx")
+    public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) throws IOException {
+        log.info("선생님 물품 중 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", userDetails.getUserId());
+
+        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsx());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=approved_items.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(resource);
+    }
+
     @GetMapping
     public ResponseEntity<List<TeacherItemResponseDto>> getAllPendingItems(
             @AuthenticationPrincipal CustomUserDetails userDetails
