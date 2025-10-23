@@ -40,7 +40,7 @@ public class ProductInfoService {
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
 
             String name = nameEl.text().trim();
-            String price = priceEl.text().trim();
+            String price = normalizePrice(priceEl.text());
 
             return new ProductInfoResponseDto(name, price);
         } catch (IOException e) {
@@ -62,11 +62,16 @@ public class ProductInfoService {
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
 
             String name = nameEl.text().trim();
-            String price = priceEl.text().trim();
+            String price = normalizePrice(priceEl.text());
 
             return new ProductInfoResponseDto(name, price);
         } catch (IOException e) {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
+    }
+
+    private String normalizePrice(String rawPrice) {
+        if (rawPrice == null) return "0";
+        return rawPrice.replaceAll("[^0-9]", "");
     }
 }
