@@ -1,17 +1,24 @@
 package co.kr.muldum.domain.item.service;
 
+import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.user.UserReader;
+import co.kr.muldum.domain.user.model.User;
+import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +61,18 @@ public class TeacherItemService {
         );
 
         log.info("팀 {}의 조회된 물품 수: {}", teamId, items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
+    public List<TeacherItemResponseDto> getAllNotApprovedItems() {
+        log.info("모든 팀의 승인 안된 물품 조회 시작");
+
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.PENDING);
+
+        log.info("조회된 승인 안된 물품 수: {}", items.size());
 
         return items.stream()
                 .map(this::convertToTeacherItemResponseDto)
