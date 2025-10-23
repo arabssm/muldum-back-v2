@@ -7,6 +7,8 @@ import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
+import co.kr.muldum.global.exception.CustomException;
+import co.kr.muldum.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,9 +42,20 @@ public class ItemRequestFacade {
             ItemStatus status = itemStatusDecisionService.decideStatus(itemSource);
             String message = itemStatusDecisionService.getStatusMessage(status);
 
-            // 거부된 경우 DB에 저장하지 않고 바로 응답
+            // 거부된 경우 DB에 저장하지 않고 바로 예외 발생
             if (status == ItemStatus.REJECTED) {
-                return itemResponseFactory.createRejectedResponse(message);
+                log.warn("물품 신청 실패 - 허용되지 않은 쇼핑몰: userId={}, productLink={}", userId, requestDto.getProductLink());
+                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE); // Throw exception here
+            }
+
+            // 가격 파싱 및 유효성 검사
+            try {
+                if (requestDto.getPrice() != null && !requestDto.getPrice().trim().isEmpty()) {
+                    Long.parseLong(requestDto.getPrice());
+                }
+            } catch (NumberFormatException e) {
+                log.warn("물품 신청 실패 - 가격 파싱 오류: userId={}, price={}", userId, requestDto.getPrice());
+                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
             }
 
             // 승인된 경우 DB에 저장
@@ -51,6 +64,8 @@ public class ItemRequestFacade {
 
         } catch (IllegalArgumentException e) {
             return itemResponseFactory.createRejectedResponse(e.getMessage());
+        } catch (CustomException e) { // Catch CustomException here
+            throw e; // Re-throw to be handled by GlobalExceptionHandler
         }
     }
 }
