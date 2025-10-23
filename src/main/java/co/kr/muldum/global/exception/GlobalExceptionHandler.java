@@ -36,4 +36,13 @@ public class GlobalExceptionHandler {
                         "message", ex.getMessage()
                 ));
     }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Map<String, Object>> handleCustomException(CustomException ex) {
+        return ResponseEntity.status(ex.getErrorCode().getStatus())
+                .body(Map.of(
+                        "statusCode", ex.getErrorCode().getStatus().value(),
+                        "message", ex.getErrorCode().getMessage()
+                ));
+    }
 }
