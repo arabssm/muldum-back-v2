@@ -5,11 +5,15 @@ import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,6 +55,19 @@ public class TeacherItemController {
         log.info("선생님 팀별 물품 조회 요청 - teacherId: {}, teamId: {}", userDetails.getUserId(), teamId);
 
         List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamId(teamId);
+
+        return ResponseEntity.ok(items);
+    }
+
+    
+
+    @GetMapping("/not-approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllNotApprovedItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+
+        List<TeacherItemResponseDto> items = teacherItemService.getAllNotApprovedItems();
 
         return ResponseEntity.ok(items);
     }
