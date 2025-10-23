@@ -44,6 +44,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'software.amazon.awssdk:s3:2.25.23'
     implementation 'org.json:json:20230227'
+    implementation 'org.apache.poi:poi:5.2.3'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
     
     compileOnly 'com.diffblue.cover:cover-annotations:1.6.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
