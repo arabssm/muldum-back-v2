@@ -1,20 +1,13 @@
 package co.kr.muldum.presentation.item;
 
-import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
-import co.kr.muldum.domain.item.dto.TempItemRequestDto;
-import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
-import co.kr.muldum.domain.item.service.ItemRequestService;
+import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.service.*;
 import co.kr.muldum.global.security.CustomUserDetails;
-import co.kr.muldum.domain.item.dto.ItemResponseDto;
-import co.kr.muldum.domain.item.dto.ItemListResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
 import co.kr.muldum.domain.item.service.ItemRequestService;
-import co.kr.muldum.domain.item.service.ItemListService;
-import co.kr.muldum.domain.item.service.ItemRequestFinalizer;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
-import co.kr.muldum.global.security.CustomUserDetails;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +30,7 @@ public class StudentItemController {
     private final ItemListService itemListService;
     private final ItemRequestFinalizer itemRequestFinalizer;
     private final UserReader userReader;
+    private final ProductInfoService productInfoService;
 
     @GetMapping
     public ResponseEntity<List<ItemListResponseDto>> getTeamItems(
@@ -45,6 +39,15 @@ public class StudentItemController {
         UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
         List<ItemListResponseDto> items = itemListService.getTeamItemRequests(userInfo);
         return ResponseEntity.ok(items);
+    }
+
+    @PostMapping("/preview")
+    public ResponseEntity<ProductInfoResponseDto> previewProduct(
+            @RequestBody ProductInfoRequestDto dto
+    ) {
+        String productLink = dto.getProductLink();
+        ProductInfoResponseDto productInfo = productInfoService.getProductInfo(productLink);
+        return ResponseEntity.ok(productInfo);
     }
 
     @GetMapping("/temp")
