@@ -27,6 +27,43 @@ import java.util.stream.Collectors;
 public class TeacherItemService {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final ExcelExportService excelExportService;
+    private final UserReader userReader;
+
+    public ByteArrayInputStream getApprovedItemsAsXlsx() throws IOException {
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.APPROVED);
+        List<ItemExcelResponseDto> dtos = items.stream()
+                .map(this::convertToItemExcelResponseDto)
+                .collect(Collectors.toList());
+        return excelExportService.createXlsx(dtos);
+    }
+
+    private ItemExcelResponseDto convertToItemExcelResponseDto(ItemRequest itemRequest) {
+        UserInfo requester = userReader.read(UserInfo.class, itemRequest.getRequesterUserId().longValue());
+        String requesterName = (requester != null) ? requester.getName() : "Unknown";
+
+        String productName = null;
+        String price = null;
+        Integer quantity = null;
+        String productLink = null;
+
+        if (itemRequest.getProductInfo() != null) {
+            productName = itemRequest.getProductInfo().getName();
+            price = itemRequest.getProductInfo().getPrice();
+            quantity = itemRequest.getProductInfo().getQuantity();
+            productLink = itemRequest.getProductInfo().getLink();
+        }
+
+        return ItemExcelResponseDto.builder()
+                .itemId(itemRequest.getId())
+                .productName(productName)
+                .price(price)
+                .quantity(quantity)
+                .productLink(productLink)
+                .requesterName(requesterName)
+                .build();
+    }
+
 
     public List<TeacherItemResponseDto> getAllPendingItems() {
         log.info("모든 팀의 PENDING, APPROVED 물품 조회 시작");
