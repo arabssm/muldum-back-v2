@@ -1,4 +1,4 @@
-package co.kr.muldum.presentation.user;
+package co.kr.muldum.infrastructure.check;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
