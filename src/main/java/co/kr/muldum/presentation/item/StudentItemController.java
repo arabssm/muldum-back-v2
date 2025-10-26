@@ -11,6 +11,7 @@ import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,6 +68,17 @@ public class StudentItemController {
                 tempItemRequestDto,
                 userDetails.getUserId()
         );
+        return handleItemResponse(response);
+    }
+
+    @DeleteMapping("/temp/{item_id}")
+    public ResponseEntity<ItemResponseDto> deleteTempItemRequest(
+            @PathVariable("item_id") Long itemId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+            ) {
+        ItemResponseDto response = itemRequestService.deleteTempItemRequest(
+                itemId,
+                userDetails.getUserId());
         return handleItemResponse(response);
     }
 

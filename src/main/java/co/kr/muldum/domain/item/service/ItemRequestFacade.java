@@ -22,9 +22,14 @@ public class ItemRequestFacade {
 
     private final UserReader userReader;
     private final ItemValidationService itemValidationService;
-    private final ItemRequestCreator itemRequestCreator;
+    private final ItemRequestExecutor itemRequestExecutor;
     private final ItemStatusDecisionService itemStatusDecisionService;
     private final ItemResponseFactory itemResponseFactory;
+
+    public ItemResponseDto deleteTempItemRequest(Long itemRequestId, Long userId) {
+        itemRequestExecutor.deleteTempItemRequest(itemRequestId, userId);
+        return itemResponseFactory.createResponse(ItemStatus.REJECTED, "임시 신청이 취소되었습니다.");
+    }
 
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
         try {
@@ -59,7 +64,7 @@ public class ItemRequestFacade {
             }
 
             // 승인된 경우 DB에 저장
-            itemRequestCreator.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue());
+            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue());
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {

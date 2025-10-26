@@ -1,0 +1,1467 @@
+00:00:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:00:00.035 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:00:00.035 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:00:10.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:00:16.644 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (5799b2b7-16b4-4fa1-aede-ac303ae8ead3)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:00:20.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:00:30.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:00:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:00:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:00:50.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:00.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:00.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:01:00.010 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:01:10.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:21.723 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (238d8675-2fa8-44f3-b1c5-29c6d395e4dc)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:01:30.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:30.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:01:40.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:01:50.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:00.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:00.011 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:02:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:02:10.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:20.006 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:26.825 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (3873a04a-49cd-4c87-b41a-e4d5d6e4cfad)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:02:30.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:30.011 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:02:40.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:02:50.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:00.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:00.008 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:03:00.009 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:03:10.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:20.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:30.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:30.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:03:31.930 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (f2e3c273-6832-447c-bbff-39125847351b)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:03:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:03:50.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:00.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:04:00.010 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:04:10.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:20.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:04:37.020 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (ce986d67-f44f-482d-9e0a-8612839efba3)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:04:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:04:50.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:00.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:00.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:05:00.010 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:05:10.006 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:20.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:30.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:30.001 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:05:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:05:42.111 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (5c33925e-a7e0-471c-a66b-f9b784879192)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:05:50.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:00.008 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:06:00.008 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:06:10.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:20.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:30.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:30.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:06:40.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:06:47.224 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (21d4f16c-8ee7-451f-aad4-c57b0151f32c)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:06:50.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:00.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:07:00.010 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:07:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:20.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:30.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:07:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:50.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:07:52.323 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (51ef7345-933e-4910-95b4-5304b9d07f8e)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:08:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:00.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:08:00.007 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:08:10.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:20.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:08:40.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:08:57.420 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (11066e70-696a-4d4c-a2af-ee0d29708285)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:09:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:09:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:09:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:09:10.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:09:20.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:09:30.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:09:30.012 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:09:40.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:09:50.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:00.011 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:10:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:10:02.538 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (d3bead15-04dc-4873-88c8-08fcf07eee63)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:10:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:10:40.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:10:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:00.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:11:00.004 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:11:07.637 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (4b15bf92-8b9a-4ede-aca1-ebb1ab4ea575)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:11:10.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:30.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:30.011 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:11:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:11:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:12:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:12:10.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:12.758 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (7b0058ad-4cb2-4e24-8fd3-0d3088391d5c)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:12:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:30.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:12:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:40.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:12:50.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:00.001 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:13:00.002 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:13:00.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:10.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:17.829 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (c8643a96-0190-4402-af70-f17387b03fa2)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:13:20.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:30.008 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:13:30.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:40.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:13:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:14:00.012 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:14:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:20.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:22.925 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (9701a587-ff8c-4bc8-8800-d5ca65c21272)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:14:30.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:30.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:14:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:14:50.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:00.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:15:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:15:10.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:20.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:28.011 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (01fb0020-dae7-449b-8dd5-88020e6f7db3)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:15:30.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:30.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:15:40.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:15:50.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:16:00.011 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:16:10.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:20.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:30.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:30.009 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:16:33.109 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (8cbbdda2-e518-4507-81eb-946096b1739b)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:16:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:16:50.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:00.007 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:00.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:17:00.010 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:17:10.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:20.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:30.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:30.010 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:17:38.214 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (78f82ca3-fcaf-401b-967f-8edbdbf9a545)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:17:40.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:17:50.008 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:00.009 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:00.011 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:18:00.012 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:18:10.006 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:20.010 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:30.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:18:40.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:18:43.303 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (ef4c32d0-3e71-4a75-828e-cfc96f30f034)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:18:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:00.007 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:19:00.008 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:19:10.006 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:20.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:19:40.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:19:48.354 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (bb17acf5-1629-47e0-9489-cfaece5f9571)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:19:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:00.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:00.001 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:20:00.002 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:20:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:20:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:20:53.417 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (55a17c9e-03a3-4ba4-9f07-bb5a75a2545a)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:21:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:00.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:21:00.004 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:21:10.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:20.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:21:40.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:50.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:21:58.471 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (f72977af-6da3-401d-bfae-4cd6b7668048)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:22:00.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:22:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:22:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:22:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:22:20.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:22:30.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:22:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:22:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:22:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:00.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:23:00.005 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:23:03.530 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (3f4ce46e-74ca-48a0-bef0-c057aae609eb)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:23:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:30.007 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:23:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:23:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:00.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:24:00.007 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:24:08.592 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (0ef4cca1-8596-4bbe-be7b-cadd2fe331b8)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:24:10.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:24:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:24:50.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:00.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:25:00.005 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:25:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:13.642 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (4e8bb94d-3e8b-45e1-9b20-da0a99313861)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:25:20.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:25:40.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:25:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:00.007 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:26:00.007 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:26:10.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:18.693 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (e3390fe4-5e7a-4dd3-8b63-bebec0167eaa)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:26:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:26:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:26:50.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:00.008 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:27:00.009 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:27:10.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:23.759 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (ad5c58d5-77bb-4b4f-bf08-f89c0449b87d)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:27:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:27:40.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:27:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:00.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:28:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:28:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:20.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:28.819 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (2377777f-3271-4ef2-a1dd-a8bdb85fbd4e)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:28:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:28:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:28:50.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:00.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:29:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:29:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:20.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:29:33.882 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (b8cf1869-7ef7-4d2a-9b60-385737583d6a)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:29:40.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:29:50.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:00.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:00.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:30:00.005 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:30:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:20.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:30.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:30:38.951 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (9e54aea2-a8a0-42ae-bb34-828675bca038)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:30:40.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:30:50.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:00.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:00.003 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:31:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:31:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:30.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:30.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:31:40.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:31:43.997 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (77d9afb5-dcda-4836-8d84-f9d0af6cd3ac)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:31:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:00.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:00.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:32:00.006 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:32:10.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:20.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:30.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:30.002 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:32:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:32:49.070 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (224da010-8911-4bf5-95d1-4849d89c3b2e)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:32:50.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:00.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:00.006 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:33:00.007 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:33:10.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:20.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:33:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:50.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:33:54.115 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (fbc54b07-7e76-4b82-ab21-7656b9f219ed)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:34:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:00.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:34:00.004 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:34:10.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:34:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:50.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:34:59.155 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (0faf2232-e56a-4ffa-9175-fac228b6eee0)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:35:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:35:00.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:35:00.005 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:35:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:35:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:35:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:35:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:35:40.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:35:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:00.001 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:00.002 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:36:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:36:04.200 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (502db087-8806-4e79-beb7-06f8d9b21d5e)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:36:09.983 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:19.993 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:29.967 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:36:29.994 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:40.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:50.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:36:59.959 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:36:59.999 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:36:59.999 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:37:09.222 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (dbe42e7f-a64d-4ebf-a539-205fd1692e79)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:37:10.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:37:20.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:37:30.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:37:30.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:37:40.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:37:50.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:00.001 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:38:00.002 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:38:00.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:10.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:14.266 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (25e23cc0-2fca-4343-82ec-f3c80e83b405)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:38:20.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:30.005 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:38:30.006 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:40.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:38:50.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:00.001 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:39:00.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:39:00.004 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:10.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:19.319 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (4faaafd5-ec49-4db9-bef1-545630206cb0)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
+00:39:20.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:30.002 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:39:30.003 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:40.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:39:50.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:40:00.003 [scheduling-1] [ERROR] c.k.m.i.check.LogSchedule[printErrorMessage:18] 에러 메세지 출력
+00:40:00.004 [scheduling-1] [ WARN] c.k.m.i.check.LogSchedule[printWarnMessage:23] Warning 메세지 출력
+00:40:00.005 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:40:10.002 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:40:20.000 [scheduling-1] [ INFO] c.k.m.i.check.LogSchedule[printInfoMessage:13] 일반 메세지 출력
+00:40:24.361 [HikariPool-1:connection-adder] [ WARN] com.zaxxer.hikari.pool.PoolBase[newConnection:386] HikariPool-1 - Pool is empty, failed to create/setup connection (a71e3df6-5765-49e8-af64-21396de47834)
+org.postgresql.util.PSQLException: Connection to 127.0.0.1:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277)
+	at org.postgresql.Driver.makeConnection(Driver.java:448)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
+	... 14 common frames omitted
