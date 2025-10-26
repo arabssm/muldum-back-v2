@@ -18,7 +18,10 @@ public enum ErrorCode {
     NOT_TEAM_MEMBER(HttpStatus.FORBIDDEN, "해당 팀의 멤버가 아닙니다."),
     TEAM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "팀에 대한 접근 권한이 없습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
-    INVALID_PRODUCT_LINK(HttpStatus.BAD_REQUEST, "상품 링크가 유효하지 않습니다.");
+    INVALID_PRODUCT_LINK(HttpStatus.BAD_REQUEST, "상품 링크가 유효하지 않습니다."),
+    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "물품을 찾을 수 없습니다."),
+    FORBIDDEN_TEAM_ITEM(HttpStatus.FORBIDDEN, "자신이 속한 팀의 물품만 취소할 수 있습니다."),
+    ITEM_NOT_IN_TEMP_STATUS(HttpStatus.BAD_REQUEST, "임시 저장 상태의 물품만 삭제할 수 있습니다.");
 
   private final HttpStatus status;
     private final String message;
