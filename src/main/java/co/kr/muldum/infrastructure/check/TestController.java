@@ -18,4 +18,9 @@ public class TestController {
     public ResponseEntity<String> simpleTest() {
         return ResponseEntity.ok("Simple test endpoint working!");
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("health check");
+    }
 }
