@@ -9,6 +9,8 @@ import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import co.kr.muldum.domain.item.model.ItemRequest;
+import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,23 @@ public class ItemRequestFacade {
     private final ItemRequestExecutor itemRequestExecutor;
     private final ItemStatusDecisionService itemStatusDecisionService;
     private final ItemResponseFactory itemResponseFactory;
+    private final ItemRequestRepository itemRequestRepository;
 
     public ItemResponseDto deleteTempItemRequest(Long itemRequestId, Long userId) {
-        itemRequestExecutor.deleteTempItemRequest(itemRequestId, userId);
-        return itemResponseFactory.createResponse(ItemStatus.REJECTED, "임시 신청이 취소되었습니다.");
+        UserInfo userInfo = userReader.read(User.class, userId);
+        ItemRequest itemRequest = itemRequestRepository.findById(itemRequestId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+        if (!itemRequest.getTeamId().equals(userInfo.getTeamId().intValue())) {
+            throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
+        }
+
+        if (itemRequest.getStatus() != ItemStatus.INTEMP) {
+            throw new CustomException(ErrorCode.ITEM_NOT_IN_TEMP_STATUS);
+        }
+
+        itemRequestExecutor.deleteTempItemRequest(itemRequestId);
+        return itemResponseFactory.createResponse(ItemStatus.INTEMP, "임시 신청이 정상적으로 취소되었습니다.");
     }
 
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
