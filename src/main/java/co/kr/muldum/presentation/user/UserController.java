@@ -22,9 +22,20 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/issue")
-    public ResponseEntity<UserIssueResponseDto> fixUserIssues() {
+    public ResponseEntity<String> fixUserIssues() {
         log.info("팀 ID가 null인 사용자 문제 해결 요청 접수");
-        UserIssueResponseDto response = userService.fixNullTeamIds();
+        UserIssueResponseDto teamIdResponse = userService.fixNullTeamIds();
+
+        log.info("profile이 null인 사용자 문제 해결 요청 접수");
+        UserIssueResponseDto profileResponse = userService.fixNullProfiles();
+
+        String response = String.format(
+                "문제 해결 완료:\n%s, %s\n%s, %s",
+                teamIdResponse.getMessage(),
+                teamIdResponse.getUpdatedCount(),
+                profileResponse.getMessage(),
+                profileResponse.getUpdatedCount()
+        );
 
         return ResponseEntity.ok(response);
     }

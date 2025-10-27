@@ -20,7 +20,6 @@ public class UserService {
         log.info("team_id가 null인 유저들을 0으로 업데이트 시작");
 
         try {
-            // 네이티브 쿼리 사용
             int updatedCount = userRepository.updateNullTeamIdToZero();
 
             log.info("team_id 업데이트 완료 - 업데이트된 유저 수: {}", updatedCount);
@@ -33,6 +32,26 @@ public class UserService {
         } catch (Exception e) {
             log.error("team_id 업데이트 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException("team_id 업데이트 실패", e);
+        }
+    }
+
+    public UserIssueResponseDto fixNullProfiles() {
+        log.info("profile이 null인 유저들을 기본 프로필로 업데이트 시작");
+
+        try {
+            // 네이티브 쿼리 사용
+            int updatedCount = userRepository.updateNullProfileToDefault();
+
+            log.info("profile 업데이트 완료 - 업데이트된 유저 수: {}", updatedCount);
+
+            return UserIssueResponseDto.builder()
+                    .message("profile이 null인 유저들을 기본 프로필로 업데이트했습니다.")
+                    .updatedCount(updatedCount)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("profile 업데이트 중 오류 발생: {}", e.getMessage());
+            throw new RuntimeException("profile 업데이트 실패", e);
         }
     }
 
