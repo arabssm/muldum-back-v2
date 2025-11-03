@@ -72,6 +72,7 @@ public class ItemRequestService {
                 .type(TeamType.NETWORK)
                 .reason(itemRequest.getRequestDetails().getReason() != null ?
                         itemRequest.getRequestDetails().getReason() : "")
+                .product_link(itemRequest.getProductInfo().getLink())
                 .build();
     }
 
