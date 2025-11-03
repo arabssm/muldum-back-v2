@@ -11,7 +11,6 @@ import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.presentation.dto.item.ItemStatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
