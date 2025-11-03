@@ -148,4 +148,18 @@ public class TeacherItemController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/{item_id}")
+    public ResponseEntity<ItemActionResponseDto> updateItem(
+            @PathVariable("item_id") Long itemId,
+            @RequestBody UpdateItemRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("물품 최종 신청 수정 요청 - teacherId: {}, itemId: {}",
+                userDetails.getUserId(), itemId);
+
+        ItemActionResponseDto response = teacherItemService.updateItem(itemId, requestDto);
+
+        return ResponseEntity.ok(response);
+    }
 }

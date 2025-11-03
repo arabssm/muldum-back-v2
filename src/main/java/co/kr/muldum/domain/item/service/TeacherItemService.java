@@ -2,6 +2,8 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.dto.UpdateItemRequestDto;
+import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
@@ -267,6 +269,45 @@ public class TeacherItemService {
 
         return DeliveryNumberResponseDto.builder()
                 .message("운송장 번호가 등록되었습니다.")
+                .build();
+    }
+
+    @Transactional
+    public ItemActionResponseDto updateItem(Long itemId, UpdateItemRequestDto requestDto) {
+        log.info("물품 수정 요청 시작 - itemId: {}", itemId);
+
+        ItemRequest item = itemRequestRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + itemId));
+
+        // ProductInfo 업데이트
+        if (item.getProductInfo() != null) {
+            item.getProductInfo().updateInfo(
+                    requestDto.getItemName(),
+                    requestDto.getCount(),
+                    requestDto.getPrice(),
+                    requestDto.getDescription(),
+                    requestDto.getImageUrl()
+            );
+        } else {
+            // If ProductInfo is null, create a new one
+            ProductInfo newProductInfo = ProductInfo.builder()
+                    .name(requestDto.getItemName())
+                    .quantity(requestDto.getCount())
+                    .price(requestDto.getPrice() != null ? String.valueOf(requestDto.getPrice()) : null)
+                    .link(requestDto.getImageUrl()) // Assuming imageUrl is stored in 'link' for now
+                    .build();
+            if (requestDto.getDescription() != null) {
+                newProductInfo.setDescription(requestDto.getDescription());
+            }
+            item.setProductInfo(newProductInfo);
+        }
+
+        itemRequestRepository.save(item);
+        log.info("물품 수정 완료 - itemId: {}", itemId);
+
+        return ItemActionResponseDto.builder()
+                .status(item.getStatus())
+                .message("물품 정보가 성공적으로 수정되었습니다.")
                 .build();
     }
 }
