@@ -4,5 +4,6 @@ public enum ItemStatus {
     PENDING,
     INTEMP,
     APPROVED,
-    REJECTED
+    REJECTED,
+    DELETED
 }
