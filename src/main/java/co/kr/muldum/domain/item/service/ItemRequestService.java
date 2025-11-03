@@ -34,6 +34,16 @@ public class ItemRequestService {
         return itemRequestFacade.createTempItemRequest(requestDto, userId);
     }
 
+    public ItemResponseDto updateTempItemRequest(Long itemId, TempItemRequestDto requestDto, Long userId) {
+        log.info("임시 물품 수정 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.updateItemRequest(itemId, userId, requestDto);
+    }
+
+    public ItemResponseDto deleteItemRequest(Long itemId, Long userId) {
+        log.info("물품 삭제 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.deleteItemRequest(itemId, userId);
+    }
+
     public ItemResponseDto deleteTempItemRequest(Long itemId, Long userId) {
         log.info("임시 물품 삭제 요청 - itemId={}, userId={}", itemId, userId);
         return itemRequestFacade.deleteTempItemRequest(itemId, userId);

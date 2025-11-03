@@ -29,6 +29,55 @@ public class ItemRequestFacade {
     private final ItemResponseFactory itemResponseFactory;
     private final ItemRequestRepository itemRequestRepository;
 
+    public ItemResponseDto updateItemRequest(Long itemId, Long userId, TempItemRequestDto requestDto) {
+        try {
+            UserInfo userInfo = userReader.read(User.class, userId);
+
+            log.debug("임시 물품 수정 - 사용자 정보: userId={}, teamId={}, userType={}",
+                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+
+            itemValidationService.validateTeamInfo(userInfo);
+            itemValidationService.validateProductLink(requestDto);
+
+            ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
+            ItemStatus status = itemStatusDecisionService.decideStatus(itemSource);
+            String message = itemStatusDecisionService.getStatusMessage(status);
+
+            if (status == ItemStatus.REJECTED) {
+                log.warn("임시 물품 수정 실패 - 허용되지 않은 쇼핑몰: userId={}, productLink={}", userId, requestDto.getProductLink());
+                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+
+            try {
+                if (requestDto.getPrice() != null && !requestDto.getPrice().trim().isEmpty()) {
+                    Long.parseLong(requestDto.getPrice());
+                }
+            } catch (NumberFormatException e) {
+                log.warn("임시 물품 수정 실패 - 가격 파싱 오류: userId={}, price={}", userId, requestDto.getPrice());
+                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+
+            itemRequestExecutor.updateItemRequest(itemId, requestDto, userId, userInfo.getTeamId().intValue());
+            return itemResponseFactory.createResponse(status, message);
+
+        } catch (IllegalArgumentException e) {
+            return itemResponseFactory.createRejectedResponse(e.getMessage());
+        } catch (CustomException e) {
+            throw e;
+        }
+    }
+
+    public ItemResponseDto deleteItemRequest(Long itemRequestId, Long userId) {
+        UserInfo userInfo = userReader.read(User.class, userId);
+        ItemRequest itemRequest = itemRequestRepository.findById(itemRequestId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+        if (!itemRequest.getTeamId().equals(userInfo.getTeamId().intValue())) {
+            throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
+        }
+        itemRequestExecutor.deleteItemRequest(itemRequestId);
+        return itemResponseFactory.createResponse(ItemStatus.REJECTED, "물품 신청이 정상적으로 삭제되었습니다.");
+    }
+
     public ItemResponseDto deleteTempItemRequest(Long itemRequestId, Long userId) {
         UserInfo userInfo = userReader.read(User.class, userId);
         ItemRequest itemRequest = itemRequestRepository.findById(itemRequestId)

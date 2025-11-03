@@ -27,6 +27,11 @@ public class ItemRequestExecutor {
         log.info("임시 물품 삭제 완료 - itemId={}", itemRequestId);
     }
 
+    public void deleteItemRequest(Long itemRequestId) {
+        itemRequestRepository.deleteById(itemRequestId);
+        log.info("물품 삭제 완료 - itemId={}", itemRequestId);
+    }
+
     public ItemRequest createTempItemRequest(TempItemRequestDto requestDto, Long userId, int teamId) {
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
 
@@ -50,6 +55,35 @@ public class ItemRequestExecutor {
                 .teamType(TeamType.NETWORK)  // 이 줄 추가
                 .requestDetails(requestDetails)
                 .build();
+
+        return itemRequestRepository.save(itemRequest);
+    }
+
+    public ItemRequest updateItemRequest(Long itemId, TempItemRequestDto requestDto, Long userId, int teamId) {
+        ItemRequest itemRequest = itemRequestRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + itemId));
+
+        // Update ProductInfo
+        ProductInfo productInfo = itemRequest.getProductInfo();
+        if (productInfo == null) {
+            productInfo = ProductInfo.builder().build();
+        }
+        productInfo.updateInfo(
+                requestDto.getProduct_name(),
+                requestDto.getQuantity(),
+                requestDto.getPrice() != null ? Long.parseLong(requestDto.getPrice()) : null,
+                null, // TempItemRequestDto does not have description
+                requestDto.getProductLink()
+        );
+        itemRequest.setProductInfo(productInfo);
+
+        // Update RequestDetails
+        RequestDetails requestDetails = itemRequest.getRequestDetails();
+        if (requestDetails == null) {
+            requestDetails = RequestDetails.builder().build();
+        }
+        requestDetails.updateReason(requestDto.getReason());
+        itemRequest.setRequestDetails(requestDetails);
 
         return itemRequestRepository.save(itemRequest);
     }
