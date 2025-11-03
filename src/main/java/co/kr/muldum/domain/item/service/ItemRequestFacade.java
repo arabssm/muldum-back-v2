@@ -75,7 +75,7 @@ public class ItemRequestFacade {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
         itemRequestExecutor.deleteItemRequest(itemRequestId);
-        return itemResponseFactory.createResponse(ItemStatus.REJECTED, "물품 신청이 정상적으로 삭제되었습니다.");
+        return itemResponseFactory.createResponse(ItemStatus.DELETED, "물품 신청이 정상적으로 삭제되었습니다.");
     }
 
     public ItemResponseDto deleteTempItemRequest(Long itemRequestId, Long userId) {
