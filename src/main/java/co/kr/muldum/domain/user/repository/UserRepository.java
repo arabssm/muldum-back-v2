@@ -53,7 +53,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = """
     UPDATE users
-    SET profile = profile - 'team_id'
+    SET profile = COALESCE(profile, '{}'::jsonb) - 'team_id'
     WHERE (profile->>'team_id') = CAST(:teamId AS text)
        OR (profile->>'team_id')::bigint = :teamId
 """, nativeQuery = true)
