@@ -110,6 +110,18 @@ public class TeacherItemController {
         return ResponseEntity.ok(items);
     }
 
+    @GetMapping("/{teamId}/rejected")
+    public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamIdRejected(
+            @PathVariable Integer teamId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 팀별 물품 중 거절된 물품 조회 요청");
+
+        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdRejected(teamId);
+
+        return ResponseEntity.ok(items);
+    }
+
     @PatchMapping("/reject")
     public ResponseEntity<ItemActionResponseDto> rejectItems(
             @RequestBody List<RejectItemRequestDto> rejectRequests,
