@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     UPDATE users
     SET profile = profile - 'team_id'
     WHERE (profile->>'team_id') = CAST(:teamId AS text)
-       OR (profile->'team_id')::bigint = :teamId
+           OR (profile->>'team_id')::bigint = :teamId
 """, nativeQuery = true)
     void removeTeamIdFromProfile(@Param("teamId") Long teamId);
 
