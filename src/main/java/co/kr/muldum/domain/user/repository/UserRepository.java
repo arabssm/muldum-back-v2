@@ -58,5 +58,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
        OR (profile->>'team_id')::bigint = :teamId
 """, nativeQuery = true)
     void removeTeamIdFromProfile(@Param("teamId") Long teamId);
-
 }
