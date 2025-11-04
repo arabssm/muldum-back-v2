@@ -163,6 +163,18 @@ public class TeacherItemService {
                 .toList();
     }
 
+    public List<TeacherItemResponseDto> getAllRejectedItems() {
+        log.info("모든 팀의 REJECTED 물품 조회 시작");
+
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.REJECTED);
+
+        log.info("조회된 거절된 물품 수: {}", items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
     @Transactional
     public ItemActionResponseDto rejectItems(List<RejectItemRequestDto> rejectRequests) {
         log.info("물품 거절 처리 시작 - 처리할 물품 수: {}", rejectRequests.size());
