@@ -30,7 +30,23 @@ public class ItemRequestService {
     private final UserReader userReader;
 
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
+        log.info("임시 물품 생성 요청 - userId={}", userId);
         return itemRequestFacade.createTempItemRequest(requestDto, userId);
+    }
+
+    public ItemResponseDto updateTempItemRequest(Long itemId, TempItemRequestDto requestDto, Long userId) {
+        log.info("임시 물품 수정 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.updateItemRequest(itemId, userId, requestDto);
+    }
+
+    public ItemResponseDto deleteItemRequest(Long itemId, Long userId) {
+        log.info("물품 삭제 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.deleteItemRequest(itemId, userId);
+    }
+
+    public ItemResponseDto deleteTempItemRequest(Long itemId, Long userId) {
+        log.info("임시 물품 삭제 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.deleteTempItemRequest(itemId, userId);
     }
 
     public List<TempItemListResponseDto> getTempItemRequests(Long userId) {
@@ -56,6 +72,7 @@ public class ItemRequestService {
                 .type(TeamType.NETWORK)
                 .reason(itemRequest.getRequestDetails().getReason() != null ?
                         itemRequest.getRequestDetails().getReason() : "")
+                .product_link(itemRequest.getProductInfo().getLink())
                 .build();
     }
 

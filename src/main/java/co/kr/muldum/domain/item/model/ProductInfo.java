@@ -17,4 +17,26 @@ public class ProductInfo {
     private String link;
     private ItemSource itemSource;
     private String description;
+
+    public void updateInfo(String name, Integer quantity, Long price, String description, String link) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (quantity != null) {
+            this.quantity = quantity;
+        }
+        if (price != null) {
+            this.price = String.valueOf(price);
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (link != null) {
+            this.link = link;
+        }
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

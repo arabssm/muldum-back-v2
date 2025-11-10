@@ -18,4 +18,5 @@ public class TempItemListResponseDto {
     private String status;
     private TeamType type;
     private String reason;
+    private String product_link;
 }

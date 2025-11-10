@@ -33,7 +33,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'  // 추가!
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
@@ -47,7 +46,7 @@ dependencies {
     implementation 'org.json:json:20230227'
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
-    
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
     compileOnly 'com.diffblue.cover:cover-annotations:1.6.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'

@@ -25,6 +25,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     int updateNullTeamIdToZero();
 
+    // 프로필이 NULL인 경우 기본 프로필로 초기화
+    @Modifying
+    @Query(value = "UPDATE users " +
+            "SET profile = '{}' " +
+            "WHERE profile IS NULL",
+            nativeQuery = true)
+    int updateNullProfileToDefault();
+
     // 학년 + 반 + 번호 + 이름 기반 조회 (팀스페이스 초대 시 사용)
     @Query(value = "SELECT * FROM users u " +
             "WHERE u.profile->>'grade' = :grade " +
@@ -45,10 +53,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = """
     UPDATE users
-    SET profile = profile - 'team_id'
+    SET profile = COALESCE(profile, '{}'::jsonb) - 'team_id'
     WHERE (profile->>'team_id') = CAST(:teamId AS text)
-       OR (profile->'team_id')::bigint = :teamId
+       OR (profile->>'team_id')::bigint = :teamId
 """, nativeQuery = true)
     void removeTeamIdFromProfile(@Param("teamId") Long teamId);
-
 }

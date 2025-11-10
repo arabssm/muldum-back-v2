@@ -1,4 +1,4 @@
-package co.kr.muldum.presentation.user;
+package co.kr.muldum.infrastructure.check;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,5 +17,10 @@ public class TestController {
     @GetMapping("/test")
     public ResponseEntity<String> simpleTest() {
         return ResponseEntity.ok("Simple test endpoint working!");
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("health check");
     }
 }

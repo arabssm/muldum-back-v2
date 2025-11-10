@@ -70,6 +70,42 @@ public class StudentItemController {
         return handleItemResponse(response);
     }
 
+    @DeleteMapping("/temp/{item_id}")
+    public ResponseEntity<ItemResponseDto> deleteTempItemRequest(
+            @PathVariable("item_id") Long itemId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+            ) {
+        ItemResponseDto response = itemRequestService.deleteTempItemRequest(
+                itemId,
+                userDetails.getUserId());
+        return handleItemResponse(response);
+    }
+
+    @PatchMapping("/{item_id}")
+    public ResponseEntity<ItemResponseDto> updateTempItemRequest(
+            @PathVariable("item_id") Long itemId,
+            @RequestBody TempItemRequestDto tempItemRequestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        ItemResponseDto response = itemRequestService.updateTempItemRequest(
+                itemId,
+                tempItemRequestDto,
+                userDetails.getUserId()
+        );
+        return handleItemResponse(response);
+    }
+
+    @DeleteMapping("/{item_id}")
+    public ResponseEntity<ItemResponseDto> deleteItemRequest(
+            @PathVariable("item_id") Long itemId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        ItemResponseDto response = itemRequestService.deleteItemRequest(
+                itemId,
+                userDetails.getUserId());
+        return handleItemResponse(response);
+    }
+
     @PatchMapping
     public ResponseEntity<ItemResponseDto> finalizeItemRequest(
             @AuthenticationPrincipal CustomUserDetails userDetails
