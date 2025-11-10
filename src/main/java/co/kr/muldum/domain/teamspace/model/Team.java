@@ -52,7 +52,8 @@ public class Team {
         this.type = type;
     }
 
-    public void changeContent(String content) {
+    public void changeContent(String teamName, String content) {
+        this.name = teamName;
         this.content = content;
     }
 
