@@ -52,8 +52,8 @@ public class Team {
         this.type = type;
     }
 
-    public void changeContent(String teamName, String content) {
-        this.name = teamName;
+    public void changeContent(String name, String content) {
+        this.name = name;
         this.content = content;
     }
 

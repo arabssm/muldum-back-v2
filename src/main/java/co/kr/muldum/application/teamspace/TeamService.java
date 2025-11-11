@@ -33,7 +33,12 @@ public class TeamService {
             throw new CustomException(ErrorCode.NOT_TEAM_MEMBER);
         }
 
-        String newName = (teamName == null || teamName.trim().isEmpty()) ? team.getName() : teamName;
-        team.changeContent(newName, content);
+        if (teamName != null) {
+            team.changeContent(teamName, content);
+        } else {
+            team.changeContent(team.getName(), content);
+        }
+
+        teamRepository.flush();
     }
 }
