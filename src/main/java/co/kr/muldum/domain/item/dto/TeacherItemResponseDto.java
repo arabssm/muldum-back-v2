@@ -5,6 +5,8 @@ import co.kr.muldum.domain.item.model.enums.TeamType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class TeacherItemResponseDto {
@@ -18,6 +20,9 @@ public class TeacherItemResponseDto {
     private String reason;
     private String status;
     private String deliveryNumber;
+    private String deliveryPrice;
+    private LocalDateTime deliveryTime;
+    private String rejectReason;
 
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
@@ -37,6 +42,12 @@ public class TeacherItemResponseDto {
                 .status(itemRequest.getStatus().name())
                 .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
                         itemRequest.getDeliveryNumber() : null)
+                .deliveryPrice(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(itemRequest.getRequestDetails() != null ?
+                        itemRequest.getRequestDetails().getReason() : null)
                 .build();
     }
 
@@ -58,6 +69,12 @@ public class TeacherItemResponseDto {
                 .status(itemRequest.getStatus().name())
                 .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
                         itemRequest.getDeliveryNumber() : null)
+                .deliveryPrice(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(itemRequest.getRequestDetails() != null ?
+                        itemRequest.getRequestDetails().getReason() : null)
                 .build();
     }
 }

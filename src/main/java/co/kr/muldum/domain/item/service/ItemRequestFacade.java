@@ -2,15 +2,17 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
+import co.kr.muldum.domain.item.model.ItemRequest;
+import co.kr.muldum.domain.item.model.NthStatus;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
-import co.kr.muldum.domain.item.model.ItemRequest;
-import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class ItemRequestFacade {
     private final ItemStatusDecisionService itemStatusDecisionService;
     private final ItemResponseFactory itemResponseFactory;
     private final ItemRequestRepository itemRequestRepository;
+    private final NthStatusRepository nthStatusRepository;
 
     public ItemResponseDto updateItemRequest(Long itemId, Long userId, TempItemRequestDto requestDto) {
         try {
@@ -98,9 +101,11 @@ public class ItemRequestFacade {
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
         try {
             UserInfo userInfo = userReader.read(User.class, userId);
-            
-            log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
-                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+            NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
+            Integer nth = (nthStatus != null && nthStatus.getNthValue() != null) ? nthStatus.getNthValue() : 1;
+
+            log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}, nth={}",
+                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType(), nth);
 
             // 검증
             itemValidationService.validateTeamInfo(userInfo);
@@ -128,7 +133,7 @@ public class ItemRequestFacade {
             }
 
             // 승인된 경우 DB에 저장
-            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue());
+            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue(), nth);
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {

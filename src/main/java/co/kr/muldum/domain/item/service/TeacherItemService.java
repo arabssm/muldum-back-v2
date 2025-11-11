@@ -9,6 +9,7 @@ import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class TeacherItemService {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final NthStatusRepository nthStatusRepository;
     private final ExcelExportService excelExportService;
     private final UserReader userReader;
 
@@ -313,7 +316,9 @@ public class TeacherItemService {
                     requestDto.getCount(),
                     requestDto.getPrice(),
                     requestDto.getDescription(),
-                    requestDto.getImageUrl()
+                    requestDto.getLink(),
+                    requestDto.getDeliveryPrice(),
+                    LocalDateTime.parse(requestDto.getDeliveryTime())
             );
         } else {
             // If ProductInfo is null, create a new one
@@ -321,10 +326,12 @@ public class TeacherItemService {
                     .name(requestDto.getItemName())
                     .quantity(requestDto.getCount())
                     .price(requestDto.getPrice() != null ? String.valueOf(requestDto.getPrice()) : null)
-                    .link(requestDto.getImageUrl()) // Assuming imageUrl is stored in 'link' for now
+                    .link(requestDto.getLink())
+                    .deliveryPrice(requestDto.getDeliveryPrice())
+                    .deliveryTime(requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null)
                     .build();
             if (requestDto.getDescription() != null) {
-                newProductInfo.setDescription(requestDto.getDescription());
+                newProductInfo.description(requestDto.getDescription());
             }
             item.setProductInfo(newProductInfo);
         }
@@ -335,6 +342,17 @@ public class TeacherItemService {
         return ItemActionResponseDto.builder()
                 .status(item.getStatus())
                 .message("물품 정보가 성공적으로 수정되었습니다.")
+                .build();
+    }
+
+    public ItemActionResponseDto openNthItemRequestPeriod(Integer nth) {
+        log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
+
+        nthStatusRepository.findNthStatusById(1L).updateNthValue(nth);
+
+        return ItemActionResponseDto.builder()
+                .status(ItemStatus.APPROVED)
+                .message(nth + "차 물품 신청 기간이 열렸습니다.")
                 .build();
     }
 }

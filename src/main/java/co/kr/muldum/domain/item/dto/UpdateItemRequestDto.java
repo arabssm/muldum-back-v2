@@ -12,5 +12,7 @@ public class UpdateItemRequestDto {
     private Integer count;
     private Long price;
     private String description;
-    private String imageUrl;
+    private String link;
+    private String deliveryPrice;
+    private String deliveryTime;
 }
