@@ -24,7 +24,7 @@ public class TeamController {
             @RequestBody @Valid TeamPageUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        log.info("TeamController 요청 수신 - teamId: {}, userId: {}", teamId, customUserDetails != null ? customUserDetails.getUserId() : "null");
+        log.info("TeamController 요청 수신 - teamId: {}, userId: {} name: {}, content: {}", teamId, customUserDetails != null ? customUserDetails.getUserId() : "null", request.name(), request.content());
         teamService.updateTeamPage(teamId, request.name(), request.content(), customUserDetails.getUserId());
         return ResponseEntity.ok(new MessageResponse("팀 페이지가 성공적으로 수정되었습니다."));
     }
