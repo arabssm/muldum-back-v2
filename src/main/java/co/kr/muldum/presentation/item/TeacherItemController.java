@@ -25,6 +25,18 @@ public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
 
+    @PostMapping("/open")
+    public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
+            @RequestParam Integer nth,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 {}차 물품신청 기간 오픈 요청", nth);
+
+        teacherItemService.openNthItemRequestPeriod(nth);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
             @AuthenticationPrincipal CustomUserDetails userDetails

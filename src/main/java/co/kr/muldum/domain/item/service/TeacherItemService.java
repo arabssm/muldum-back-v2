@@ -9,6 +9,7 @@ import co.kr.muldum.domain.item.model.RequestDetails;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class TeacherItemService {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final NthStatusRepository nthStatusRepository;
     private final ExcelExportService excelExportService;
     private final UserReader userReader;
 
@@ -335,6 +337,17 @@ public class TeacherItemService {
         return ItemActionResponseDto.builder()
                 .status(item.getStatus())
                 .message("물품 정보가 성공적으로 수정되었습니다.")
+                .build();
+    }
+
+    public ItemActionResponseDto openNthItemRequestPeriod(Integer nth) {
+        log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
+
+        nthStatusRepository.findNthStatusById(1L).updateNthValue(nth);
+
+        return ItemActionResponseDto.builder()
+                .status(ItemStatus.APPROVED)
+                .message(nth + "차 물품 신청 기간이 열렸습니다.")
                 .build();
     }
 }
