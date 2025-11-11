@@ -286,4 +286,46 @@ public class TeamspaceService {
         userRepository.removeTeamIdFromProfile(teamId);
         teamRepository.delete(team);
     }
+
+    public CreateTeamResponseDto createNetworkTeam(List<StudentInfo> stdList, String team) {
+        Team newTeam = Team.builder()
+                .name(team)
+                .type(TeamType.NETWORK)
+                .config(TeamSettings.builder()
+                        .backgroundImageUrl(defaultTeamBannerImage)
+                        .build())
+                .build();
+        teamRepository.save(newTeam);
+
+        for (StudentInfo studentInfo : stdList) {
+            String studentId = studentInfo.getStudentId();
+
+            if (studentId != null && studentId.matches("\\d{4}")) {
+                int grade = Character.getNumericValue(studentId.charAt(0));
+                int classNum = Character.getNumericValue(studentId.charAt(1));
+                int number = Integer.parseInt(studentId.substring(2));
+
+                Optional<User> foundUser = userRepository.findByGradeAndClassAndNumber(grade, classNum, number);
+                User user = foundUser.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+                Map<String, Object> profile = new HashMap<>(user.getProfile());
+                profile.put("team_id", newTeam.getId());
+                user.setProfile(profile);
+                userRepository.save(user);
+
+                Role role = (studentInfo.getRole() == null ? Role.MEMBER : Role.valueOf(studentInfo.getRole()));
+                if (!teamspaceMemberRepository.existsByTeamAndUser(newTeam, user)) {
+                    teamspaceMemberRepository.save(new TeamspaceMember(newTeam, user, role));
+                }
+
+            } else {
+                throw new CustomException(ErrorCode.INVALID_ROLE);
+            }
+        }
+
+        return new CreateTeamResponseDto(
+                newTeam.getName(),
+                "팀이 추가되었습니다."
+        );
+    }
 }

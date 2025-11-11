@@ -56,6 +56,15 @@ public class TeamspaceController {
         return teamspaceService.getTeamspaceWithItem(userDetails.getUserId());
     }
 
+    @PostMapping("/tch/teamspace/network/team")
+    @PreAuthorize("hasRole('TEACHER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CreateTeamResponseDto createTeam(
+            @RequestBody CreateTeamRequestDto request
+    ) {
+        return teamspaceService.createNetworkTeam(request.getStudents(), request.getTeam());
+    }
+
     // 전공동아리 팀 조회
     @GetMapping("/ara/teamspace/major")
     public TeamspaceResponseDto getMajorTeams() {

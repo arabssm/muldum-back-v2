@@ -17,6 +17,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM users u WHERE u.profile->>'studentId' = :studentId LIMIT 1", nativeQuery = true)
     Optional<User> findByStudentId(@Param("studentId") String studentId);
 
+    @Query(value = "SELECT * FROM users u " +
+            "WHERE (u.profile->>'grade')::int = :grade " +
+            "AND (u.profile->>'class')::int = :classNum " +
+            "AND (u.profile->>'number')::int = :number", nativeQuery = true)
+    Optional<User> findByGradeAndClassAndNumber(
+            @Param("grade") int grade,
+            @Param("classNum") int classNum,
+            @Param("number") int number
+    );
+
     // 프로필의 team_id가 NULL인 경우 0으로 초기화
     @Modifying
     @Query(value = "UPDATE users " +
