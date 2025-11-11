@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.item.dto;
 
-import co.kr.muldum.domain.item.model.enums.ItemSource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +13,6 @@ public class TempItemRequestDto {
     private String price;
     private String productLink;
     private String reason;
+    private String deliveryPrice;
+    private String deliveryTime;
 }

@@ -73,6 +73,8 @@ public class ItemRequestService {
                 .reason(itemRequest.getRequestDetails().getReason() != null ?
                         itemRequest.getRequestDetails().getReason() : "")
                 .product_link(itemRequest.getProductInfo().getLink())
+                .deliveryPrice(itemRequest.getProductInfo().getDeliveryPrice())
+                .deliveryTime(itemRequest.getProductInfo().getDeliveryTime())
                 .build();
     }
 
