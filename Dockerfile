@@ -1,5 +1,5 @@
 # ===== base image =====
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk-jammy
 
 # ===== install tools (awscli, bash) =====
 RUN apt-get update \
