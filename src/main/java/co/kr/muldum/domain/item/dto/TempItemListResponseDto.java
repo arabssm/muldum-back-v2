@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class TempItemListResponseDto {
     private TeamType type;
     private String reason;
     private String product_link;
+    private String deliveryPrice;
+    private LocalDateTime deliveryTime;
 }

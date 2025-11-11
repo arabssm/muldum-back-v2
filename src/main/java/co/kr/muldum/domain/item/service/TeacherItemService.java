@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -315,7 +316,9 @@ public class TeacherItemService {
                     requestDto.getCount(),
                     requestDto.getPrice(),
                     requestDto.getDescription(),
-                    requestDto.getImageUrl()
+                    requestDto.getLink(),
+                    requestDto.getDeliveryPrice(),
+                    LocalDateTime.parse(requestDto.getDeliveryTime())
             );
         } else {
             // If ProductInfo is null, create a new one
@@ -323,10 +326,12 @@ public class TeacherItemService {
                     .name(requestDto.getItemName())
                     .quantity(requestDto.getCount())
                     .price(requestDto.getPrice() != null ? String.valueOf(requestDto.getPrice()) : null)
-                    .link(requestDto.getImageUrl()) // Assuming imageUrl is stored in 'link' for now
+                    .link(requestDto.getLink())
+                    .deliveryPrice(requestDto.getDeliveryPrice())
+                    .deliveryTime(requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null)
                     .build();
             if (requestDto.getDescription() != null) {
-                newProductInfo.setDescription(requestDto.getDescription());
+                newProductInfo.description(requestDto.getDescription());
             }
             item.setProductInfo(newProductInfo);
         }

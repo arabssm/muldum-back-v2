@@ -45,6 +45,13 @@ public class ItemListService {
             price = 0;
         }
 
+        // 반려사유 가져오기 (REJECTED 상태인 경우)
+        String rejectReason = null;
+        if (itemRequest.getStatus() == ItemStatus.REJECTED &&
+                itemRequest.getRequestDetails() != null) {
+            rejectReason = itemRequest.getRequestDetails().getReason();
+        }
+
         return ItemListResponseDto.builder()
                 .id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
@@ -54,6 +61,11 @@ public class ItemListService {
                 .price(price)
                 .status(itemRequest.getStatus().name())
                 .type(itemRequest.getTeamType().name())
+                .deliveryPrice(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(rejectReason)
                 .build();
     }
 }

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -16,4 +18,7 @@ public class ItemListResponseDto {
     private Integer price;
     private String status;
     private String type;
+    private String deliveryPrice;
+    private LocalDateTime deliveryTime;
+    private String rejectReason;
 }
