@@ -119,7 +119,7 @@ public class ItemRequestFacade {
             // 거부된 경우 DB에 저장하지 않고 바로 예외 발생
             if (status == ItemStatus.REJECTED) {
                 log.warn("물품 신청 실패 - 허용되지 않은 쇼핑몰: userId={}, productLink={}", userId, requestDto.getProductLink());
-                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE); // Throw exception here
+                throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
             }
 
             // 가격 파싱 및 유효성 검사
@@ -132,14 +132,14 @@ public class ItemRequestFacade {
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
             }
 
-            // 승인된 경우 DB에 저장
+            // 승인된 경우 DB에 저장 (nth 파라미터 추가)
             itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue(), nth);
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {
             return itemResponseFactory.createRejectedResponse(e.getMessage());
-        } catch (CustomException e) { // Catch CustomException here
-            throw e; // Re-throw to be handled by GlobalExceptionHandler
+        } catch (CustomException e) {
+            throw e;
         }
     }
 }

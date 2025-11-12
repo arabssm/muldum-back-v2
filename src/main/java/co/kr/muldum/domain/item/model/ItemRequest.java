@@ -83,11 +83,11 @@ public class ItemRequest {
         this.status = status;
     }
 
-    public void setProductInfo(ProductInfo productInfo) {
+    public void updateProductInfo(ProductInfo productInfo) {
         this.productInfo = productInfo;
     }
 
-    public void setRequestDetails(RequestDetails requestDetails) {
+    public void updateRequestDetails(RequestDetails requestDetails) {
         this.requestDetails = requestDetails;
     }
 }

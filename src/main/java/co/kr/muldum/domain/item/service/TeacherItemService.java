@@ -2,7 +2,6 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
-import co.kr.muldum.domain.item.dto.UpdateItemRequestDto;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
@@ -11,7 +10,6 @@ import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.user.UserReader;
-import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -318,7 +316,7 @@ public class TeacherItemService {
                     requestDto.getDescription(),
                     requestDto.getLink(),
                     requestDto.getDeliveryPrice(),
-                    LocalDateTime.parse(requestDto.getDeliveryTime())
+                    requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null
             );
         } else {
             // If ProductInfo is null, create a new one
@@ -327,13 +325,11 @@ public class TeacherItemService {
                     .quantity(requestDto.getCount())
                     .price(requestDto.getPrice() != null ? String.valueOf(requestDto.getPrice()) : null)
                     .link(requestDto.getLink())
+                    .description(requestDto.getDescription())
                     .deliveryPrice(requestDto.getDeliveryPrice())
                     .deliveryTime(requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null)
                     .build();
-            if (requestDto.getDescription() != null) {
-                newProductInfo.description(requestDto.getDescription());
-            }
-            item.setProductInfo(newProductInfo);
+            item.updateProductInfo(newProductInfo);
         }
 
         itemRequestRepository.save(item);
@@ -356,3 +352,4 @@ public class TeacherItemService {
                 .build();
     }
 }
+

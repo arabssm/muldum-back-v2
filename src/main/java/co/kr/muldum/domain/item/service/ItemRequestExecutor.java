@@ -78,7 +78,7 @@ public class ItemRequestExecutor {
                 .requesterUserId(userId.intValue())
                 .productInfo(productInfo)
                 .status(ItemStatus.INTEMP)
-                .teamType(TeamType.NETWORK)  // 이 줄 추가
+                .teamType(TeamType.NETWORK)
                 .requestDetails(requestDetails)
                 .nth(nth)
                 .build();
@@ -90,21 +90,30 @@ public class ItemRequestExecutor {
         ItemRequest itemRequest = itemRequestRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("물품을 찾을 수 없습니다. itemId: " + itemId));
 
-        // Update ProductInfo
-        ProductInfo productInfo = itemRequest.getProductInfo();
-        if (productInfo == null) {
-            productInfo = ProductInfo.builder().build();
-        }
-        productInfo.updateInfo(
-                requestDto.getProduct_name(),
-                requestDto.getQuantity(),
-                requestDto.getPrice() != null ? Long.parseLong(requestDto.getPrice()) : null,
-                null, // TempItemRequestDto does not have description
-                requestDto.getProductLink(),
-                requestDto.getDeliveryPrice(),
-                parseDeliveryTime(requestDto.getDeliveryTime())
-        );
-        itemRequest.setProductInfo(productInfo);
+        // 기존 ProductInfo 가져오기
+        ProductInfo oldProductInfo = itemRequest.getProductInfo();
+
+        // 새로운 ProductInfo 생성 (JSONB 변경 감지를 위해)
+        ProductInfo newProductInfo = ProductInfo.builder()
+                .name(requestDto.getProduct_name() != null ? requestDto.getProduct_name() :
+                      (oldProductInfo != null ? oldProductInfo.getName() : null))
+                .quantity(requestDto.getQuantity() != null ? requestDto.getQuantity() :
+                         (oldProductInfo != null ? oldProductInfo.getQuantity() : null))
+                .price(requestDto.getPrice() != null ? requestDto.getPrice() :
+                      (oldProductInfo != null ? oldProductInfo.getPrice() : null))
+                .link(requestDto.getProductLink() != null ? requestDto.getProductLink() :
+                     (oldProductInfo != null ? oldProductInfo.getLink() : null))
+                .itemSource(requestDto.getProductLink() != null ?
+                           ItemSource.fromUrl(requestDto.getProductLink()) :
+                           (oldProductInfo != null ? oldProductInfo.getItemSource() : null))
+                .description(oldProductInfo != null ? oldProductInfo.getDescription() : null)
+                .deliveryPrice(requestDto.getDeliveryPrice() != null ? requestDto.getDeliveryPrice() :
+                              (oldProductInfo != null ? oldProductInfo.getDeliveryPrice() : null))
+                .deliveryTime(requestDto.getDeliveryTime() != null ? parseDeliveryTime(requestDto.getDeliveryTime()) :
+                             (oldProductInfo != null ? oldProductInfo.getDeliveryTime() : null))
+                .build();
+
+        itemRequest.updateProductInfo(newProductInfo);
 
         // Update RequestDetails
         RequestDetails requestDetails = itemRequest.getRequestDetails();
@@ -112,7 +121,7 @@ public class ItemRequestExecutor {
             requestDetails = RequestDetails.builder().build();
         }
         requestDetails.updateReason(requestDto.getReason());
-        itemRequest.setRequestDetails(requestDetails);
+        itemRequest.updateRequestDetails(requestDetails);
 
         return itemRequestRepository.save(itemRequest);
     }

@@ -43,10 +43,6 @@ public class ProductInfo {
         }
         if (deliveryTime != null) {
             this.deliveryTime = deliveryTime;
-            }
-    }
-
-    public void description(String description) {
-        this.description = description;
+        }
     }
 }
