@@ -38,24 +38,32 @@ public class TeacherItemService {
     public String fixNthIssues() {
         log.info("물품신청 n차 문제 해결 시작");
 
-        NthStatus nthStatus = nthStatusRepository.findById(1L).orElseGet(() -> {
-            NthStatus newNthStatus = NthStatus.builder()
-                    .id(1L)
-                    .nthValue(0)
-                    .build();
-            log.info("NthStatus 엔티티가 없어서 새로 생성함 - id: 1, nthValue: 0");
-            return nthStatusRepository.save(newNthStatus);
-        });
+        try {
+            // JPA를 사용하여 조회 또는 생성
+            NthStatus nthStatus = nthStatusRepository.findById(1L)
+                    .orElse(null);
 
-        if (nthStatus.getNthValue() == null) {
-            nthStatus.updateNthValue(0);
-            nthStatusRepository.save(nthStatus);
-            log.info("NthStatus의 nthValue가 null이어서 0으로 초기화함");
-        } else {
-            log.info("NthStatus의 nthValue가 이미 설정되어 있음 - nthValue: {}", nthStatus.getNthValue());
+            if (nthStatus == null) {
+                // 새로 생성 (ID는 자동 생성되도록 설정하지 않음)
+                nthStatus = NthStatus.builder()
+                        .nthValue(0)
+                        .build();
+                nthStatus = nthStatusRepository.save(nthStatus);
+                log.info("NthStatus 엔티티 생성 완료 - id: {}, nthValue: 0", nthStatus.getId());
+            } else if (nthStatus.getNthValue() == null) {
+                // nthValue가 null인 경우 0으로 초기화
+                nthStatus.updateNthValue(0);
+                log.info("NthStatus의 nthValue를 0으로 초기화함 - id: {}", nthStatus.getId());
+            } else {
+                log.info("NthStatus가 이미 정상 상태임 - id: {}, nthValue: {}",
+                        nthStatus.getId(), nthStatus.getNthValue());
+            }
+
+            return "물품신청 n차 문제 해결이 완료되었습니다.";
+        } catch (Exception e) {
+            log.error("물품신청 n차 문제 해결 중 오류 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("NthStatus 초기화 실패: " + e.getMessage(), e);
         }
-
-        return "물품신청 n차 문제 해결이 완료되었습니다.";
     }
 
     public NthStatusResponseDto getNthStatus() {
