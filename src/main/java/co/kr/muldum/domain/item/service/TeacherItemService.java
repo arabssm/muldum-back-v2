@@ -34,23 +34,22 @@ public class TeacherItemService {
     private final ExcelExportService excelExportService;
     private final UserReader userReader;
 
+    @Transactional
     public String fixNthIssues() {
         log.info("물품신청 n차 문제 해결 시작");
 
-        if (nthStatusRepository.findById(1L).isEmpty()) {
+        NthStatus nthStatus = nthStatusRepository.findById(1L).orElseGet(() -> {
             NthStatus newNthStatus = NthStatus.builder()
                     .id(1L)
                     .nthValue(0)
                     .build();
-            nthStatusRepository.save(newNthStatus);
             log.info("NthStatus 엔티티가 없어서 새로 생성함 - id: 1, nthValue: 0");
-        } else {
-            log.info("NthStatus 엔티티가 이미 존재함 - id: 1");
-        }
+            return nthStatusRepository.save(newNthStatus);
+        });
 
-        NthStatus nthStatus = nthStatusRepository.findById(1L).orElseThrow();
         if (nthStatus.getNthValue() == null) {
             nthStatus.updateNthValue(0);
+            nthStatusRepository.save(nthStatus);
             log.info("NthStatus의 nthValue가 null이어서 0으로 초기화함");
         } else {
             log.info("NthStatus의 nthValue가 이미 설정되어 있음 - nthValue: {}", nthStatus.getNthValue());
@@ -400,10 +399,15 @@ public class TeacherItemService {
                 .build();
     }
 
+    @Transactional
     public ItemActionResponseDto openNthItemRequestPeriod(Integer nth) {
         log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
 
-        nthStatusRepository.findNthStatusById(1L).updateNthValue(nth);
+        NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
+        nthStatus.updateNthValue(nth);
+        nthStatusRepository.save(nthStatus);
+
+        log.info("{}차 물품 신청 기간 오픈 완료", nth);
 
         return ItemActionResponseDto.builder()
                 .status(ItemStatus.APPROVED)
@@ -411,4 +415,3 @@ public class TeacherItemService {
                 .build();
     }
 }
-
