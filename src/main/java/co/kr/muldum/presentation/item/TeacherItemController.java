@@ -25,15 +25,6 @@ public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
 
-    @PostMapping("/issue")
-    public ResponseEntity<String> fixNthIssues() {
-        log.info("물품신청 n차 문제 해결 요청 접수");
-
-        String response = teacherItemService.fixNthIssues();
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/open")
     public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
             @RequestParam Integer nth,
