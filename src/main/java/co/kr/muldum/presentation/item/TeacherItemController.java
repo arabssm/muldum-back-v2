@@ -25,6 +25,15 @@ public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
 
+    @PostMapping("/issue")
+    public ResponseEntity<String> fixNthIssues() {
+        log.info("물품신청 n차 문제 해결 요청 접수");
+
+        String response = teacherItemService.fixNthIssues();
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/open")
     public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
             @RequestParam Integer nth,
@@ -37,6 +46,17 @@ public class TeacherItemController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/open-status")
+    public ResponseEntity<NthStatusResponseDto> getNthItemRequestPeriodStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품신청 기간 상태 조회 요청");
+
+        NthStatusResponseDto nth = teacherItemService.getNthStatus();
+
+        return ResponseEntity.ok(nth);
+    }
+
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -47,6 +67,21 @@ public class TeacherItemController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=approved_items.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(resource);
+    }
+
+    @GetMapping("/xlsx")
+    public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsxWithNth(
+            @RequestParam Integer nth,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) throws IOException {
+        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, userDetails.getUserId());
+
+        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=approved_items_nth_" + nth + ".xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(resource);
     }
@@ -85,7 +120,17 @@ public class TeacherItemController {
         return ResponseEntity.ok(items);
     }
 
-    
+    @GetMapping("/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItemsWithNth(
+            @RequestParam Integer nth,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("{}차 승인된 물품 조회 요청 - teacherId: {}", nth, userDetails.getUserId());
+
+        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItemsWithNth(nth);
+
+        return ResponseEntity.ok(items);
+    }
 
     @GetMapping("/not-approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllNotApprovedItems(

@@ -2,6 +2,7 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.model.NthStatus;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
@@ -33,8 +34,53 @@ public class TeacherItemService {
     private final ExcelExportService excelExportService;
     private final UserReader userReader;
 
+    public String fixNthIssues() {
+        log.info("물품신청 n차 문제 해결 시작");
+
+        if (nthStatusRepository.findById(1L).isEmpty()) {
+            NthStatus newNthStatus = NthStatus.builder()
+                    .id(1L)
+                    .nthValue(0)
+                    .build();
+            nthStatusRepository.save(newNthStatus);
+            log.info("NthStatus 엔티티가 없어서 새로 생성함 - id: 1, nthValue: 0");
+        } else {
+            log.info("NthStatus 엔티티가 이미 존재함 - id: 1");
+        }
+
+        NthStatus nthStatus = nthStatusRepository.findById(1L).orElseThrow();
+        if (nthStatus.getNthValue() == null) {
+            nthStatus.updateNthValue(0);
+            log.info("NthStatus의 nthValue가 null이어서 0으로 초기화함");
+        } else {
+            log.info("NthStatus의 nthValue가 이미 설정되어 있음 - nthValue: {}", nthStatus.getNthValue());
+        }
+
+        return "물품신청 n차 문제 해결이 완료되었습니다.";
+    }
+
+    public NthStatusResponseDto getNthStatus() {
+        log.info("현재 물품 신청 차수 조회 시작");
+
+        Integer nthValue = nthStatusRepository.findNthStatusById(1L).getNthValue();
+
+        log.info("현재 물품 신청 차수: {}차", nthValue);
+
+        return NthStatusResponseDto.builder()
+                .nth(nthValue)
+                .build();
+    }
+
     public ByteArrayInputStream getApprovedItemsAsXlsx() throws IOException {
         List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.APPROVED);
+        List<ItemExcelResponseDto> dtos = items.stream()
+                .map(this::convertToItemExcelResponseDto)
+                .collect(Collectors.toList());
+        return excelExportService.createXlsx(dtos);
+    }
+
+    public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(Integer nth) throws IOException {
+        List<ItemRequest> items = itemRequestRepository.findByStatusAndNth(ItemStatus.APPROVED, nth);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
                 .collect(Collectors.toList());
@@ -90,6 +136,19 @@ public class TeacherItemService {
         return items.stream()
                 .map(this::convertToTeacherItemResponseDto)
                 .toList();
+    }
+
+    public List<TeacherItemResponseDto> getAllApprovedItemsWithNth(Integer nth) {
+        log.info("{}차 승인된 물품 조회 시작", nth);
+
+        List<ItemRequest> items = itemRequestRepository.findByStatusAndNth(ItemStatus.APPROVED, nth);
+
+        log.info("조회된 {}차 승인된 물품 수: {}", nth, items.size());
+
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+
     }
 
     public List<TeacherItemResponseDto> getItemsByTeamId(Integer teamId) {
