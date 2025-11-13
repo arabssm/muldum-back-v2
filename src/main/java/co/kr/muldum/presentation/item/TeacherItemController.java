@@ -50,29 +50,24 @@ public class TeacherItemController {
 
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
-        log.info("선생님 물품 중 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", userDetails.getUserId());
+        InputStreamResource resource;
+        String filename;
 
-        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsx());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=approved_items.xlsx")
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .body(resource);
-    }
-
-    @GetMapping("/xlsx")
-    public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsxWithNth(
-            @RequestParam Integer nth,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) throws IOException {
-        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, userDetails.getUserId());
-
-        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
+        if (nth != null) {
+            log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, userDetails.getUserId());
+            resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
+            filename = "approved_items_nth_" + nth + ".xlsx";
+        } else {
+            log.info("선생님 물품 중 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", userDetails.getUserId());
+            resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsx());
+            filename = "approved_items.xlsx";
+        }
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=approved_items_nth_" + nth + ".xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(resource);
     }
@@ -90,11 +85,18 @@ public class TeacherItemController {
 
     @GetMapping("/approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItems(
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> items;
 
-        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItems();
+        if (nth != null) {
+            log.info("{}차 승인된 물품 조회 요청 - teacherId: {}", nth, userDetails.getUserId());
+            items = teacherItemService.getAllApprovedItemsWithNth(nth);
+        } else {
+            log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
+            items = teacherItemService.getAllApprovedItems();
+        }
 
         return ResponseEntity.ok(items);
     }
@@ -107,18 +109,6 @@ public class TeacherItemController {
         log.info("선생님 팀별 물품 조회 요청 - teacherId: {}, teamId: {}", userDetails.getUserId(), teamId);
 
         List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamId(teamId);
-
-        return ResponseEntity.ok(items);
-    }
-
-    @GetMapping("/approved")
-    public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItemsWithNth(
-            @RequestParam Integer nth,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        log.info("{}차 승인된 물품 조회 요청 - teacherId: {}", nth, userDetails.getUserId());
-
-        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItemsWithNth(nth);
 
         return ResponseEntity.ok(items);
     }
