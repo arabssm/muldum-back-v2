@@ -11,4 +11,7 @@ public interface NthStatusRepository extends JpaRepository<NthStatus, Long> {
 
     @Query("SELECT ns FROM NthStatus ns WHERE ns.id = :id")
     Optional<NthStatus> findByNthStatusId(Long id);
+
+    @Query("SELECT ns FROM NthStatus ns WHERE ns.nthValue = :nth")
+    Optional<NthStatus> findByNthStatusIdForExcel(Long nth);
 }
