@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -21,5 +22,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     List<ItemRequest> findByStatusAndNth(ItemStatus status, Integer nth);
 
     @Query("SELECT ir FROM ItemRequest ir WHERE ir.status = :itemStatus AND ir.nth = :nth AND ir.createdAt BETWEEN :start AND :end")
-    List<ItemRequest> findByStatusAndNthAndStartAndEnd(ItemStatus itemStatus, Integer nth, String start, String end);
+    List<ItemRequest> findByStatusAndNthAndStartAndEnd(ItemStatus itemStatus, Integer nth, LocalDateTime start, LocalDateTime end);
 }
