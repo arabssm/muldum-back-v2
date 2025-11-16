@@ -23,6 +23,7 @@ public class TeacherItemResponseDto {
     private String deliveryPrice;
     private LocalDateTime deliveryTime;
     private String rejectReason;
+    private LocalDateTime updatedAt;
 
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
@@ -48,6 +49,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
+                .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
 
