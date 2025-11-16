@@ -2,6 +2,7 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.dto.req.ItemGuide;
 import co.kr.muldum.domain.item.model.NthStatus;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.ItemRequest;
@@ -52,7 +53,7 @@ public class TeacherItemService {
                 log.info("NthStatus 엔티티 생성 완료 - id: {}, nthValue: 0", nthStatus.getId());
             } else if (nthStatus.getNthValue() == null) {
                 // nthValue가 null인 경우 0으로 초기화
-                nthStatus.updateNthValue(0);
+                nthStatus.updateNthValue(0, null, null, null, null);
                 log.info("NthStatus의 nthValue를 0으로 초기화함 - id: {}", nthStatus.getId());
             } else {
                 log.info("NthStatus가 이미 정상 상태임 - id: {}, nthValue: {}",
@@ -86,8 +87,12 @@ public class TeacherItemService {
         return excelExportService.createXlsx(dtos);
     }
 
-    public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(Integer nth) throws IOException {
-        List<ItemRequest> items = itemRequestRepository.findByStatusAndNth(ItemStatus.APPROVED, nth);
+    public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(
+            Integer nth,
+            String start,
+            String end
+    ) throws IOException {
+        List<ItemRequest> items = itemRequestRepository.findByStatusAndNthAndStartAndEnd(ItemStatus.APPROVED, nth, start, end);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
                 .collect(Collectors.toList());
@@ -326,6 +331,7 @@ public class TeacherItemService {
                 .status(itemRequest.getStatus().name())
                 .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
                         itemRequest.getDeliveryNumber() : null)
+                .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
 
@@ -408,11 +414,17 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public ItemActionResponseDto openNthItemRequestPeriod(Integer nth) {
+    public ItemActionResponseDto openNthItemRequestPeriod(
+            Integer nth, String type,
+            List<ItemGuide> guide,
+            String deadlineDate,
+            Long teacherId
+    ) {
         log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
 
-        NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
-        nthStatus.updateNthValue(nth);
+        NthStatus nthStatus = nthStatusRepository.findByNthStatusId(1L)
+                .orElseGet(() -> nthStatusRepository.save(new NthStatus()));
+        nthStatus.updateNthValue(nth, type, guide, deadlineDate, teacherId);
         nthStatusRepository.save(nthStatus);
 
         log.info("{}차 물품 신청 기간 오픈 완료", nth);
