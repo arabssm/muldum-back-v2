@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,7 +94,14 @@ public class TeacherItemService {
             String start,
             String end
     ) throws IOException {
-        List<ItemRequest> items = itemRequestRepository.findByStatusAndNthAndStartAndEnd(ItemStatus.APPROVED, nth, start, end);
+        // 문자열을 LocalDate로 변환
+        LocalDate startDate = LocalDate.parse(start); // 2025-11-16
+        LocalDate endDate = LocalDate.parse(end);     // 2025-11-17
+
+        // 시작은 00:00:00, 끝은 23:59:59.999로 설정
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+        List<ItemRequest> items = itemRequestRepository.findByStatusAndNthAndStartAndEnd(ItemStatus.APPROVED, nth, startDateTime, endDateTime);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
                 .collect(Collectors.toList());
