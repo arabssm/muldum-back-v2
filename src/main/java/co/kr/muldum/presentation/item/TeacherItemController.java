@@ -2,7 +2,6 @@ package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
-import co.kr.muldum.domain.item.dto.req.DownloadXlsxRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
@@ -62,13 +61,12 @@ public class TeacherItemController {
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
             @RequestParam Integer nth,
-            @RequestBody DownloadXlsxRequest req,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
 
-        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, req.start(), req.end(), userDetails.getUserId());
-        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth, req.start(), req.end()));
-        String filename = "approved_items_" + nth + "차" + "_" + req.end() + "까지" + ".xlsx";
+        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth);
+        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
+        String filename = "approved_items_" + nth + "차" + ".xlsx";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
