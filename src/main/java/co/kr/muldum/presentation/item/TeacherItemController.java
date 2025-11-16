@@ -1,6 +1,9 @@
 package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
+import co.kr.muldum.domain.item.dto.req.DownloadXlsxRequest;
+import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +31,20 @@ public class TeacherItemController {
     @PostMapping("/open")
     public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
             @RequestParam Integer nth,
+            @RequestBody ItemOpenRequest req,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
+
         log.info("선생님 {}차 물품신청 기간 오픈 요청", nth);
 
-        teacherItemService.openNthItemRequestPeriod(nth);
+        teacherItemService.openNthItemRequestPeriod(nth, req.projectType(), req.guide(), req.deadlineDate(), userDetails.getUserId());
 
-        return ResponseEntity.ok().build();
+        ItemActionResponseDto response = ItemActionResponseDto.builder()
+                .status(ItemStatus.APPROVED)
+                .message(nth + "차 물품 신청 기간이 열렸습니다.")
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/open-status")
@@ -48,23 +58,17 @@ public class TeacherItemController {
         return ResponseEntity.ok(nth);
     }
 
+    //엑셀
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
-            @RequestParam(required = false) Integer nth,
+            @RequestParam Integer nth,
+            @RequestBody DownloadXlsxRequest req,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
-        InputStreamResource resource;
-        String filename;
 
-        if (nth != null) {
-            log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, userDetails.getUserId());
-            resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
-            filename = "approved_items_nth_" + nth + ".xlsx";
-        } else {
-            log.info("선생님 물품 중 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", userDetails.getUserId());
-            resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsx());
-            filename = "approved_items.xlsx";
-        }
+        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth, req.start(), req.end(), userDetails.getUserId());
+        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth, req.start(), req.end()));
+        String filename = "approved_items_" + nth + "차" + "_" + req.end() + "까지" + ".xlsx";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)

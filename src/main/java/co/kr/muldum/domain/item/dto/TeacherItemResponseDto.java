@@ -2,6 +2,7 @@ package co.kr.muldum.domain.item.dto;
 
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.TeamType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,6 +24,8 @@ public class TeacherItemResponseDto {
     private String deliveryPrice;
     private LocalDateTime deliveryTime;
     private String rejectReason;
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 
     public static TeacherItemResponseDto from(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
@@ -48,6 +51,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
+                .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
 
@@ -75,6 +79,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
+                .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
 }
