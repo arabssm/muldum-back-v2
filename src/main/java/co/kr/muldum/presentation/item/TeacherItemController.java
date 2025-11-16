@@ -61,7 +61,7 @@ public class TeacherItemController {
     //엑셀
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
-            @RequestParam(required = false) Integer nth,
+            @RequestParam Integer nth,
             @RequestBody DownloadXlsxRequest req,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
