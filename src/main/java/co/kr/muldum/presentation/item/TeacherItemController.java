@@ -1,12 +1,15 @@
 package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.*;
+import co.kr.muldum.domain.item.dto.req.AddRejectTemplatesRequest;
 import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.service.RejectTemplateService;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,6 +29,7 @@ import java.util.List;
 public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
+    private final RejectTemplateService rejectTemplateService;
 
     @PostMapping("/open")
     public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
@@ -57,16 +61,51 @@ public class TeacherItemController {
         return ResponseEntity.ok(nth);
     }
 
+    @GetMapping("/open-history")
+    public ResponseEntity<List<NthStatusHistoryResponseDto>> getNthOpenHistory(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품신청 오픈 이력 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<NthStatusHistoryResponseDto> history = teacherItemService.getNthOpenHistory();
+        return ResponseEntity.ok(history);
+    }
+
+    @GetMapping("/open-count")
+    public ResponseEntity<NthOpenCountResponseDto> getNthOpenCount(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품신청 오픈 횟수 조회 요청 - teacherId: {}", userDetails.getUserId());
+        NthOpenCountResponseDto response = teacherItemService.getNthOpenCount();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/open-nths")
+    public ResponseEntity<NthOpenedListResponseDto> getOpenedNthValues(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품신청 오픈 차수 리스트 조회 요청 - teacherId: {}", userDetails.getUserId());
+        return ResponseEntity.ok(teacherItemService.getOpenedNthValues());
+    }
+
     //엑셀
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
-            @RequestParam Integer nth,
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
 
-        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", nth);
-        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(nth));
-        String filename = "approved_items_" + nth + "차" + ".xlsx";
+        Integer targetNth = nth;
+        if (targetNth == null) {
+            NthStatusResponseDto currentStatus = teacherItemService.getNthStatus();
+            targetNth = currentStatus.getNth();
+            if (targetNth == null || targetNth == 0) {
+                throw new IllegalArgumentException("현재 열린 물품 신청 차수가 없습니다. nth 파라미터를 지정해주세요.");
+            }
+        }
+
+        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", targetNth, userDetails.getUserId());
+        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(targetNth));
+        String filename = "approved_items_" + targetNth + "차" + ".xlsx";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
@@ -76,12 +115,11 @@ public class TeacherItemController {
 
     @GetMapping
     public ResponseEntity<List<TeacherItemResponseDto>> getAllPendingItems(
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
-
-        List<TeacherItemResponseDto> items = teacherItemService.getAllPendingItems();
-
+        log.info("선생님 물품 전체 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
+        List<TeacherItemResponseDto> items = teacherItemService.getAllPendingItems(nth);
         return ResponseEntity.ok(items);
     }
 
@@ -90,16 +128,8 @@ public class TeacherItemController {
             @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<TeacherItemResponseDto> items;
-
-        if (nth != null) {
-            log.info("{}차 승인된 물품 조회 요청 - teacherId: {}", nth, userDetails.getUserId());
-            items = teacherItemService.getAllApprovedItemsWithNth(nth);
-        } else {
-            log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
-            items = teacherItemService.getAllApprovedItems();
-        }
-
+        log.info("선생님 승인 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
+        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItems(nth);
         return ResponseEntity.ok(items);
     }
 
@@ -117,12 +147,11 @@ public class TeacherItemController {
 
     @GetMapping("/not-approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllNotApprovedItems(
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
-
-        List<TeacherItemResponseDto> items = teacherItemService.getAllNotApprovedItems();
-
+        log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
+        List<TeacherItemResponseDto> items = teacherItemService.getAllNotApprovedItems(nth);
         return ResponseEntity.ok(items);
     }
 
@@ -164,10 +193,11 @@ public class TeacherItemController {
 
     @GetMapping("/rejected")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllRejectedItems(
+            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 중 거절된 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
-        List<TeacherItemResponseDto> items = teacherItemService.getAllRejectedItems();
+        log.info("선생님 물품 중 거절된 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
+        List<TeacherItemResponseDto> items = teacherItemService.getAllRejectedItems(nth);
         return ResponseEntity.ok(items);
     }
 
@@ -182,6 +212,36 @@ public class TeacherItemController {
         ItemActionResponseDto response = teacherItemService.rejectItems(rejectRequests);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reject-templates")
+    public ResponseEntity<List<RejectTemplateResponseDto>> addRejectTemplates(
+            @Valid @RequestBody AddRejectTemplatesRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        int templateCount = request.getTemplates() != null ? request.getTemplates().size() : 0;
+        log.info("거절 템플릿 등록 요청 - teacherId: {}, 템플릿 수: {}", userDetails.getUserId(), templateCount);
+        List<RejectTemplateResponseDto> response = rejectTemplateService.addRejectTemplates(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/reject-templates")
+    public ResponseEntity<List<RejectTemplateResponseDto>> getRejectTemplates(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("거절 템플릿 목록 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<RejectTemplateResponseDto> response = rejectTemplateService.getAllTemplates();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/reject-templates/{templateId}")
+    public ResponseEntity<Void> deleteRejectTemplate(
+            @PathVariable Long templateId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("거절 템플릿 삭제 요청 - teacherId: {}, templateId: {}", userDetails.getUserId(), templateId);
+        rejectTemplateService.deleteTemplate(templateId);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/submit")

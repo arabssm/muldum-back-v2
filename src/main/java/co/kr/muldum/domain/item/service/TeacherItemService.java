@@ -3,7 +3,11 @@ package co.kr.muldum.domain.item.service;
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.dto.req.ItemGuide;
+import co.kr.muldum.domain.item.dto.NthStatusHistoryResponseDto;
+import co.kr.muldum.domain.item.dto.NthOpenCountResponseDto;
+import co.kr.muldum.domain.item.dto.NthOpenedListResponseDto;
 import co.kr.muldum.domain.item.model.NthStatus;
+import co.kr.muldum.domain.item.model.NthStatusHistory;
 import co.kr.muldum.domain.item.model.ProductInfo;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.RequestDetails;
@@ -11,6 +15,7 @@ import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
+import co.kr.muldum.domain.item.repository.NthStatusHistoryRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +41,8 @@ public class TeacherItemService {
     private final NthStatusRepository nthStatusRepository;
     private final ExcelExportService excelExportService;
     private final UserReader userReader;
+    private final NthStatusQueryService nthStatusQueryService;
+    private final NthStatusHistoryRepository nthStatusHistoryRepository;
 
     @Transactional
     public String fixNthIssues() {
@@ -72,13 +79,10 @@ public class TeacherItemService {
     public NthStatusResponseDto getNthStatus() {
         log.info("현재 물품 신청 차수 조회 시작");
 
-        Integer nthValue = nthStatusRepository.findNthStatusById(1L).getNthValue();
+        NthStatusResponseDto nthStatus = nthStatusQueryService.getCurrentStatus();
+        log.info("현재 물품 신청 차수: {}차", nthStatus.getNth());
 
-        log.info("현재 물품 신청 차수: {}차", nthValue);
-
-        return NthStatusResponseDto.builder()
-                .nth(nthValue)
-                .build();
+        return nthStatus;
     }
 
     public ByteArrayInputStream getApprovedItemsAsXlsx() throws IOException {
@@ -134,41 +138,12 @@ public class TeacherItemService {
     }
 
 
-    public List<TeacherItemResponseDto> getAllPendingItems() {
-        log.info("모든 팀의 PENDING, APPROVED 물품 조회 시작");
-
-        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.PENDING);
-
-        log.info("조회된 물품 수: {}", items.size());
-
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+    public List<TeacherItemResponseDto> getAllPendingItems(Integer nth) {
+        return findItemsByStatus(ItemStatus.PENDING, nth);
     }
 
-    public List<TeacherItemResponseDto> getAllApprovedItems() {
-        log.info("모든 팀의 PENDING, APPROVED 물품 조회 시작");
-
-        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.APPROVED);
-
-        log.info("조회된 물품 수: {}", items.size());
-
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
-    }
-
-    public List<TeacherItemResponseDto> getAllApprovedItemsWithNth(Integer nth) {
-        log.info("{}차 승인된 물품 조회 시작", nth);
-
-        List<ItemRequest> items = itemRequestRepository.findByStatusAndNth(ItemStatus.APPROVED, nth);
-
-        log.info("조회된 {}차 승인된 물품 수: {}", nth, items.size());
-
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
-
+    public List<TeacherItemResponseDto> getAllApprovedItems(Integer nth) {
+        return findItemsByStatus(ItemStatus.APPROVED, nth);
     }
 
     public List<TeacherItemResponseDto> getItemsByTeamId(Integer teamId) {
@@ -186,16 +161,8 @@ public class TeacherItemService {
                 .toList();
     }
 
-    public List<TeacherItemResponseDto> getAllNotApprovedItems() {
-        log.info("모든 팀의 승인 안된 물품 조회 시작");
-
-        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.PENDING);
-
-        log.info("조회된 승인 안된 물품 수: {}", items.size());
-
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+    public List<TeacherItemResponseDto> getAllNotApprovedItems(Integer nth) {
+        return getAllPendingItems(nth);
     }
 
     public List<TeacherItemResponseDto> getItemsByTeamIdNotApproved(Integer teamId) {
@@ -243,12 +210,21 @@ public class TeacherItemService {
                 .toList();
     }
 
-    public List<TeacherItemResponseDto> getAllRejectedItems() {
-        log.info("모든 팀의 REJECTED 물품 조회 시작");
+    public List<TeacherItemResponseDto> getAllRejectedItems(Integer nth) {
+        return findItemsByStatus(ItemStatus.REJECTED, nth);
+    }
 
-        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.REJECTED);
+    private List<TeacherItemResponseDto> findItemsByStatus(ItemStatus status, Integer nth) {
+        List<ItemRequest> items;
+        if (nth != null) {
+            log.info("{} 차수의 {} 상태 물품 조회 시작", nth, status);
+            items = itemRequestRepository.findByStatusAndNth(status, nth);
+        } else {
+            log.info("전체 {} 상태 물품 조회 시작", status);
+            items = itemRequestRepository.findByStatus(status);
+        }
 
-        log.info("조회된 거절된 물품 수: {}", items.size());
+        log.info("조회된 물품 수: {}", items.size());
 
         return items.stream()
                 .map(this::convertToTeacherItemResponseDto)
@@ -339,6 +315,13 @@ public class TeacherItemService {
                 .status(itemRequest.getStatus().name())
                 .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
                         itemRequest.getDeliveryNumber() : null)
+                .deliveryPrice(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(itemRequest.getRequestDetails() != null ?
+                        itemRequest.getRequestDetails().getReason() : null)
+                .nth(itemRequest.getNth())
                 .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
@@ -435,6 +418,28 @@ public class TeacherItemService {
         nthStatus.updateNthValue(nth, type, guide, deadlineDate, teacherId);
         nthStatusRepository.save(nthStatus);
 
+        nthStatusHistoryRepository.save(
+                NthStatusHistory.builder()
+                        .nthValue(nth)
+                        .projectType(type)
+                        .guide(guide)
+                        .deadlineDate(deadlineDate)
+                        .teacherId(teacherId)
+                        .build()
+        );
+
         log.info("{}차 물품 신청 기간 오픈 완료", nth);
+    }
+
+    public List<NthStatusHistoryResponseDto> getNthOpenHistory() {
+        return nthStatusQueryService.getOpenHistory();
+    }
+
+    public NthOpenCountResponseDto getNthOpenCount() {
+        return nthStatusQueryService.getOpenCount();
+    }
+
+    public NthOpenedListResponseDto getOpenedNthValues() {
+        return nthStatusQueryService.getOpenedNthValues();
     }
 }

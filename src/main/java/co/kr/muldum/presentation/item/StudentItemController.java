@@ -31,6 +31,7 @@ public class StudentItemController {
     private final ItemRequestFinalizer itemRequestFinalizer;
     private final UserReader userReader;
     private final ProductInfoService productInfoService;
+    private final NthStatusQueryService nthStatusQueryService;
 
     @GetMapping
     public ResponseEntity<List<ItemListResponseDto>> getTeamItems(
@@ -48,6 +49,15 @@ public class StudentItemController {
         String productLink = dto.getProductLink();
         ProductInfoResponseDto productInfo = productInfoService.getProductInfo(productLink);
         return ResponseEntity.ok(productInfo);
+    }
+
+    @GetMapping("/open-status")
+    public ResponseEntity<NthStatusResponseDto> getNthItemRequestPeriodStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("학생 물품신청 기간 상태 조회 요청 - userId: {}", userDetails.getUserId());
+        NthStatusResponseDto nthStatus = nthStatusQueryService.getCurrentStatus();
+        return ResponseEntity.ok(nthStatus);
     }
 
     @GetMapping("/temp")

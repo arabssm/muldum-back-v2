@@ -24,6 +24,7 @@ public class TeacherItemResponseDto {
     private String deliveryPrice;
     private LocalDateTime deliveryTime;
     private String rejectReason;
+    private Integer nth;
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
@@ -51,6 +52,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
+                .nth(itemRequest.getNth())
                 .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
@@ -79,6 +81,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
+                .nth(itemRequest.getNth())
                 .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }

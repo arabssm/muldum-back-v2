@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class NthStatusResponseDto {
+public class NthStatusHistoryResponseDto {
     private Integer nth;
     private String projectType;
     private List<ItemGuide> guide;
