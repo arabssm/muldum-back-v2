@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -36,6 +37,8 @@ public class NthStatus {
 
     private Long teacherId;
 
+    private LocalDateTime createdAt;
+
     public void updateNthValue(
             Integer nth,
             String projectType,
@@ -48,5 +51,6 @@ public class NthStatus {
         this.guide = guide;
         this.deadlineDate = deadlineDate;
         this.teacherId = teacherId;
+        this.createdAt = LocalDateTime.now();
     }
 }
