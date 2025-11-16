@@ -92,7 +92,7 @@ public class TeacherItemService {
     public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(
             Integer nth
     ) throws IOException {
-        NthStatus nthStatus = nthStatusRepository.findByNthStatusId(Long.valueOf(nth))
+        NthStatus nthStatus = nthStatusRepository.findByNthStatusIdForExcel(Long.valueOf(nth))
                 .orElseThrow(() -> new RuntimeException("해당 nthStatus 없음"));
 
         LocalDateTime startDateTime = nthStatus.getCreatedAt();
