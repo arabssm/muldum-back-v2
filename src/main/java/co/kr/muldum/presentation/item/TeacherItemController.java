@@ -3,6 +3,7 @@ package co.kr.muldum.presentation.item;
 import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
 import co.kr.muldum.domain.item.dto.req.DownloadXlsxRequest;
+import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,12 @@ public class TeacherItemController {
 
         teacherItemService.openNthItemRequestPeriod(nth, req.projectType(), req.guide(), req.deadlineDate(), userDetails.getUserId());
 
-        return ResponseEntity.ok().build();
+        ItemActionResponseDto response = ItemActionResponseDto.builder()
+                .status(ItemStatus.APPROVED)
+                .message(nth + "차 물품 신청 기간이 열렸습니다.")
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/open-status")

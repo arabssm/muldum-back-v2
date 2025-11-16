@@ -414,7 +414,7 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public ItemActionResponseDto openNthItemRequestPeriod(
+    public void openNthItemRequestPeriod(
             Integer nth, String type,
             List<ItemGuide> guide,
             String deadlineDate,
@@ -428,10 +428,5 @@ public class TeacherItemService {
         nthStatusRepository.save(nthStatus);
 
         log.info("{}차 물품 신청 기간 오픈 완료", nth);
-
-        return ItemActionResponseDto.builder()
-                .status(ItemStatus.APPROVED)
-                .message(nth + "차 물품 신청 기간이 열렸습니다.")
-                .build();
     }
 }
