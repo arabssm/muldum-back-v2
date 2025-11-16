@@ -90,17 +90,16 @@ public class TeacherItemService {
     }
 
     public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(
-            Integer nth,
-            String start,
-            String end
+            Integer nth
     ) throws IOException {
-        // 문자열을 LocalDate로 변환
-        LocalDate startDate = LocalDate.parse(start); // 2025-11-16
-        LocalDate endDate = LocalDate.parse(end);     // 2025-11-17
+        NthStatus nthStatus = nthStatusRepository.findByNthStatusId(Long.valueOf(nth))
+                .orElseThrow(() -> new RuntimeException("해당 nthStatus 없음"));
 
-        // 시작은 00:00:00, 끝은 23:59:59.999로 설정
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+        LocalDateTime startDateTime = nthStatus.getCreatedAt();
+        String endDate = nthStatus.getDeadlineDate();
+        LocalDate endLocalDate = LocalDate.parse(endDate);
+        LocalDateTime endDateTime = endLocalDate.atTime(LocalTime.MAX);
+
         List<ItemRequest> items = itemRequestRepository.findByStatusAndNthAndStartAndEnd(ItemStatus.APPROVED, nth, startDateTime, endDateTime);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
