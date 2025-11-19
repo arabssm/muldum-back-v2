@@ -2,7 +2,9 @@ package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.dto.req.AddRejectTemplatesRequest;
+import co.kr.muldum.domain.item.dto.req.ItemGuideRequest;
 import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
+import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.service.RejectTemplateService;
 import co.kr.muldum.domain.item.service.TeacherItemService;
@@ -281,6 +283,27 @@ public class TeacherItemController {
 
         ItemActionResponseDto response = teacherItemService.updateItem(itemId, requestDto);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/guide")
+    public ResponseEntity<ItemGuideResponse> getItemGuide(
+            @RequestBody ItemGuideRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 물품신청 가이드 작성 요청 - teacherId: {}", userDetails.getUserId());
+        ItemGuideResponse response = teacherItemService.createItemGuide(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/guide/{guide_id}")
+    public ResponseEntity<ItemGuideResponse> updateItemGuide(
+            @RequestBody ItemGuideRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("guide_id") Long guideId
+    ) {
+        log.info("선생님 물품신청 가이드 수정 요청 - teacherId: {}", userDetails.getUserId());
+        ItemGuideResponse response = teacherItemService.updateItemGuide(request, guideId);
         return ResponseEntity.ok(response);
     }
 }

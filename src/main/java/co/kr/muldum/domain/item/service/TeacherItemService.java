@@ -6,6 +6,8 @@ import co.kr.muldum.domain.item.dto.req.ItemGuide;
 import co.kr.muldum.domain.item.dto.NthStatusHistoryResponseDto;
 import co.kr.muldum.domain.item.dto.NthOpenCountResponseDto;
 import co.kr.muldum.domain.item.dto.NthOpenedListResponseDto;
+import co.kr.muldum.domain.item.dto.req.ItemGuideRequest;
+import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
 import co.kr.muldum.domain.item.model.NthStatus;
 import co.kr.muldum.domain.item.model.NthStatusHistory;
 import co.kr.muldum.domain.item.model.ProductInfo;
@@ -441,5 +443,14 @@ public class TeacherItemService {
 
     public NthOpenedListResponseDto getOpenedNthValues() {
         return nthStatusQueryService.getOpenedNthValues();
+    }
+
+    public ItemGuideResponse createItemGuide(ItemGuideRequest request) {
+
+        return null;
+    }
+
+    public ItemGuideResponse updateItemGuide(ItemGuideRequest request, Long guideId) {
+        return null;
     }
 }
