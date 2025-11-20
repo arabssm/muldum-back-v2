@@ -1,6 +1,6 @@
 package co.kr.muldum.domain.item.model;
 
-import co.kr.muldum.domain.item.dto.req.ItemGuide;
+import co.kr.muldum.domain.item.dto.req.ItemMinPriceRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class NthStatus {
 
     @Column(columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<ItemGuide> guide;
+    private List<ItemMinPriceRequest> guide;
 
     private String deadlineDate;
 
@@ -42,7 +42,7 @@ public class NthStatus {
     public void updateNthValue(
             Integer nth,
             String projectType,
-            List<ItemGuide> guide,
+            List<ItemMinPriceRequest> guide,
             String deadlineDate,
             Long teacherId
     ) {
