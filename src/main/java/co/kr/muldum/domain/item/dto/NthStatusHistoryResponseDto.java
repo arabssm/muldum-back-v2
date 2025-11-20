@@ -1,6 +1,6 @@
 package co.kr.muldum.domain.item.dto;
 
-import co.kr.muldum.domain.item.dto.req.ItemGuide;
+import co.kr.muldum.domain.item.dto.req.ItemMinPriceRequest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class NthStatusHistoryResponseDto {
     private Integer nth;
     private String projectType;
-    private List<ItemGuide> guide;
+    private List<ItemMinPriceRequest> guide;
     private String deadlineDate;
     private Long teacherId;
     private LocalDateTime openedAt;

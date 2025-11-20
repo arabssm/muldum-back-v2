@@ -4,6 +4,6 @@ import java.util.List;
 
 public record ItemOpenRequest(
         String projectType,
-        List<ItemGuide> guide,
+        List<ItemMinPriceRequest> guide,
         String deadlineDate
 ) {}
