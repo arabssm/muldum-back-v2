@@ -9,4 +9,5 @@ public class TeamspaceMemberDto {
 
     private Long userId;
     private String userName;
+    private String studentId;
 }

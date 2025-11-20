@@ -151,10 +151,15 @@ public class TeamspaceService {
                                 }
                                 return 0;
                             })
-                            .map(member -> TeamspaceMemberDto.builder()
-                                    .userId(member.getUser().getId())
-                                    .userName(member.getUser().getName())
-                                    .build())
+                            .map(member -> {
+                                Map<String, Object> profile = member.getUser().getProfile();
+                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+                                return TeamspaceMemberDto.builder()
+                                        .userId(member.getUser().getId())
+                                        .userName(member.getUser().getName())
+                                        .studentId(studentId)
+                                        .build();
+                            })
                             .toList();
 
                     // 해당 반에 멤버가 있는 팀만 반환
@@ -251,10 +256,15 @@ public class TeamspaceService {
                                 }
                                 return 0;
                             })
-                            .map(member -> TeamspaceMemberDto.builder()
-                                    .userId(member.getUser().getId())
-                                    .userName(member.getUser().getName())
-                                    .build())
+                            .map(member -> {
+                                Map<String, Object> profile = member.getUser().getProfile();
+                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+                                return TeamspaceMemberDto.builder()
+                                        .userId(member.getUser().getId())
+                                        .userName(member.getUser().getName())
+                                        .studentId(studentId)
+                                        .build();
+                            })
                             .toList();
 
                     return TeamspaceTeamDto.builder()
