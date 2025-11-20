@@ -33,8 +33,8 @@ public class ItemGuide {
     }
 
     public void update(String content, String projectType) {
-        if (content != null) this.content = content;
-        if (projectType != null) this.projectType = projectType;
+        this.content = content;
+        this.projectType = projectType;
     }
 
 }

@@ -443,6 +443,7 @@ public class TeacherItemService {
         return nthStatusQueryService.getOpenedNthValues();
     }
 
+    @Transactional
     public ItemGuideResponse createItemGuide(ItemGuideRequest request, Long teacherId) {
         ItemGuide guide = ItemGuide.create(
                 teacherId,
@@ -458,6 +459,7 @@ public class TeacherItemService {
                 .build();
     }
 
+    @Transactional
     public ItemGuideResponse updateItemGuide(ItemGuideRequest request, Long guideId) {
         ItemGuide guide = itemGuideRepository.findById(guideId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가이드를 찾을 수 없음"));
