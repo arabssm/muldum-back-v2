@@ -2,19 +2,16 @@ package co.kr.muldum.domain.item.service;
 
 import co.kr.muldum.application.teamspace.ExcelExportService;
 import co.kr.muldum.domain.item.dto.*;
-import co.kr.muldum.domain.item.dto.req.ItemGuide;
+import co.kr.muldum.domain.item.dto.req.ItemMinPriceRequest;
 import co.kr.muldum.domain.item.dto.NthStatusHistoryResponseDto;
 import co.kr.muldum.domain.item.dto.NthOpenCountResponseDto;
 import co.kr.muldum.domain.item.dto.NthOpenedListResponseDto;
 import co.kr.muldum.domain.item.dto.req.ItemGuideRequest;
 import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
-import co.kr.muldum.domain.item.model.NthStatus;
-import co.kr.muldum.domain.item.model.NthStatusHistory;
-import co.kr.muldum.domain.item.model.ProductInfo;
-import co.kr.muldum.domain.item.model.ItemRequest;
-import co.kr.muldum.domain.item.model.RequestDetails;
+import co.kr.muldum.domain.item.model.*;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
+import co.kr.muldum.domain.item.repository.ItemGuideRepository;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.item.repository.NthStatusHistoryRepository;
@@ -45,6 +42,7 @@ public class TeacherItemService {
     private final UserReader userReader;
     private final NthStatusQueryService nthStatusQueryService;
     private final NthStatusHistoryRepository nthStatusHistoryRepository;
+    private final ItemGuideRepository itemGuideRepository;
 
     @Transactional
     public String fixNthIssues() {
@@ -409,7 +407,7 @@ public class TeacherItemService {
     @Transactional
     public void openNthItemRequestPeriod(
             Integer nth, String type,
-            List<ItemGuide> guide,
+            List<ItemMinPriceRequest> guide,
             String deadlineDate,
             Long teacherId
     ) {
@@ -445,12 +443,30 @@ public class TeacherItemService {
         return nthStatusQueryService.getOpenedNthValues();
     }
 
-    public ItemGuideResponse createItemGuide(ItemGuideRequest request) {
+    public ItemGuideResponse createItemGuide(ItemGuideRequest request, Long teacherId) {
+        ItemGuide guide = ItemGuide.create(
+                teacherId,
+                request.getContent(),
+                request.getProjectType()
+        );
 
-        return null;
+        itemGuideRepository.save(guide);
+
+        return ItemGuideResponse.builder()
+                .id(guide.getId())
+                .message(guide.getProjectType() + " 물품 신청 가이드가 등록되었습니다.")
+                .build();
     }
 
     public ItemGuideResponse updateItemGuide(ItemGuideRequest request, Long guideId) {
-        return null;
+        ItemGuide guide = itemGuideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가이드를 찾을 수 없음"));
+
+        guide.update(request.getContent(), request.getProjectType());
+
+        return ItemGuideResponse.builder()
+                .id(guide.getId())
+                .message(guide.getProjectType() + " 물품 신청 가이드가 수정되었습니다.")
+                .build();
     }
 }
