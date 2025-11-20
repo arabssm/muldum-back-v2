@@ -292,7 +292,7 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품신청 가이드 작성 요청 - teacherId: {}", userDetails.getUserId());
-        ItemGuideResponse response = teacherItemService.createItemGuide(request);
+        ItemGuideResponse response = teacherItemService.createItemGuide(request, userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
