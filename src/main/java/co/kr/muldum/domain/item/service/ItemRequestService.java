@@ -4,9 +4,12 @@ import co.kr.muldum.domain.item.dto.UsedBudgetResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemListResponseDto;
+import co.kr.muldum.domain.item.dto.res.GetItemGuideResponse;
+import co.kr.muldum.domain.item.model.ItemGuide;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
+import co.kr.muldum.domain.item.repository.ItemGuideRepository;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
@@ -28,6 +31,7 @@ public class ItemRequestService {
     private final ItemRequestFacade itemRequestFacade;
     private final ItemRequestRepository itemRequestRepository;
     private final UserReader userReader;
+    private final ItemGuideRepository itemGuideRepository;
 
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
         log.info("임시 물품 생성 요청 - userId={}", userId);
@@ -134,4 +138,13 @@ public class ItemRequestService {
                 .build();
     }
 
+    public GetItemGuideResponse getItemGuide(Long guideId, String projectType) {
+        ItemGuide guide = itemGuideRepository.findByIdAndProjectType(guideId, projectType)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가이드를 찾을 수 없습니다."));
+
+        return new GetItemGuideResponse(
+                guide.getId(),
+                guide.getContent()
+        );
+    }
 }

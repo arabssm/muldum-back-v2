@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ItemGuideRepository extends JpaRepository<ItemGuide, Long> {
-    Optional<ItemGuide> findByIdAndTeacherId(Long id, Long teacherId);
+    Optional<ItemGuide> findByIdAndProjectType(Long id, String projectType);
 }
