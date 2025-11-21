@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ public class SignalHandler extends TextWebSocketHandler {
             Set<UserInfoPayload> existingUsers = sessionsInRoom.values().stream()
                     .map(UserInfoPayload::from)
                     .collect(Collectors.toSet());
+            Set<String> existingSessionIds = new HashSet<>(sessionsInRoom.keySet());
 
             UserSessionInfo currentInfo = new UserSessionInfo(session, userId, userName);
             sessionsInRoom.put(session.getId(), currentInfo);
@@ -70,7 +72,8 @@ public class SignalHandler extends TextWebSocketHandler {
             if (!existingUsers.isEmpty()) {
                 Map<String, Object> newUserMessage = Map.of(
                         "type", "new_user",
-                        "data", UserInfoPayload.from(currentInfo)
+                        "data", session.getId(),
+                        "user", UserInfoPayload.from(currentInfo)
                 );
                 sessionsInRoom.values().forEach(info -> {
                     if (!info.session().getId().equals(session.getId())) {
@@ -81,7 +84,11 @@ public class SignalHandler extends TextWebSocketHandler {
                         }
                     }
                 });
-                sendMessage(session, Map.of("type", "existing_users", "data", existingUsers));
+                sendMessage(session, Map.of(
+                        "type", "existing_users",
+                        "data", existingSessionIds,
+                        "users", existingUsers
+                ));
             }
         } catch (CustomException e) {
             log.warn("Connection attempt to non-existent room {}. Session ID: {}", roomId, session.getId());
@@ -145,9 +152,10 @@ public class SignalHandler extends TextWebSocketHandler {
                 log.info("Session {} disconnected from room {}. Remaining users: {}", session.getId(), roomId, sessionsInRoom.size());
                 Map<String, Object> userLeftMessage = Map.of(
                         "type", "user_left",
-                        "data", removedInfo != null
+                        "data", session.getId(),
+                        "user", removedInfo != null
                                 ? UserInfoPayload.from(removedInfo)
-                                : Map.of("sessionId", session.getId())
+                                : new UserInfoPayload(session.getId(), null, null)
                 );
                 broadcastToAll(roomId, userLeftMessage);
 
