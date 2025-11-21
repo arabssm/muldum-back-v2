@@ -38,9 +38,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             path.startsWith("/ara/") ||
             path.startsWith("/user/issue")
         );
+        if (skip && hasAuthorizationHeader(request)) {
+            log.info("[JwtFilter] Authorization header present, forcing filter for path {}", path);
+            return false;
+        }
         
         log.info("[JwtFilter] Should skip filter for path {}: {}", path, skip);
         return skip;
+    }
+
+    private boolean hasAuthorizationHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        return authHeader != null && !authHeader.isBlank();
     }
 
     @Override

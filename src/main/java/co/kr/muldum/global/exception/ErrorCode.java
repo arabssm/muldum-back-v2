@@ -21,9 +21,18 @@ public enum ErrorCode {
     INVALID_PRODUCT_LINK(HttpStatus.BAD_REQUEST, "상품 링크가 유효하지 않습니다."),
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "물품을 찾을 수 없습니다."),
     FORBIDDEN_TEAM_ITEM(HttpStatus.FORBIDDEN, "자신이 속한 팀의 물품만 취소할 수 있습니다."),
-    ITEM_NOT_IN_TEMP_STATUS(HttpStatus.BAD_REQUEST, "임시 저장 상태의 물품만 삭제할 수 있습니다.");
+    ITEM_NOT_IN_TEMP_STATUS(HttpStatus.BAD_REQUEST, "임시 저장 상태의 물품만 삭제할 수 있습니다."),
 
-  private final HttpStatus status;
+    INVALID_CREATOR_ROLE(HttpStatus.BAD_REQUEST, "유효하지 않은 생성자 역할입니다."),
+    ROOM_CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "최대 참가자 수를 초과할 수 없습니다."),
+    ROOM_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "비활성화된 방에는 참가할 수 없습니다."),
+    PARTICIPANT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 참가 중인 사용자입니다."),
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 방을 찾을 수 없습니다."),
+    MAX_PARTICIPANTS_INVALID(HttpStatus.BAD_REQUEST, "최대 참가자 수는 현재 인원보다 적을 수 없습니다."),
+    INVALID_ROOM_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 방 상태 값입니다."),
+    INVALID_CREATED_BY_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 생성자 정보 형식입니다.");
+
+    private final HttpStatus status;
     private final String message;
 
     ErrorCode(HttpStatus status, String message) {

@@ -9,9 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableScheduling
 public class MuldumApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(MuldumApplication.class, args);
 	}
-
 }
