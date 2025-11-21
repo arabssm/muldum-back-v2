@@ -3,6 +3,7 @@ package co.kr.muldum.domain.report.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +16,7 @@ public class MonthReport {
     private final Long userId;
     private final Long teamId;
     private final String topic;
-    private final String goal;
+    private final List<String> goal;
     private final String tech;
     private final String problem;
     private final String teacherFeedback;
