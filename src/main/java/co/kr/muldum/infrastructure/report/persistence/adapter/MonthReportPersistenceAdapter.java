@@ -3,6 +3,7 @@ package co.kr.muldum.infrastructure.report.persistence.adapter;
 import co.kr.muldum.application.report.port.out.LoadMonthReportPort;
 import co.kr.muldum.application.report.port.out.SaveMonthReportPort;
 import co.kr.muldum.domain.report.model.MonthReport;
+import co.kr.muldum.domain.report.model.ReportStatus;
 import co.kr.muldum.infrastructure.report.persistence.repository.MonthReportJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -41,6 +42,12 @@ public class MonthReportPersistenceAdapter implements LoadMonthReportPort, SaveM
     @Override
     public Optional<MonthReport> findByUserIdAndMonth(Long userId, int month) {
         return monthReportJpaRepository.findByUserIdAndMonth(userId, month)
+                .map(monthReportMapper::toDomain);
+    }
+
+    @Override
+    public Optional<MonthReport> findByTeamIdAndStatus(Long teamId, ReportStatus status) {
+        return monthReportJpaRepository.findByTeamIdAndStatus(teamId, status)
                 .map(monthReportMapper::toDomain);
     }
 

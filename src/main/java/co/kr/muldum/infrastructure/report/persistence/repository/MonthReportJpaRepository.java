@@ -1,5 +1,6 @@
 package co.kr.muldum.infrastructure.report.persistence.repository;
 
+import co.kr.muldum.domain.report.model.ReportStatus;
 import co.kr.muldum.infrastructure.report.persistence.entity.MonthReportEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface MonthReportJpaRepository extends JpaRepository<MonthReportEntit
 
     @Query(value = "SELECT * FROM month_report m WHERE m.user_id = :userId AND EXTRACT(MONTH FROM m.created_at) = :month LIMIT 1", nativeQuery = true)
     Optional<MonthReportEntity> findByUserIdAndMonth(@Param("userId") Long userId, @Param("month") int month);
+
+    Optional<MonthReportEntity> findByTeamIdAndStatus(Long teamId, ReportStatus status);
 }

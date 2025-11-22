@@ -1,6 +1,7 @@
 package co.kr.muldum.presentation.report.controller;
 
 import co.kr.muldum.application.report.support.UserTeamResolver;
+import co.kr.muldum.application.report.usecase.GetDraftReportUseCase;
 import co.kr.muldum.application.report.usecase.GetStudentMonthReportUseCase;
 import co.kr.muldum.application.report.usecase.SaveMonthReportUseCase;
 import co.kr.muldum.application.report.usecase.SubmitMonthReportUseCase;
@@ -36,8 +37,18 @@ public class StudentMonthReportController {
     private final SaveMonthReportUseCase saveMonthReportUseCase;
     private final SubmitMonthReportUseCase submitMonthReportUseCase;
     private final GetStudentMonthReportUseCase getStudentMonthReportUseCase;
+    private final GetDraftReportUseCase getDraftReportUseCase;
     private final MonthReportWebMapper monthReportWebMapper;
     private final UserTeamResolver userTeamResolver;
+
+    @GetMapping("/draft")
+    public ResponseEntity<MonthReportDetailResponse> getDraftMonthReportForTeam() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        validateStudentRole(SecurityUtil.getCurrentUserType());
+        Long teamId = userTeamResolver.resolveTeamId(userId);
+        var report = getDraftReportUseCase.getDraftReport(teamId);
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
 
     @PostMapping("/draft")
     public ResponseEntity<SaveMonthReportResponse> saveDraft(
