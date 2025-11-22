@@ -31,6 +31,8 @@ public class GoogleOAuthClient {
     }
 
     public TokenResponse exchangeCodeForToken(String authorizationCode, String codeVerifier) {
+        log.info("Google token request clientId={}, redirectUri={}, tokenUrl={}", clientId, redirectUri, tokenUrl);
+
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("code", authorizationCode);
         form.add("client_id", clientId);

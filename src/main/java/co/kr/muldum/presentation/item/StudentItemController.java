@@ -32,6 +32,7 @@ public class StudentItemController {
     private final UserReader userReader;
     private final ProductInfoService productInfoService;
     private final NthStatusQueryService nthStatusQueryService;
+    private final SimilarProductService similarProductService;
 
     @GetMapping
     public ResponseEntity<List<ItemListResponseDto>> getTeamItems(
@@ -116,6 +117,15 @@ public class StudentItemController {
         return handleItemResponse(response);
     }
 
+    @PostMapping("/{item_id}/reapply")
+    public ResponseEntity<ItemResponseDto> reapplyRejectedItem(
+            @PathVariable("item_id") Long itemId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        ItemResponseDto response = itemRequestService.reapplyRejectedItem(itemId, userDetails.getUserId());
+        return handleItemResponse(response);
+    }
+
     @PatchMapping
     public ResponseEntity<ItemResponseDto> finalizeItemRequest(
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -145,6 +155,16 @@ public class StudentItemController {
     ) {
         UsedBudgetResponseDto response = itemRequestService.getUsedBudget(userDetails.getUserId());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{item_id}/alternatives")
+    public ResponseEntity<List<SimilarProductResponseDto>> getSimilarProducts(
+            @PathVariable("item_id") Long itemId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<SimilarProductResponseDto> suggestions =
+                similarProductService.getSimilarProducts(itemId, userDetails.getUserId());
+        return ResponseEntity.ok(suggestions);
     }
 
     private ResponseEntity<ItemResponseDto> handleItemResponse(ItemResponseDto response) {

@@ -62,8 +62,8 @@ public class ProductInfoService {
     }
 
     private ProductInfoResponseDto scrape11st(String productLink) {
-        if (productLink.contains("www.11st.co.kr")) {
-            productLink = productLink.replace("www.11st.co.kr", "m.11st.co.kr").replace("/products/", "/products/ma/");
+        if (productLink.contains("11st.co.kr")) {
+            productLink = normalize11stLink(productLink);
         }
 
         try {
@@ -111,6 +111,20 @@ public class ProductInfoService {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
+    }
+
+    private String normalize11stLink(String productLink) {
+        String normalized = productLink
+                .replace("www.11st.co.kr", "m.11st.co.kr")
+                .replace("app.11st.co.kr", "m.11st.co.kr");
+
+        if (normalized.contains("/products/pa/")) {
+            normalized = normalized.replace("/products/pa/", "/products/ma/");
+        } else if (!normalized.contains("/products/ma/")) {
+            normalized = normalized.replace("/products/", "/products/ma/");
+        }
+
+        return normalized;
     }
 
 

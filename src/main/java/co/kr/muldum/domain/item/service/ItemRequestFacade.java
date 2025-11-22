@@ -142,4 +142,30 @@ public class ItemRequestFacade {
             throw e;
         }
     }
+
+    public ItemResponseDto reapplyRejectedItem(Long itemId, Long userId) {
+        UserInfo userInfo = userReader.read(User.class, userId);
+        ItemRequest rejectedItem = itemRequestRepository.findById(itemId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+        if (!rejectedItem.getTeamId().equals(userInfo.getTeamId().intValue())) {
+            throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
+        }
+
+        if (rejectedItem.getStatus() != ItemStatus.REJECTED) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
+        Integer nth = (nthStatus != null && nthStatus.getNthValue() != null)
+                ? nthStatus.getNthValue()
+                : rejectedItem.getNth();
+
+        itemRequestExecutor.duplicateRejectedItemAsTemp(rejectedItem, nth);
+
+        return itemResponseFactory.createResponse(
+                ItemStatus.INTEMP,
+                "거절된 물품을 임시 신청으로 이동했습니다. 수정 후 다시 제출하세요."
+        );
+    }
 }

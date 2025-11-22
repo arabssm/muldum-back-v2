@@ -147,4 +147,9 @@ public class ItemRequestService {
                 guide.getContent()
         );
     }
+
+    public ItemResponseDto reapplyRejectedItem(Long itemId, Long userId) {
+        log.info("거절 물품 재신청 요청 - itemId={}, userId={}", itemId, userId);
+        return itemRequestFacade.reapplyRejectedItem(itemId, userId);
+    }
 }

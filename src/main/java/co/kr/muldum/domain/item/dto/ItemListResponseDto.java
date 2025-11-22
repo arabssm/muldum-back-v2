@@ -16,6 +16,7 @@ public class ItemListResponseDto {
     private String product_name;
     private Integer quantity;
     private Integer price;
+    private String productLink;
     private String status;
     private String type;
     private String deliveryPrice;

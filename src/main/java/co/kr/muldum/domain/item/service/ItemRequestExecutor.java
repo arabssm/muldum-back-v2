@@ -8,6 +8,8 @@ import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.global.exception.CustomException;
+import co.kr.muldum.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -124,5 +126,43 @@ public class ItemRequestExecutor {
         itemRequest.updateRequestDetails(requestDetails);
 
         return itemRequestRepository.save(itemRequest);
+    }
+
+    public ItemRequest duplicateRejectedItemAsTemp(ItemRequest source, Integer nth) {
+        if (source.getProductInfo() == null) {
+            throw new CustomException(ErrorCode.INVALID_PRODUCT_LINK);
+        }
+
+        ProductInfo originalInfo = source.getProductInfo();
+        ProductInfo copiedInfo = ProductInfo.builder()
+                .name(originalInfo.getName())
+                .quantity(originalInfo.getQuantity())
+                .price(originalInfo.getPrice())
+                .link(originalInfo.getLink())
+                .itemSource(originalInfo.getItemSource())
+                .description(originalInfo.getDescription())
+                .deliveryPrice(originalInfo.getDeliveryPrice())
+                .deliveryTime(originalInfo.getDeliveryTime())
+                .build();
+
+        RequestDetails newDetails = RequestDetails.builder()
+                .reason(null)
+                .deliveryInfo(null)
+                .approvalNotes(null)
+                .build();
+
+        ItemRequest copy = ItemRequest.builder()
+                .teamId(source.getTeamId())
+                .requesterUserId(source.getRequesterUserId())
+                .productInfo(copiedInfo)
+                .status(ItemStatus.INTEMP)
+                .teamType(source.getTeamType())
+                .requestDetails(newDetails)
+                .nth(nth != null ? nth : source.getNth())
+                .build();
+
+        ItemRequest saved = itemRequestRepository.save(copy);
+        log.info("거절 물품 재신청 복사 완료 - originalId={}, newId={}", source.getId(), saved.getId());
+        return saved;
     }
 }

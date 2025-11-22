@@ -2,6 +2,8 @@ package co.kr.muldum.presentation.room.websocket;
 
 import co.kr.muldum.application.room.dto.room.response.RoomDetailResponse;
 import co.kr.muldum.application.room.port.in.FindRoomByIdUseCase;
+import co.kr.muldum.domain.user.UserReader;
+import co.kr.muldum.domain.user.model.UserInfo;
 import co.kr.muldum.global.exception.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,9 +28,11 @@ public class SignalHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, Map<String, UserSessionInfo>> roomSessions = new ConcurrentHashMap<>();
     private final FindRoomByIdUseCase findRoomByIdUseCase;
+    private final UserReader userReader;
 
-    public SignalHandler(FindRoomByIdUseCase findRoomByIdUseCase) {
+    public SignalHandler(FindRoomByIdUseCase findRoomByIdUseCase, UserReader userReader) {
         this.findRoomByIdUseCase = findRoomByIdUseCase;
+        this.userReader = userReader;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     : DEFAULT_MAX_PARTICIPANTS;
 
             Long userId = extractUserId(session);
-            String userName = extractUserName(session);
+            String userName = resolveUserName(userId, session);
 
             Map<String, UserSessionInfo> sessionsInRoom = roomSessions.computeIfAbsent(
                     roomId,
@@ -113,13 +117,37 @@ public class SignalHandler extends TextWebSocketHandler {
 
         try {
             Map<String, Object> msg = objectMapper.readValue(message.getPayload(), Map.class);
-            String to = (String) msg.get("to");
+            String type = msg.get("type") != null ? msg.get("type").toString().trim() : null;
+            String to = msg.get("to") != null ? msg.get("to").toString() : null;
+
+            UserSessionInfo senderInfo = roomSessions
+                    .getOrDefault(roomId, Map.of())
+                    .get(session.getId());
+
+            if ("ping".equalsIgnoreCase(type)) {
+                sendMessage(session, Map.of("type", "pong"));
+                return;
+            }
+
+            if (isChatMessage(type)) {
+                msg.put("from", session.getId());
+                if (senderInfo != null) {
+                    msg.put("user", UserInfoPayload.from(senderInfo));
+                }
+                broadcastToAll(roomId, msg);
+                return;
+            }
+
             if (to == null) {
                 log.warn("Received message without 'to' field: {}", msg);
                 return;
             }
 
             msg.put("from", session.getId());
+
+            if (senderInfo != null) {
+                msg.put("user", UserInfoPayload.from(senderInfo));
+            }
 
             roomSessions.getOrDefault(roomId, Map.of()).values().stream()
                     .filter(info -> info.session().getId().equals(to) && info.session().isOpen())
@@ -183,12 +211,21 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-    private String extractUserName(WebSocketSession session) {
-        String userName = getQueryParam(session, "userName");
-        if (userName == null || userName.isBlank()) {
+    private String resolveUserName(Long userId, WebSocketSession session) {
+        try {
+            UserInfo userInfo = userReader.read(SignalHandler.class, userId);
+            if (userInfo == null || userInfo.getName() == null || userInfo.getName().isBlank()) {
+                throw new IllegalArgumentException("user name is missing for userId " + userId);
+            }
+            return userInfo.getName();
+        } catch (RuntimeException e) {
+            log.warn("Failed to load user name from DB for userId {}: {}", userId, e.getMessage());
+            String fallbackUserName = getQueryParam(session, "userName");
+            if (fallbackUserName != null && !fallbackUserName.isBlank()) {
+                return fallbackUserName;
+            }
             throw new IllegalArgumentException("userName is required");
         }
-        return userName;
     }
 
     private String getQueryParam(WebSocketSession session, String key) {
@@ -220,6 +257,17 @@ public class SignalHandler extends TextWebSocketHandler {
                 log.error("Failed to broadcast to session {}: {}", info.session().getId(), e.getMessage());
             }
         });
+    }
+
+    private boolean isChatMessage(String type) {
+        if (type == null) {
+            return false;
+        }
+        String normalized = type.trim().toLowerCase();
+        return normalized.equals("chat")
+                || normalized.equals("chat_message")
+                || normalized.equals("chatmessage")
+                || normalized.equals("chat-message");
     }
 
     private record UserSessionInfo(WebSocketSession session, Long userId, String userName) {

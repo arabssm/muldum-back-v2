@@ -59,6 +59,8 @@ public class ItemListService {
                 .quantity(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getQuantity() : 0)
                 .price(price)
+                .productLink(itemRequest.getProductInfo() != null ?
+                        itemRequest.getProductInfo().getLink() : null)
                 .status(itemRequest.getStatus().name())
                 .type(itemRequest.getTeamType().name())
                 .deliveryPrice(itemRequest.getProductInfo() != null ?
