@@ -21,6 +21,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
     List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
     List<ItemRequest> findByStatusAndNth(ItemStatus status, Integer nth);
+    List<ItemRequest> findByTeamIdAndStatusAndIdIn(Integer teamId, ItemStatus itemStatus, List<Long> ids);
 
     @Query("SELECT ir FROM ItemRequest ir WHERE ir.status = :itemStatus AND ir.nth = :nth AND ir.createdAt BETWEEN :start AND :end")
     List<ItemRequest> findByStatusAndNthAndStartAndEnd(ItemStatus itemStatus, Integer nth, LocalDateTime start, LocalDateTime end);

@@ -41,4 +41,12 @@ public class HistoryService {
 
         return HistoryResponseDto.fromEntity(history, slogan, detail);
     }
+
+    public Integer getCurrentGeneration() {
+        History latest = historyRepository.findTopByOrderByGenerationDesc();
+        if (latest == null) {
+            return null;
+        }
+        return latest.getGeneration();
+    }
 }

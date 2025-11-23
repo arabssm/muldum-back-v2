@@ -56,6 +56,14 @@ public class TeamspaceController {
         return teamspaceService.getTeamspaceWithItem(userDetails.getUserId());
     }
 
+    @GetMapping("/tch/teamspace/major/item")
+    @PreAuthorize("hasRole('TEACHER')")
+    public List<TeamspaceWithItemResponseDto> getMajorTeamsWithItem(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return teamspaceService.getMajorTeamsWithItem(userDetails.getUserId());
+    }
+
     @PostMapping("/tch/teamspace/network/team")
     @PreAuthorize("hasRole('TEACHER')")
     @ResponseStatus(HttpStatus.CREATED)

@@ -5,5 +5,9 @@ public enum ItemStatus {
     INTEMP,
     APPROVED,
     REJECTED,
-    DELETED
+    DELETED;
+
+    public boolean isRejected() {
+        return this == REJECTED;
+    }
 }

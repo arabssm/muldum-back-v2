@@ -12,6 +12,6 @@ public class TeamspaceWithItemResponseDto {
     private Long teamId;
     private String teamName;
     private List<TeamspaceMemberDto> members;
-    private Boolean hasNewItems;
+    private Integer newCount;
 
 }
