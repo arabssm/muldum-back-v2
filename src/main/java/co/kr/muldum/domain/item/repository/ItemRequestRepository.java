@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,6 +21,13 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
     List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
     List<ItemRequest> findByTeamIdAndStatusAndIdIn(Integer teamId, ItemStatus itemStatus, List<Long> ids);
+
+    @Query("SELECT ir FROM ItemRequest ir WHERE ir.status = :status AND ir.updatedAt BETWEEN :start AND :end")
+    List<ItemRequest> findByStatusAndUpdatedAtBetween(
+            @Param("status") ItemStatus status,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 
     @Query(value = """
             SELECT *

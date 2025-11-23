@@ -107,7 +107,8 @@ public class TeacherItemService {
         LocalDate endLocalDate = LocalDate.parse(endDate);
         LocalDateTime endDateTime = endLocalDate.atTime(LocalTime.MAX);
 
-        List<ItemRequest> items = itemRequestRepository.findByStatusAndNthAndStartAndEnd(ItemStatus.APPROVED, nth, startDateTime, endDateTime);
+        List<ItemRequest> items = itemRequestRepository.findByStatusAndUpdatedAtBetween(
+                ItemStatus.APPROVED, startDateTime, endDateTime);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
                 .collect(Collectors.toList());
