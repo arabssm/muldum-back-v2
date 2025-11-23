@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface GetTeacherMonthReportUseCase {
     TeacherMonthReportApplicationResponse getTeacherByReportId(Long reportId, Long teacherId);
-    List<TeacherMonthReportApplicationResponse> getByTeamAndMonth(Long teamId, int month, Long teacherId);
+    List<TeacherMonthReportApplicationResponse> getByTeamAndMonth(Long teamId, Integer month, Long teacherId);
 }

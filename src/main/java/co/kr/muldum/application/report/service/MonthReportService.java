@@ -144,8 +144,10 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
     }
 
     @Override
-    public List<TeacherMonthReportApplicationResponse> getByTeamAndMonth(Long teamId, int month, Long teacherId) {
-        List<MonthReport> reports = loadMonthReportPort.findByTeamAndMonth(teamId, month);
+    public List<TeacherMonthReportApplicationResponse> getByTeamAndMonth(Long teamId, Integer month, Long teacherId) {
+        List<MonthReport> reports = month != null
+                ? loadMonthReportPort.findByTeamAndMonth(teamId, month)
+                : loadMonthReportPort.findByTeamId(teamId);
         return reports.stream()
                 .map(report -> TeacherMonthReportApplicationResponse.builder()
                         .reportId(report.getId())

@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface MonthReportJpaRepository extends JpaRepository<MonthReportEntity, Long> {
     List<MonthReportEntity> findByUserId(Long userId);
+    List<MonthReportEntity> findByTeamId(Long teamId);
 
     @Query(value = "SELECT * FROM month_report m WHERE m.team_id = :teamId AND EXTRACT(MONTH FROM m.created_at) = :month", nativeQuery = true)
     List<MonthReportEntity> findByTeamIdAndMonth(@Param("teamId") Long teamId, @Param("month") int month);
