@@ -47,3 +47,6 @@ out/
 .cache/
 .viminfo
 .sudo_as_admin_successful
+
+# Custom
+prompt.md
