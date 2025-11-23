@@ -28,7 +28,7 @@ public class FileUploadController {
     return ResponseEntity.ok("파일 업로드 성공");
   }
 
-  @PatchMapping("/network/team/{team-id}/icon")
+  @PatchMapping("/team/{team-id}/icon")
   public ResponseEntity<String> uploadTeamIcon(
           @PathVariable("team-id") Long teamId,
           @Valid @RequestBody TeamFileRequest teamFileRequest,
