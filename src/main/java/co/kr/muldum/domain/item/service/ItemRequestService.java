@@ -53,6 +53,11 @@ public class ItemRequestService {
         return itemRequestFacade.deleteTempItemRequest(itemId, userId);
     }
 
+    public ItemResponseDto deleteTempItemRequests(List<Long> itemIds, Long userId) {
+        log.info("임시 물품 일괄 삭제 요청 - itemIds={}, userId={}", itemIds, userId);
+        return itemRequestFacade.deleteTempItemRequests(itemIds, userId);
+    }
+
     public List<TempItemListResponseDto> getTempItemRequests(Long userId) {
         UserInfo userInfo = userReader.read(User.class, userId);
         log.debug("임시 물품 목록 조회 - teamId={}, userId={}",

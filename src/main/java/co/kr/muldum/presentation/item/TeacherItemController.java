@@ -121,8 +121,8 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품 전체 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> items = teacherItemService.getAllPendingItems(nth);
-        return ResponseEntity.ok(items);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllPendingItems(nth, userDetails.getUserId());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/approved")
@@ -131,8 +131,8 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 승인 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> items = teacherItemService.getAllApprovedItems(nth);
-        return ResponseEntity.ok(items);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllApprovedItems(nth, userDetails.getUserId());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{teamId}")
@@ -142,9 +142,9 @@ public class TeacherItemController {
     ) {
         log.info("선생님 팀별 물품 조회 요청 - teacherId: {}, teamId: {}", userDetails.getUserId(), teamId);
 
-        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamId(teamId);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamId(teamId, userDetails.getUserId());
 
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/not-approved")
@@ -153,8 +153,8 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> items = teacherItemService.getAllNotApprovedItems(nth);
-        return ResponseEntity.ok(items);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllNotApprovedItems(nth, userDetails.getUserId());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{teamId}/not-approved")
@@ -164,9 +164,9 @@ public class TeacherItemController {
     ) {
         log.info("선생님 팀별 물품 중 승인 필요 물품 조회 요청");
 
-        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdNotApproved(teamId);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdNotApproved(teamId, userDetails.getUserId());
 
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{teamId}/approved")
@@ -176,9 +176,9 @@ public class TeacherItemController {
     ) {
         log.info("선생님 팀별 물품 중 승인된 물품 조회 요청");
 
-        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdApproved(teamId);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdApproved(teamId, userDetails.getUserId());
 
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{teamId}/rejected")
@@ -188,9 +188,9 @@ public class TeacherItemController {
     ) {
         log.info("선생님 팀별 물품 중 거절된 물품 조회 요청");
 
-        List<TeacherItemResponseDto> items = teacherItemService.getItemsByTeamIdRejected(teamId);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdRejected(teamId, userDetails.getUserId());
 
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/rejected")
@@ -199,8 +199,8 @@ public class TeacherItemController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품 중 거절된 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> items = teacherItemService.getAllRejectedItems(nth);
-        return ResponseEntity.ok(items);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllRejectedItems(nth, userDetails.getUserId());
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/reject")

@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -96,6 +98,29 @@ public class ItemRequestFacade {
 
         itemRequestExecutor.deleteTempItemRequest(itemRequestId);
         return itemResponseFactory.createResponse(ItemStatus.INTEMP, "임시 신청이 정상적으로 취소되었습니다.");
+    }
+
+    public ItemResponseDto deleteTempItemRequests(List<Long> itemRequestIds, Long userId) {
+        if (itemRequestIds == null || itemRequestIds.isEmpty()) {
+            return itemResponseFactory.createRejectedResponse("삭제할 임시 물품 ID를 전달해주세요.");
+        }
+
+        UserInfo userInfo = userReader.read(User.class, userId);
+        Integer teamId = userInfo.getTeamId().intValue();
+
+        // 팀 소속 & INTEMP 상태 검증
+        List<ItemRequest> requests = itemRequestRepository.findByTeamIdAndStatusAndIdIn(
+                teamId,
+                ItemStatus.INTEMP,
+                itemRequestIds
+        );
+
+        if (requests.size() != itemRequestIds.size()) {
+            return itemResponseFactory.createRejectedResponse("선택한 항목 중 임시 상태가 아니거나 팀에 속하지 않는 물품이 있습니다.");
+        }
+
+        itemRequestExecutor.deleteTempItemRequests(itemRequestIds);
+        return itemResponseFactory.createResponse(ItemStatus.INTEMP, "선택한 임시 신청이 정상적으로 취소되었습니다.");
     }
 
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {

@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import co.kr.muldum.domain.item.model.enums.ItemStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -92,6 +93,18 @@ public class StudentItemController {
         return handleItemResponse(response);
     }
 
+    @DeleteMapping("/temp")
+    public ResponseEntity<ItemResponseDto> deleteTempItemRequests(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody ItemFinalizeRequestDto finalizeRequestDto
+    ) {
+        ItemResponseDto response = itemRequestService.deleteTempItemRequests(
+                finalizeRequestDto != null ? finalizeRequestDto.getItemIds() : null,
+                userDetails.getUserId()
+        );
+        return handleItemResponse(response);
+    }
+
     @PatchMapping("/{item_id}")
     public ResponseEntity<ItemResponseDto> updateTempItemRequest(
             @PathVariable("item_id") Long itemId,
@@ -128,10 +141,25 @@ public class StudentItemController {
 
     @PatchMapping
     public ResponseEntity<ItemResponseDto> finalizeItemRequest(
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody(required = false) ItemFinalizeRequestDto finalizeRequestDto
     ) {
+        List<Long> itemIds = finalizeRequestDto != null ? finalizeRequestDto.getItemIds() : null;
+
+        // 요청 바디가 있었지만 item_ids가 비어있거나 없을 때는 전체 제출로 오인되지 않도록 거부 처리
+        if (finalizeRequestDto != null && (itemIds == null || itemIds.isEmpty())) {
+            ItemResponseDto rejected = ItemResponseDto.builder()
+                    .status(ItemStatus.REJECTED.name())
+                    .message("item_ids를 전달해주세요.")
+                    .build();
+            return handleItemResponse(rejected);
+        }
+
         UserInfo userInfo = userReader.read(User.class, userDetails.getUserId());
-        ItemRequestFinalizer.FinalizeResult result = itemRequestFinalizer.finalizeRequest(userInfo);
+        ItemRequestFinalizer.FinalizeResult result = itemRequestFinalizer.finalizeRequest(
+                userInfo,
+                itemIds
+        );
 
         ItemResponseDto response = ItemResponseDto.builder()
                 .status(result.getStatus().name())

@@ -21,8 +21,13 @@ public class HistoryController {
         return historyUseCase.getHistories(generation);
     }
 
-    @GetMapping("/{teamId}")
+    @GetMapping("/{teamId:\\d+}")
     public HistoryResponseDto getHistory(@PathVariable Long teamId) {
         return historyUseCase.getHistory(teamId);
+    }
+
+    @GetMapping("/current-generation")
+    public Integer getCurrentGeneration() {
+        return historyUseCase.getCurrentGeneration();
     }
 }

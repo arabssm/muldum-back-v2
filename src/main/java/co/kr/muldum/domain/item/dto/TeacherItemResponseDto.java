@@ -50,7 +50,7 @@ public class TeacherItemResponseDto {
                         itemRequest.getProductInfo().getDeliveryPrice() : null)
                 .deliveryTime(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getDeliveryTime() : null)
-                .rejectReason(itemRequest.getRequestDetails() != null ?
+                .rejectReason(itemRequest.getStatus().isRejected() && itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .nth(itemRequest.getNth())
                 .updatedAt(itemRequest.getUpdatedAt())

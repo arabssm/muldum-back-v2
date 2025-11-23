@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,11 @@ public class ItemRequestExecutor {
     public void deleteTempItemRequest(Long itemRequestId) {
         itemRequestRepository.deleteById(itemRequestId);
         log.info("임시 물품 삭제 완료 - itemId={}", itemRequestId);
+    }
+
+    public void deleteTempItemRequests(List<Long> itemRequestIds) {
+        itemRequestRepository.deleteAllById(itemRequestIds);
+        log.info("임시 물품 일괄 삭제 완료 - itemIds={}", itemRequestIds);
     }
 
     public void deleteItemRequest(Long itemRequestId) {

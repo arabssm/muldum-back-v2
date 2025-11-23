@@ -15,6 +15,8 @@ import co.kr.muldum.domain.item.repository.ItemGuideRepository;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.item.repository.NthStatusHistoryRepository;
+import co.kr.muldum.domain.item.repository.ViewRepository;
+import co.kr.muldum.domain.item.model.View;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,7 @@ public class TeacherItemService {
     private final NthStatusQueryService nthStatusQueryService;
     private final NthStatusHistoryRepository nthStatusHistoryRepository;
     private final ItemGuideRepository itemGuideRepository;
+    private final ViewRepository viewRepository;
 
     @Transactional
     public String fixNthIssues() {
@@ -138,15 +141,18 @@ public class TeacherItemService {
     }
 
 
-    public List<TeacherItemResponseDto> getAllPendingItems(Integer nth) {
-        return findItemsByStatus(ItemStatus.PENDING, nth);
+    @Transactional
+    public List<TeacherItemResponseDto> getAllPendingItems(Integer nth, Long teacherId) {
+        return buildResponse(findItemsByStatusEntities(ItemStatus.PENDING, nth), teacherId);
     }
 
-    public List<TeacherItemResponseDto> getAllApprovedItems(Integer nth) {
-        return findItemsByStatus(ItemStatus.APPROVED, nth);
+    @Transactional
+    public List<TeacherItemResponseDto> getAllApprovedItems(Integer nth, Long teacherId) {
+        return buildResponse(findItemsByStatusEntities(ItemStatus.APPROVED, nth), teacherId);
     }
 
-    public List<TeacherItemResponseDto> getItemsByTeamId(Integer teamId) {
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsByTeamId(Integer teamId, Long teacherId) {
         log.info("팀별 PENDING, APPROVED 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatusIn(
@@ -156,16 +162,16 @@ public class TeacherItemService {
 
         log.info("팀 {}의 조회된 물품 수: {}", teamId, items.size());
 
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+        return buildResponse(items, teacherId);
     }
 
-    public List<TeacherItemResponseDto> getAllNotApprovedItems(Integer nth) {
-        return getAllPendingItems(nth);
+    @Transactional
+    public List<TeacherItemResponseDto> getAllNotApprovedItems(Integer nth, Long teacherId) {
+        return getAllPendingItems(nth, teacherId);
     }
 
-    public List<TeacherItemResponseDto> getItemsByTeamIdNotApproved(Integer teamId) {
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsByTeamIdNotApproved(Integer teamId, Long teacherId) {
         log.info("팀별 승인 안된 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
@@ -175,12 +181,11 @@ public class TeacherItemService {
 
         log.info("팀 {}의 승인 안된 물품 수: {}", teamId, items.size());
 
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+        return buildResponse(items, teacherId);
     }
 
-    public List<TeacherItemResponseDto> getItemsByTeamIdApproved(Integer teamId) {
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsByTeamIdApproved(Integer teamId, Long teacherId) {
         log.info("팀별 승인 상태 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
@@ -190,12 +195,11 @@ public class TeacherItemService {
 
         log.info("팀 {}의 승인된 물품 수: {}", teamId, items.size());
 
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+        return buildResponse(items, teacherId);
     }
 
-    public List<TeacherItemResponseDto>  getItemsByTeamIdRejected(Integer teamId) {
+    @Transactional
+    public List<TeacherItemResponseDto>  getItemsByTeamIdRejected(Integer teamId, Long teacherId) {
         log.info("팀별 거절 상태 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
@@ -205,16 +209,15 @@ public class TeacherItemService {
 
         log.info("팀 {}의 거절된 물품 수: {}", teamId, items.size());
 
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+        return buildResponse(items, teacherId);
     }
 
-    public List<TeacherItemResponseDto> getAllRejectedItems(Integer nth) {
-        return findItemsByStatus(ItemStatus.REJECTED, nth);
+    @Transactional
+    public List<TeacherItemResponseDto> getAllRejectedItems(Integer nth, Long teacherId) {
+        return buildResponse(findItemsByStatusEntities(ItemStatus.REJECTED, nth), teacherId);
     }
 
-    private List<TeacherItemResponseDto> findItemsByStatus(ItemStatus status, Integer nth) {
+    private List<ItemRequest> findItemsByStatusEntities(ItemStatus status, Integer nth) {
         List<ItemRequest> items;
         if (nth != null) {
             log.info("{} 차수의 {} 상태 물품 조회 시작", nth, status);
@@ -225,10 +228,7 @@ public class TeacherItemService {
         }
 
         log.info("조회된 물품 수: {}", items.size());
-
-        return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
-                .toList();
+        return items;
     }
 
     @Transactional
@@ -470,5 +470,26 @@ public class TeacherItemService {
                 .id(guide.getId())
                 .message(guide.getProjectType() + " 물품 신청 가이드가 수정되었습니다.")
                 .build();
+    }
+
+    private List<TeacherItemResponseDto> buildResponse(List<ItemRequest> items, Long teacherId) {
+        saveViewForItems(items, teacherId);
+        return items.stream()
+                .map(this::convertToTeacherItemResponseDto)
+                .toList();
+    }
+
+    private void saveViewForItems(List<ItemRequest> items, Long teacherId) {
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        items.forEach(item -> viewRepository.save(
+                View.builder()
+                        .viewer(teacherId)
+                        .viewedItemId(item.getId())
+                        .watchedAt(now)
+                        .build()
+        ));
     }
 }

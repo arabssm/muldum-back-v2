@@ -3,6 +3,7 @@ package co.kr.muldum.application.teamspace;
 import co.kr.muldum.application.teamspace.dto.*;
 import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.View;
+import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.ViewRepository;
 import co.kr.muldum.domain.teamspace.model.Team;
@@ -23,11 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -202,23 +203,29 @@ public class TeamspaceService {
             List<Long> itemRequestIds = itemRequests.stream().map(ItemRequest::getId).toList();
 
             Optional<View> latestView = viewRepository.findTopByViewerAndViewedItemIdInOrderByWatchedAtDesc(userInfo.getUserId(), itemRequestIds);
-            Optional<ItemRequest> latestItemRequest = itemRequests.stream().max(java.util.Comparator.comparing(ItemRequest::getCreatedAt));
+            LocalDateTime lastWatched = latestView.map(View::getWatchedAt).orElse(null);
 
-            boolean hasNewItems = false;
-            if (latestItemRequest.isPresent()) {
-                if (latestView.isPresent()) {
-                    if (latestItemRequest.get().getCreatedAt().isAfter(latestView.get().getWatchedAt())) {
-                        hasNewItems = true;
-                    }
-                } else {
-                    hasNewItems = true;
-                }
-                viewRepository.save(View.builder()
-                        .viewer(userInfo.getUserId())
-                        .viewedItemId(latestItemRequest.get().getId())
-                        .watchedAt(LocalDateTime.now())
-                        .build());
+            int newCount;
+            if (lastWatched == null) {
+                newCount = (int) itemRequests.stream()
+                        .filter(ir -> ir.getStatus() == ItemStatus.PENDING)
+                        .count();
+            } else {
+                newCount = (int) itemRequests.stream()
+                        .filter(ir -> ir.getStatus() == ItemStatus.PENDING
+                                && ir.getUpdatedAt() != null
+                                && ir.getUpdatedAt().isAfter(lastWatched))
+                        .count();
             }
+
+            // 조회 시점 기록 (최신 아이템 기준)
+            itemRequests.stream()
+                    .max(java.util.Comparator.comparing(ItemRequest::getUpdatedAt))
+                    .ifPresent(latest -> viewRepository.save(View.builder()
+                            .viewer(userInfo.getUserId())
+                            .viewedItemId(latest.getId())
+                            .watchedAt(LocalDateTime.now())
+                            .build()));
 
             List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
             List<TeamspaceMemberDto> memberDtos = members.stream()
@@ -232,7 +239,57 @@ public class TeamspaceService {
                     .teamId(team.getId())
                     .teamName(team.getName())
                     .members(memberDtos)
-                    .hasNewItems(hasNewItems)
+                    .newCount(newCount)
+                    .build();
+        }).toList();
+    }
+
+    @Transactional
+    public List<TeamspaceWithItemResponseDto> getMajorTeamsWithItem(Long userId) {
+        UserInfo userInfo = userReader.read(User.class, userId);
+        List<Team> teams = teamRepository.findByType(TeamType.MAJOR);
+
+        return teams.stream().map(team -> {
+            List<ItemRequest> itemRequests = itemRequestRepository.findByTeamId(team.getId().intValue());
+            List<Long> itemRequestIds = itemRequests.stream().map(ItemRequest::getId).toList();
+
+            Optional<View> latestView = viewRepository.findTopByViewerAndViewedItemIdInOrderByWatchedAtDesc(userInfo.getUserId(), itemRequestIds);
+            LocalDateTime lastWatched = latestView.map(View::getWatchedAt).orElse(null);
+
+            int newCount;
+            if (lastWatched == null) {
+                newCount = (int) itemRequests.stream()
+                        .filter(ir -> ir.getStatus() == ItemStatus.PENDING)
+                        .count();
+            } else {
+                newCount = (int) itemRequests.stream()
+                        .filter(ir -> ir.getStatus() == ItemStatus.PENDING
+                                && ir.getUpdatedAt() != null
+                                && ir.getUpdatedAt().isAfter(lastWatched))
+                        .count();
+            }
+
+            itemRequests.stream()
+                    .max(java.util.Comparator.comparing(ItemRequest::getUpdatedAt))
+                    .ifPresent(latest -> viewRepository.save(View.builder()
+                            .viewer(userInfo.getUserId())
+                            .viewedItemId(latest.getId())
+                            .watchedAt(LocalDateTime.now())
+                            .build()));
+
+            List<TeamspaceMember> members = teamspaceMemberRepository.findByTeam(team);
+            List<TeamspaceMemberDto> memberDtos = members.stream()
+                    .map(member -> TeamspaceMemberDto.builder()
+                            .userId(member.getUser().getId())
+                            .userName(member.getUser().getName())
+                            .build())
+                    .toList();
+
+            return TeamspaceWithItemResponseDto.builder()
+                    .teamId(team.getId())
+                    .teamName(team.getName())
+                    .members(memberDtos)
+                    .newCount(newCount)
                     .build();
         }).toList();
     }
