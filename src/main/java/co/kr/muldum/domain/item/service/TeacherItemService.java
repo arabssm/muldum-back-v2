@@ -270,6 +270,9 @@ public class TeacherItemService {
     public ItemActionResponseDto approveItems(List<ApproveItemRequestDto> approveRequests) {
         log.info("물품 승인 처리 시작 - 처리할 물품 수: {}", approveRequests.size());
 
+        Integer currentNth = getCurrentNthValue();
+        log.debug("현재 n차: {}", currentNth);
+
         int processedCount = 0;
         for (ApproveItemRequestDto request : approveRequests) {
             try {
@@ -278,9 +281,10 @@ public class TeacherItemService {
 
                 if (item != null) {
                     item.updateStatus(ItemStatus.APPROVED);
+                    item.updateNth(currentNth);
                     itemRequestRepository.save(item);
                     processedCount++;
-                    log.info("물품 승인 완료 - itemId: {}", request.getItem_id());
+                    log.info("물품 승인 완료 - itemId: {}, nth: {}", request.getItem_id(), currentNth);
                 } else {
                     log.warn("물품을 찾을 수 없음 - itemId: {}", request.getItem_id());
                 }
@@ -295,6 +299,12 @@ public class TeacherItemService {
                 .status(ItemStatus.APPROVED)
                 .message("물품이 승인되었습니다.")
                 .build();
+    }
+
+    private Integer getCurrentNthValue() {
+        return nthStatusRepository.findByNthStatusId(1L)
+                .map(NthStatus::getNthValue)
+                .orElse(0);
     }
 
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
