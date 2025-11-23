@@ -67,8 +67,6 @@ public class NthStatusQueryService {
                 .deadlineDate(nthStatus.getDeadlineDate())
                 .teacherId(nthStatus.getTeacherId())
                 .openedAt(nthStatus.getCreatedAt())
-                .created_date(nthStatus.getCreatedAt() != null ?
-                        nthStatus.getCreatedAt().toLocalDate().toString() : null)
                 .build();
     }
 
@@ -80,8 +78,6 @@ public class NthStatusQueryService {
                 .deadlineDate(history.getDeadlineDate())
                 .teacherId(history.getTeacherId())
                 .openedAt(history.getCreatedAt())
-                .created_date(history.getCreatedAt() != null ?
-                        history.getCreatedAt().toLocalDate().toString() : null)
                 .build();
     }
 }

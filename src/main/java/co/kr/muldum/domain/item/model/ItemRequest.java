@@ -90,8 +90,4 @@ public class ItemRequest {
     public void updateRequestDetails(RequestDetails requestDetails) {
         this.requestDetails = requestDetails;
     }
-
-    public void updateNth(Integer nth) {
-        this.nth = nth;
-    }
 }
