@@ -64,7 +64,7 @@ public class ItemRequestExecutor {
         }
     }
 
-    public ItemRequest createTempItemRequest(TempItemRequestDto requestDto, Long userId, int teamId, Integer nth) {
+    public ItemRequest createTempItemRequest(TempItemRequestDto requestDto, Long userId, int teamId) {
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
 
         ProductInfo productInfo = ProductInfo.builder()
@@ -88,7 +88,6 @@ public class ItemRequestExecutor {
                 .status(ItemStatus.INTEMP)
                 .teamType(TeamType.NETWORK)
                 .requestDetails(requestDetails)
-                .nth(nth)
                 .build();
 
         return itemRequestRepository.save(itemRequest);
@@ -134,7 +133,7 @@ public class ItemRequestExecutor {
         return itemRequestRepository.save(itemRequest);
     }
 
-    public ItemRequest duplicateRejectedItemAsTemp(ItemRequest source, Integer nth) {
+    public ItemRequest duplicateRejectedItemAsTemp(ItemRequest source) {
         if (source.getProductInfo() == null) {
             throw new CustomException(ErrorCode.INVALID_PRODUCT_LINK);
         }
@@ -164,7 +163,6 @@ public class ItemRequestExecutor {
                 .status(ItemStatus.INTEMP)
                 .teamType(source.getTeamType())
                 .requestDetails(newDetails)
-                .nth(nth != null ? nth : source.getNth())
                 .build();
 
         ItemRequest saved = itemRequestRepository.save(copy);

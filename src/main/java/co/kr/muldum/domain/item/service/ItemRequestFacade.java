@@ -3,11 +3,9 @@ package co.kr.muldum.domain.item.service;
 import co.kr.muldum.domain.item.dto.ItemResponseDto;
 import co.kr.muldum.domain.item.dto.TempItemRequestDto;
 import co.kr.muldum.domain.item.model.ItemRequest;
-import co.kr.muldum.domain.item.model.NthStatus;
 import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
-import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.model.UserInfo;
@@ -32,7 +30,6 @@ public class ItemRequestFacade {
     private final ItemStatusDecisionService itemStatusDecisionService;
     private final ItemResponseFactory itemResponseFactory;
     private final ItemRequestRepository itemRequestRepository;
-    private final NthStatusRepository nthStatusRepository;
 
     public ItemResponseDto updateItemRequest(Long itemId, Long userId, TempItemRequestDto requestDto) {
         try {
@@ -126,11 +123,9 @@ public class ItemRequestFacade {
     public ItemResponseDto createTempItemRequest(TempItemRequestDto requestDto, Long userId) {
         try {
             UserInfo userInfo = userReader.read(User.class, userId);
-            NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
-            Integer nth = (nthStatus != null && nthStatus.getNthValue() != null) ? nthStatus.getNthValue() : 1;
 
-            log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}, nth={}",
-                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType(), nth);
+            log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
+                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
 
             // 검증
             itemValidationService.validateTeamInfo(userInfo);
@@ -157,14 +152,12 @@ public class ItemRequestFacade {
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
             }
 
-            // 승인된 경우 DB에 저장 (nth 파라미터 추가)
-            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue(), nth);
+            // 승인된 경우 DB에 저장
+            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue());
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {
             return itemResponseFactory.createRejectedResponse(e.getMessage());
-        } catch (CustomException e) {
-            throw e;
         }
     }
 
@@ -177,16 +170,12 @@ public class ItemRequestFacade {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
 
-        if (rejectedItem.getStatus() != ItemStatus.REJECTED) {
+        if (!rejectedItem.getStatus().isRejected()) {
+            log.warn("재신청 실패 - 거절 상태가 아닌 물품입니다. userId={}, itemId={}", userId, itemId);
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        NthStatus nthStatus = nthStatusRepository.findNthStatusById(1L);
-        Integer nth = (nthStatus != null && nthStatus.getNthValue() != null)
-                ? nthStatus.getNthValue()
-                : rejectedItem.getNth();
-
-        itemRequestExecutor.duplicateRejectedItemAsTemp(rejectedItem, nth);
+        itemRequestExecutor.duplicateRejectedItemAsTemp(rejectedItem);
 
         return itemResponseFactory.createResponse(
                 ItemStatus.INTEMP,

@@ -117,21 +117,19 @@ public class TeacherItemController {
 
     @GetMapping
     public ResponseEntity<List<TeacherItemResponseDto>> getAllPendingItems(
-            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 전체 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> response = teacherItemService.getAllPendingItems(nth, userDetails.getUserId());
+        log.info("선생님 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllPendingItems(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItems(
-            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 승인 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> response = teacherItemService.getAllApprovedItems(nth, userDetails.getUserId());
+        log.info("선생님 승인 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllApprovedItems(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
@@ -149,11 +147,10 @@ public class TeacherItemController {
 
     @GetMapping("/not-approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllNotApprovedItems(
-            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> response = teacherItemService.getAllNotApprovedItems(nth, userDetails.getUserId());
+        log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllNotApprovedItems(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
@@ -195,11 +192,10 @@ public class TeacherItemController {
 
     @GetMapping("/rejected")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllRejectedItems(
-            @RequestParam(required = false) Integer nth,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 물품 중 거절된 물품 조회 요청 - teacherId: {}, nth: {}", userDetails.getUserId(), nth);
-        List<TeacherItemResponseDto> response = teacherItemService.getAllRejectedItems(nth, userDetails.getUserId());
+        log.info("선생님 물품 중 거절된 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllRejectedItems(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
