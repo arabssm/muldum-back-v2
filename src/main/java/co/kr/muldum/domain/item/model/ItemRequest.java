@@ -61,9 +61,6 @@ public class ItemRequest {
     @Column(name = "delivery_number")
     private String deliveryNumber;
 
-    @Column(name = "nth")
-    private Integer nth;
-
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
