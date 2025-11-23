@@ -142,13 +142,13 @@ public class TeacherItemService {
 
 
     @Transactional
-    public List<TeacherItemResponseDto> getAllPendingItems(Integer nth, Long teacherId) {
-        return buildResponse(findItemsByStatusEntities(ItemStatus.PENDING, nth), teacherId);
+    public List<TeacherItemResponseDto> getAllPendingItems(Long teacherId) {
+        return buildResponse(itemRequestRepository.findByStatus(ItemStatus.PENDING), teacherId);
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getAllApprovedItems(Integer nth, Long teacherId) {
-        return buildResponse(findItemsByStatusEntities(ItemStatus.APPROVED, nth), teacherId);
+    public List<TeacherItemResponseDto> getAllApprovedItems(Long teacherId) {
+        return buildResponse(itemRequestRepository.findByStatus(ItemStatus.APPROVED), teacherId);
     }
 
     @Transactional
@@ -166,8 +166,8 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getAllNotApprovedItems(Integer nth, Long teacherId) {
-        return getAllPendingItems(nth, teacherId);
+    public List<TeacherItemResponseDto> getAllNotApprovedItems(Long teacherId) {
+        return getAllPendingItems(teacherId);
     }
 
     @Transactional
@@ -213,20 +213,13 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getAllRejectedItems(Integer nth, Long teacherId) {
-        return buildResponse(findItemsByStatusEntities(ItemStatus.REJECTED, nth), teacherId);
+    public List<TeacherItemResponseDto> getAllRejectedItems(Long teacherId) {
+        return buildResponse(itemRequestRepository.findByStatus(ItemStatus.REJECTED), teacherId);
     }
 
-    private List<ItemRequest> findItemsByStatusEntities(ItemStatus status, Integer nth) {
-        List<ItemRequest> items;
-        if (nth != null) {
-            log.info("{} 차수의 {} 상태 물품 조회 시작", nth, status);
-            items = itemRequestRepository.findByStatusAndNth(status, nth);
-        } else {
-            log.info("전체 {} 상태 물품 조회 시작", status);
-            items = itemRequestRepository.findByStatus(status);
-        }
-
+    private List<ItemRequest> findItemsByStatusEntities(ItemStatus status) {
+        log.info("전체 {} 상태 물품 조회 시작", status);
+        List<ItemRequest> items = itemRequestRepository.findByStatus(status);
         log.info("조회된 물품 수: {}", items.size());
         return items;
     }
@@ -300,7 +293,7 @@ public class TeacherItemService {
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type(TeamType.NETWORK) // 고정값
+                .type(TeamType.NETWORK)
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
@@ -321,7 +314,6 @@ public class TeacherItemService {
                         itemRequest.getProductInfo().getDeliveryTime() : null)
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
-                .nth(itemRequest.getNth())
                 .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
