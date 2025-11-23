@@ -16,4 +16,5 @@ public class NthStatusHistoryResponseDto {
     private String deadlineDate;
     private Long teacherId;
     private LocalDateTime openedAt;
+    private String created_date;  // 생성 날짜 (yyyy-MM-dd)
 }

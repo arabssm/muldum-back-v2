@@ -80,6 +80,8 @@ public class NthStatusQueryService {
                 .deadlineDate(history.getDeadlineDate())
                 .teacherId(history.getTeacherId())
                 .openedAt(history.getCreatedAt())
+                .created_date(history.getCreatedAt() != null ?
+                        history.getCreatedAt().toLocalDate().toString() : null)
                 .build();
     }
 }
