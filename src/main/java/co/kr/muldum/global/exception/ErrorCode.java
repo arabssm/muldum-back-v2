@@ -30,7 +30,14 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 방을 찾을 수 없습니다."),
     MAX_PARTICIPANTS_INVALID(HttpStatus.BAD_REQUEST, "최대 참가자 수는 현재 인원보다 적을 수 없습니다."),
     INVALID_ROOM_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 방 상태 값입니다."),
-    INVALID_CREATED_BY_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 생성자 정보 형식입니다.");
+    INVALID_CREATED_BY_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 생성자 정보 형식입니다."),
+
+    // Calendar
+    INVALID_CALENDAR_ENTRY(HttpStatus.BAD_REQUEST, "유효하지 않은 일정 데이터입니다."),
+    INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "유효하지 않은 날짜 범위입니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "일정에 접근할 권한이 없습니다."),
+    CALENDAR_ENTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."),
+    SCHEDULE_CONFLICT(HttpStatus.CONFLICT, "일정이 충돌합니다.");
 
     private final HttpStatus status;
     private final String message;

@@ -48,12 +48,11 @@ public class TeacherMonthReportController {
     @GetMapping
     public ResponseEntity<TeacherMonthReportListResponse> getTeacherMonthReportsByTeamAndMonth(
             @RequestParam("team") Long teamId,
-            @RequestParam Integer month
+            @RequestParam(value = "month", required = false) Integer month
     ) {
         validateTeacherRole(SecurityUtil.getCurrentUserType());
         Long teacherId = SecurityUtil.getCurrentUserId();
         Objects.requireNonNull(teamId, "team parameter is required");
-        Objects.requireNonNull(month, "month parameter is required");
         var reports = getTeacherMonthReportUseCase.getByTeamAndMonth(teamId, month, teacherId);
         var reportResponses = reports.stream()
                 .map(monthReportWebMapper::toTeacherSimpleResponse)

@@ -12,4 +12,5 @@ public interface LoadMonthReportPort {
     List<MonthReport> findByTeamAndMonth(Long teamId, int month); // This might need adjustment depending on domain model
     Optional<MonthReport> findByUserIdAndMonth(Long userId, int month);
     Optional<MonthReport> findByTeamIdAndStatus(Long teamId, ReportStatus status);
+    List<MonthReport> findByTeamId(Long teamId);
 }

@@ -31,7 +31,7 @@ public class MonthReportEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "report_content", columnDefinition = "jsonb")
-    private ReportContent reportContent;
+    private String reportContent;
 
     @Enumerated(EnumType.STRING)
     private ReportStatus status;

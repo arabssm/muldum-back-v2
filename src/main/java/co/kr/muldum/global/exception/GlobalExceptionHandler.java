@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getErrorCode().getStatus())
                 .body(Map.of(
                         "statusCode", ex.getErrorCode().getStatus().value(),
-                        "message", ex.getErrorCode().getMessage()
+                        "errorCode", ex.getErrorCode().name(),
+                        "message", ex.getMessage()
                 ));
     }
 

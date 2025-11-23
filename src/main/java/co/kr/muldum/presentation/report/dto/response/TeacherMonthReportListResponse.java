@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Builder
 public class TeacherMonthReportListResponse {
-    private int month;
+    private Integer month;
     private List<TeacherMonthReportSimpleResponse> reports;
 }
