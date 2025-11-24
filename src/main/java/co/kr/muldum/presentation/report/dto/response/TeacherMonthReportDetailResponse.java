@@ -18,4 +18,5 @@ public class TeacherMonthReportDetailResponse {
     private String teacherFeedback;
     private String mentorFeedback;
     private ReportStatus status;
+    private String feedback;
 }
