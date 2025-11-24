@@ -410,6 +410,8 @@ public class TeamspaceService {
         if (grade == null || classNo == null || number == null) return null;
         if (grade.equals("null") || classNo.equals("null") || number.equals("null")) return null;
 
-        return grade + classNo + number;
+        String paddedNumber = String.format("%02d", Integer.parseInt(number));
+
+        return grade + classNo + paddedNumber;
     }
 }
