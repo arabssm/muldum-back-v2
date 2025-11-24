@@ -19,4 +19,6 @@ public class TempItemRequestDto {
     private String deliveryPrice;
     @JsonAlias("delivery_time")
     private String deliveryTime;
+    @JsonAlias("team_id")
+    private Integer teamId;
 }

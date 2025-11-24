@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,8 +21,8 @@ public class ItemRequestFinalizer {
     private final ItemRequestRepository itemRequestRepository;
 
     public FinalizeResult finalizeRequest(UserInfo userInfo, List<Long> itemIds) {
-        log.debug("물품 최종 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
-                userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+        log.debug("물품 최종 신청 - 사용자 정보: userId={}, teamIds={}, userType={}",
+                userInfo.getUserId(), userInfo.getTeamIds(), userInfo.getUserType());
 
         List<ItemRequest> tempRequests;
         try {
@@ -40,26 +39,26 @@ public class ItemRequestFinalizer {
         for (ItemRequest itemRequest : tempRequests) {
             itemRequest.updateStatus(ItemStatus.PENDING);
             itemRequestRepository.save(itemRequest);
-            
-            log.info("물품 상태 변경: INTEMP -> PENDING, userId={}, itemId={}", 
+
+            log.info("물품 상태 변경: INTEMP -> PENDING, userId={}, itemId={}",
                     userInfo.getUserId(), itemRequest.getId());
         }
 
-        return new FinalizeResult(ItemStatus.PENDING, 
+        return new FinalizeResult(ItemStatus.PENDING,
                 String.format("총 %d개 물품이 성공적으로 신청되었습니다.", tempRequests.size()));
     }
 
     private List<ItemRequest> resolveTargetItems(UserInfo userInfo, List<Long> itemIds) {
-        Integer teamId = userInfo.getTeamId().intValue();
+        List<Integer> teamIds = userInfo.getTeamIds().stream()
+                .map(Long::intValue)
+                .toList();
+
         if (itemIds == null || itemIds.isEmpty()) {
-            return itemRequestRepository.findByTeamIdAndStatus(teamId, ItemStatus.INTEMP);
+            return itemRequestRepository.findByTeamIdInAndStatus(teamIds, ItemStatus.INTEMP);
         }
 
-        List<ItemRequest> requests = itemRequestRepository.findByTeamIdAndStatusAndIdIn(
-                teamId,
-                ItemStatus.INTEMP,
-                itemIds
-        );
+        // ID로 조회 후 권한 검증
+        List<ItemRequest> requests = itemRequestRepository.findAllById(itemIds);
 
         Set<Long> foundIds = requests.stream()
                 .map(ItemRequest::getId)
@@ -69,10 +68,18 @@ public class ItemRequestFinalizer {
             List<Long> missing = itemIds.stream()
                     .filter(id -> !foundIds.contains(id))
                     .toList();
-            log.warn("최종 신청 대상 검증 실패 - userId={}, teamId={}, missing={}", userInfo.getUserId(), teamId, missing);
+            log.warn("최종 신청 대상 검증 실패 - userId={}, teamIds={}, missing={}", userInfo.getUserId(), teamIds, missing);
             throw new IllegalArgumentException(
-                    String.format("선택한 항목 중 임시 상태가 아니거나 팀에 속하지 않는 물품이 있습니다: %s", missing)
-            );
+                    String.format("선택한 항목 중 존재하지 않는 물품이 있습니다: %s", missing));
+        }
+
+        for (ItemRequest req : requests) {
+            if (req.getStatus() != ItemStatus.INTEMP) {
+                throw new IllegalArgumentException("임시 상태가 아닌 물품이 포함되어 있습니다: " + req.getId());
+            }
+            if (!userInfo.getTeamIds().contains(req.getTeamId().longValue())) {
+                throw new IllegalArgumentException("권한이 없는 물품이 포함되어 있습니다: " + req.getId());
+            }
         }
 
         return requests;
@@ -87,7 +94,7 @@ public class ItemRequestFinalizer {
             this.status = status;
             this.message = message;
         }
-        
+
         public static FinalizeResult of(ItemStatus status, String message) {
             return new FinalizeResult(status, message);
         }

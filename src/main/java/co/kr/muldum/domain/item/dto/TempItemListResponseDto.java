@@ -23,4 +23,5 @@ public class TempItemListResponseDto {
     private String product_link;
     private String deliveryPrice;
     private LocalDateTime deliveryTime;
+    private Integer teamId;
 }

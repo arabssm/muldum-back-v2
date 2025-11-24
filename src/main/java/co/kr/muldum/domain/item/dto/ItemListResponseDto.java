@@ -22,4 +22,5 @@ public class ItemListResponseDto {
     private String deliveryPrice;
     private LocalDateTime deliveryTime;
     private String rejectReason;
+    private Integer teamId;
 }

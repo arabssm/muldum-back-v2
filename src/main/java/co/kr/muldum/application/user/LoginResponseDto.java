@@ -11,7 +11,7 @@ public class LoginResponseDto {
     private String userType;
     private Long userId;
     private String name;
-    private Long teamId;
+    private java.util.List<Long> teamIds;
     private String role;
     private String accessToken;
     private String refreshToken;
@@ -21,7 +21,7 @@ public class LoginResponseDto {
                 .userType(userInfo.getUserType().name())
                 .userId(userInfo.getUserId())
                 .name(userInfo.getName())
-                .teamId(userInfo.getTeamId())
+                .teamIds(userInfo.getTeamIds())
                 .role(userInfo.getRole().name())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

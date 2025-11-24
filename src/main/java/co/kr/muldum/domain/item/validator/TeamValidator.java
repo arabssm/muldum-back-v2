@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class TeamValidator {
 
     public ValidationResult validateTeam(UserInfo userInfo) {
-        if (userInfo.getTeamId() == null) {
-            log.warn("물품 신청 실패 - teamId가 null입니다. userId={}", userInfo.getUserId());
+        if (userInfo.getTeamIds() == null || userInfo.getTeamIds().isEmpty()) {
+            log.warn("물품 신청 실패 - teamIds가 비어있습니다. userId={}", userInfo.getUserId());
             return ValidationResult.fail("팀 정보가 없습니다. 팀에 소속되어야 물품을 신청할 수 있습니다.");
         }
-        
+
         return ValidationResult.success();
     }
 
