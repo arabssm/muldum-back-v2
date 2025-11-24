@@ -33,7 +33,7 @@ public class SimilarProductService {
         ItemRequest baseItem = itemRequestRepository.findById(itemId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-        if (!baseItem.getTeamId().equals(userInfo.getTeamId().intValue())) {
+        if (!userInfo.getTeamIds().contains(baseItem.getTeamId().longValue())) {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
 
@@ -59,11 +59,11 @@ public class SimilarProductService {
                 domain,
                 itemId,
                 keyword,
-                MAX_SUGGESTIONS
-        ));
+                MAX_SUGGESTIONS));
 
         if (candidates.size() < MAX_SUGGESTIONS) {
-            List<ItemRequest> fallback = itemRequestRepository.findSimilarItems(domain, itemId, null, MAX_SUGGESTIONS * 2);
+            List<ItemRequest> fallback = itemRequestRepository.findSimilarItems(domain, itemId, null,
+                    MAX_SUGGESTIONS * 2);
             for (ItemRequest candidate : fallback) {
                 boolean alreadyIncluded = candidates.stream()
                         .anyMatch(existing -> existing.getId().equals(candidate.getId()));

@@ -10,7 +10,6 @@ import co.kr.muldum.domain.item.dto.req.ItemGuideRequest;
 import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
 import co.kr.muldum.domain.item.model.*;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
-import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemGuideRepository;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
@@ -97,8 +96,7 @@ public class TeacherItemService {
     }
 
     public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(
-            Integer nth
-    ) throws IOException {
+            Integer nth) throws IOException {
         NthStatus nthStatus = nthStatusRepository.findByNthStatusIdForExcel(Long.valueOf(nth))
                 .orElseThrow(() -> new RuntimeException("해당 nthStatus 없음"));
 
@@ -141,7 +139,6 @@ public class TeacherItemService {
                 .build();
     }
 
-
     @Transactional
     public List<TeacherItemResponseDto> getAllPendingItems(Long teacherId) {
         return buildResponse(itemRequestRepository.findByStatus(ItemStatus.PENDING), teacherId);
@@ -158,8 +155,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatusIn(
                 teamId,
-                List.of(ItemStatus.PENDING, ItemStatus.APPROVED)
-        );
+                List.of(ItemStatus.PENDING, ItemStatus.APPROVED));
 
         log.info("팀 {}의 조회된 물품 수: {}", teamId, items.size());
 
@@ -177,8 +173,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.PENDING
-        );
+                ItemStatus.PENDING);
 
         log.info("팀 {}의 승인 안된 물품 수: {}", teamId, items.size());
 
@@ -191,8 +186,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.APPROVED
-        );
+                ItemStatus.APPROVED);
 
         log.info("팀 {}의 승인된 물품 수: {}", teamId, items.size());
 
@@ -200,13 +194,12 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto>  getItemsByTeamIdRejected(Integer teamId, Long teacherId) {
+    public List<TeacherItemResponseDto> getItemsByTeamIdRejected(Integer teamId, Long teacherId) {
         log.info("팀별 거절 상태 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.REJECTED
-        );
+                ItemStatus.REJECTED);
 
         log.info("팀 {}의 거절된 물품 수: {}", teamId, items.size());
 
@@ -294,27 +287,21 @@ public class TeacherItemService {
     private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type(TeamType.NETWORK)
+                .type(itemRequest.getTeamType())
                 .item_id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getName() : null)
-                .quantity(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getQuantity() : null)
-                .price(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getPrice() : null)
-                .productLink(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getLink() : null)
-                .reason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
+                .product_name(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getName() : null)
+                .quantity(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getQuantity() : null)
+                .price(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getPrice() : null)
+                .productLink(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getLink() : null)
+                .reason(itemRequest.getRequestDetails() != null ? itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
-                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
-                        itemRequest.getDeliveryNumber() : null)
-                .deliveryPrice(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryPrice() : null)
-                .deliveryTime(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryTime() : null)
-                .rejectReason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
+                .deliveryNumber(itemRequest.getDeliveryNumber() != null ? itemRequest.getDeliveryNumber() : null)
+                .deliveryPrice(
+                        itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(
+                        itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(
+                        itemRequest.getRequestDetails() != null ? itemRequest.getRequestDetails().getReason() : null)
                 .updatedAt(itemRequest.getUpdatedAt())
                 .build();
     }
@@ -372,8 +359,7 @@ public class TeacherItemService {
                     requestDto.getDescription(),
                     requestDto.getLink(),
                     requestDto.getDeliveryPrice(),
-                    requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null
-            );
+                    requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null);
         } else {
             // If ProductInfo is null, create a new one
             ProductInfo newProductInfo = ProductInfo.builder()
@@ -383,7 +369,9 @@ public class TeacherItemService {
                     .link(requestDto.getLink())
                     .description(requestDto.getDescription())
                     .deliveryPrice(requestDto.getDeliveryPrice())
-                    .deliveryTime(requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null)
+                    .deliveryTime(
+                            requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime())
+                                    : null)
                     .build();
             item.updateProductInfo(newProductInfo);
         }
@@ -402,8 +390,7 @@ public class TeacherItemService {
             Integer nth, String type,
             List<ItemMinPriceRequest> guide,
             String deadlineDate,
-            Long teacherId
-    ) {
+            Long teacherId) {
         log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
 
         NthStatus nthStatus = nthStatusRepository.findByNthStatusId(1L)
@@ -418,8 +405,7 @@ public class TeacherItemService {
                         .guide(guide)
                         .deadlineDate(deadlineDate)
                         .teacherId(teacherId)
-                        .build()
-        );
+                        .build());
 
         log.info("{}차 물품 신청 기간 오픈 완료", nth);
     }
@@ -441,8 +427,7 @@ public class TeacherItemService {
         ItemGuide guide = ItemGuide.create(
                 teacherId,
                 request.getContent(),
-                request.getProjectType()
-        );
+                request.getProjectType());
 
         itemGuideRepository.save(guide);
 
@@ -482,7 +467,6 @@ public class TeacherItemService {
                         .viewer(teacherId)
                         .viewedItemId(item.getId())
                         .watchedAt(now)
-                        .build()
-        ));
+                        .build()));
     }
 }

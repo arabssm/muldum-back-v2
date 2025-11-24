@@ -12,36 +12,48 @@ import java.util.List;
 
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
-    List<ItemRequest> findByTeamIdAndStatus(Integer teamId, ItemStatus itemStatus);
-    List<ItemRequest> findByIdAndRequesterUserIdAndStatus(Long id, Integer requesterUserId, ItemStatus itemStatus);
-    List<ItemRequest> findByTeamId(Integer teamId);
-    List<ItemRequest> findByStatusIn(List<ItemStatus> statuses);
-    List<ItemRequest> findByTeamIdAndStatusIn(Integer teamId, List<ItemStatus> statuses);
-    List<ItemRequest> findByStatus(ItemStatus itemStatus);
-    List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
-    List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
-    List<ItemRequest> findByTeamIdAndStatusAndIdIn(Integer teamId, ItemStatus itemStatus, List<Long> ids);
+        List<ItemRequest> findByTeamIdAndStatus(Integer teamId, ItemStatus itemStatus);
 
-    @Query("SELECT ir FROM ItemRequest ir WHERE ir.status = :status AND ir.updatedAt BETWEEN :start AND :end")
-    List<ItemRequest> findByStatusAndUpdatedAtBetween(
-            @Param("status") ItemStatus status,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end
-    );
+        List<ItemRequest> findByIdAndRequesterUserIdAndStatus(Long id, Integer requesterUserId, ItemStatus itemStatus);
 
-    @Query(value = """
-            SELECT *
-            FROM item_requests
-            WHERE id <> :excludeId
-              AND (product_info ->> 'link') ILIKE CONCAT('%', :domain, '%')
-              AND (:keyword IS NULL OR :keyword = '' OR (product_info ->> 'name') ILIKE CONCAT('%', :keyword, '%'))
-            ORDER BY updated_at DESC
-            LIMIT :limit
-            """, nativeQuery = true)
-    List<ItemRequest> findSimilarItems(
-            @Param("domain") String domain,
-            @Param("excludeId") Long excludeId,
-            @Param("keyword") String keyword,
-            @Param("limit") int limit
-    );
+        List<ItemRequest> findByTeamId(Integer teamId);
+
+        List<ItemRequest> findByStatusIn(List<ItemStatus> statuses);
+
+        List<ItemRequest> findByTeamIdAndStatusIn(Integer teamId, List<ItemStatus> statuses);
+
+        List<ItemRequest> findByStatus(ItemStatus itemStatus);
+
+        List<ItemRequest> findByRequesterUserIdAndStatus(Integer requesterUserId, ItemStatus itemStatus);
+
+        List<ItemRequest> findByTeamIdAndStatusNot(Integer teamId, ItemStatus excludeStatus);
+
+        List<ItemRequest> findByTeamIdAndStatusAndIdIn(Integer teamId, ItemStatus itemStatus, List<Long> ids);
+
+        List<ItemRequest> findByTeamIdInAndStatus(List<Integer> teamIds, ItemStatus itemStatus);
+
+        List<ItemRequest> findByTeamIdIn(List<Integer> teamIds);
+
+        List<ItemRequest> findByTeamIdInAndStatusNot(List<Integer> teamIds, ItemStatus excludeStatus);
+
+        @Query("SELECT ir FROM ItemRequest ir WHERE ir.status = :status AND ir.updatedAt BETWEEN :start AND :end")
+        List<ItemRequest> findByStatusAndUpdatedAtBetween(
+                        @Param("status") ItemStatus status,
+                        @Param("start") LocalDateTime start,
+                        @Param("end") LocalDateTime end);
+
+        @Query(value = """
+                        SELECT *
+                        FROM item_requests
+                        WHERE id <> :excludeId
+                          AND (product_info ->> 'link') ILIKE CONCAT('%', :domain, '%')
+                          AND (:keyword IS NULL OR :keyword = '' OR (product_info ->> 'name') ILIKE CONCAT('%', :keyword, '%'))
+                        ORDER BY updated_at DESC
+                        LIMIT :limit
+                        """, nativeQuery = true)
+        List<ItemRequest> findSimilarItems(
+                        @Param("domain") String domain,
+                        @Param("excludeId") Long excludeId,
+                        @Param("keyword") String keyword,
+                        @Param("limit") int limit);
 }

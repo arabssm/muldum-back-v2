@@ -9,9 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.List;
 import java.util.Optional;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,14 +21,22 @@ public class UserReaderImpl implements UserReader {
     @Override
     public Optional<UserInfo> findByEmail(String email) {
         try {
-            String query = "SELECT id, name, user_type, profile->>'team_id' as team_id FROM users WHERE email = ?";
+            String query = "SELECT id, name, user_type FROM users WHERE email = ?";
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
                             query,
-                            (rs, rowNum) -> mapRowToUserInfo(rs),
-                            email
-                    )
-            );
+                            (rs, rowNum) -> {
+                                Long userId = rs.getLong("id");
+                                List<Long> teamIds = findTeamIdsByUserId(userId);
+                                return UserInfo.builder()
+                                        .userId(userId)
+                                        .name(rs.getString("name"))
+                                        .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
+                                        .teamIds(teamIds)
+                                        .role(Role.MEMBER)
+                                        .build();
+                            },
+                            email));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -38,34 +45,27 @@ public class UserReaderImpl implements UserReader {
     @Override
     public UserInfo read(Class<?> clazz, Long id) {
         try {
-            String query = "SELECT id, name, email, user_type, profile->>'team_id' as team_id FROM users WHERE id = ?";
+            String query = "SELECT id, name, email, user_type FROM users WHERE id = ?";
             return jdbcTemplate.queryForObject(
                     query,
-                    (rs, rowNum) -> mapRowToUserInfo(rs),
-                    id
-            );
+                    (rs, rowNum) -> {
+                        List<Long> teamIds = findTeamIdsByUserId(id);
+                        return UserInfo.builder()
+                                .userId(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
+                                .teamIds(teamIds)
+                                .role(Role.MEMBER)
+                                .build();
+                    },
+                    id);
         } catch (EmptyResultDataAccessException e) {
             throw new RuntimeException("User not found with id: " + id);
         }
     }
 
-    private UserInfo mapRowToUserInfo(ResultSet rs) throws SQLException {
-        String teamIdStr = rs.getString("team_id");
-        Long teamId = null;
-        if (teamIdStr != null && !teamIdStr.isEmpty() && !"null".equals(teamIdStr)) {
-            try {
-                teamId = Long.parseLong(teamIdStr);
-            } catch (NumberFormatException e) {
-                // 파싱 실패 시 null 유지
-            }
-        }
-
-        return UserInfo.builder()
-                .userId(rs.getLong("id"))
-                .name(rs.getString("name"))
-                .userType(UserType.valueOf(rs.getString("user_type").toUpperCase()))
-                .teamId(teamId)
-                .role(Role.MEMBER)
-                .build();
+    private List<Long> findTeamIdsByUserId(Long userId) {
+        String query = "SELECT team_id FROM members WHERE user_id = ?";
+        return jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("team_id"), userId);
     }
 }

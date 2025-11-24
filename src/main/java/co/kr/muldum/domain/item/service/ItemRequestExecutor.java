@@ -8,6 +8,8 @@ import co.kr.muldum.domain.item.model.enums.ItemSource;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
+import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
 
@@ -28,6 +30,7 @@ import java.util.List;
 public class ItemRequestExecutor {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final TeamRepository teamRepository;
 
     public void deleteTempItemRequest(Long itemRequestId) {
         itemRequestRepository.deleteById(itemRequestId);
@@ -67,6 +70,9 @@ public class ItemRequestExecutor {
     public ItemRequest createTempItemRequest(TempItemRequestDto requestDto, Long userId, int teamId) {
         ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
 
+        Team team = teamRepository.findById((long) teamId)
+                .orElseThrow(() -> new IllegalArgumentException("Team not found with id: " + teamId));
+
         ProductInfo productInfo = ProductInfo.builder()
                 .name(requestDto.getProduct_name())
                 .quantity(requestDto.getQuantity())
@@ -86,7 +92,7 @@ public class ItemRequestExecutor {
                 .requesterUserId(userId.intValue())
                 .productInfo(productInfo)
                 .status(ItemStatus.INTEMP)
-                .teamType(TeamType.NETWORK)
+                .teamType(TeamType.valueOf(team.getType().name()))
                 .requestDetails(requestDetails)
                 .build();
 
@@ -102,22 +108,21 @@ public class ItemRequestExecutor {
 
         // 새로운 ProductInfo 생성 (JSONB 변경 감지를 위해)
         ProductInfo newProductInfo = ProductInfo.builder()
-                .name(requestDto.getProduct_name() != null ? requestDto.getProduct_name() :
-                      (oldProductInfo != null ? oldProductInfo.getName() : null))
-                .quantity(requestDto.getQuantity() != null ? requestDto.getQuantity() :
-                         (oldProductInfo != null ? oldProductInfo.getQuantity() : null))
-                .price(requestDto.getPrice() != null ? requestDto.getPrice() :
-                      (oldProductInfo != null ? oldProductInfo.getPrice() : null))
-                .link(requestDto.getProductLink() != null ? requestDto.getProductLink() :
-                     (oldProductInfo != null ? oldProductInfo.getLink() : null))
-                .itemSource(requestDto.getProductLink() != null ?
-                           ItemSource.fromUrl(requestDto.getProductLink()) :
-                           (oldProductInfo != null ? oldProductInfo.getItemSource() : null))
+                .name(requestDto.getProduct_name() != null ? requestDto.getProduct_name()
+                        : (oldProductInfo != null ? oldProductInfo.getName() : null))
+                .quantity(requestDto.getQuantity() != null ? requestDto.getQuantity()
+                        : (oldProductInfo != null ? oldProductInfo.getQuantity() : null))
+                .price(requestDto.getPrice() != null ? requestDto.getPrice()
+                        : (oldProductInfo != null ? oldProductInfo.getPrice() : null))
+                .link(requestDto.getProductLink() != null ? requestDto.getProductLink()
+                        : (oldProductInfo != null ? oldProductInfo.getLink() : null))
+                .itemSource(requestDto.getProductLink() != null ? ItemSource.fromUrl(requestDto.getProductLink())
+                        : (oldProductInfo != null ? oldProductInfo.getItemSource() : null))
                 .description(oldProductInfo != null ? oldProductInfo.getDescription() : null)
-                .deliveryPrice(requestDto.getDeliveryPrice() != null ? requestDto.getDeliveryPrice() :
-                              (oldProductInfo != null ? oldProductInfo.getDeliveryPrice() : null))
-                .deliveryTime(requestDto.getDeliveryTime() != null ? parseDeliveryTime(requestDto.getDeliveryTime()) :
-                             (oldProductInfo != null ? oldProductInfo.getDeliveryTime() : null))
+                .deliveryPrice(requestDto.getDeliveryPrice() != null ? requestDto.getDeliveryPrice()
+                        : (oldProductInfo != null ? oldProductInfo.getDeliveryPrice() : null))
+                .deliveryTime(requestDto.getDeliveryTime() != null ? parseDeliveryTime(requestDto.getDeliveryTime())
+                        : (oldProductInfo != null ? oldProductInfo.getDeliveryTime() : null))
                 .build();
 
         itemRequest.updateProductInfo(newProductInfo);

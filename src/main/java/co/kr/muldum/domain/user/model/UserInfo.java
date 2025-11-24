@@ -8,7 +8,7 @@ import lombok.Getter;
 public class UserInfo {
     private Long userId;
     private String name;
-    private Long teamId;
+    private java.util.List<Long> teamIds;
     private Role role;
     private UserType userType;
 }

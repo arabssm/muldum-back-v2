@@ -35,11 +35,14 @@ public class ItemRequestFacade {
         try {
             UserInfo userInfo = userReader.read(User.class, userId);
 
-            log.debug("임시 물품 수정 - 사용자 정보: userId={}, teamId={}, userType={}",
-                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+            log.debug("임시 물품 수정 - 사용자 정보: userId={}, teamIds={}, userType={}",
+                    userInfo.getUserId(), userInfo.getTeamIds(), userInfo.getUserType());
 
             itemValidationService.validateTeamInfo(userInfo);
             itemValidationService.validateProductLink(requestDto);
+
+            // 팀 ID 결정
+            Integer teamId = resolveTeamId(requestDto.getTeamId(), userInfo);
 
             ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
             ItemStatus status = itemStatusDecisionService.decideStatus(itemSource);
@@ -59,7 +62,7 @@ public class ItemRequestFacade {
                 throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
             }
 
-            itemRequestExecutor.updateItemRequest(itemId, requestDto, userId, userInfo.getTeamId().intValue());
+            itemRequestExecutor.updateItemRequest(itemId, requestDto, userId, teamId);
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {
@@ -73,7 +76,8 @@ public class ItemRequestFacade {
         UserInfo userInfo = userReader.read(User.class, userId);
         ItemRequest itemRequest = itemRequestRepository.findById(itemRequestId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
-        if (!itemRequest.getTeamId().equals(userInfo.getTeamId().intValue())) {
+
+        if (!userInfo.getTeamIds().contains(itemRequest.getTeamId().longValue())) {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
         itemRequestExecutor.deleteItemRequest(itemRequestId);
@@ -85,7 +89,7 @@ public class ItemRequestFacade {
         ItemRequest itemRequest = itemRequestRepository.findById(itemRequestId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-        if (!itemRequest.getTeamId().equals(userInfo.getTeamId().intValue())) {
+        if (!userInfo.getTeamIds().contains(itemRequest.getTeamId().longValue())) {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
 
@@ -103,17 +107,25 @@ public class ItemRequestFacade {
         }
 
         UserInfo userInfo = userReader.read(User.class, userId);
-        Integer teamId = userInfo.getTeamId().intValue();
+        // 일괄 삭제의 경우, 모든 요청이 사용자의 팀 중 하나에 속해야 함.
+        // 하지만 여기서는 간단히 첫 번째 팀을 기준으로 하거나, 로직을 변경해야 함.
+        // 기존 로직: findByTeamIdAndStatusAndIdIn
+        // 변경 로직: ID로 조회 후 각각 권한 확인 또는 IN 절에 팀 목록 사용
 
-        // 팀 소속 & INTEMP 상태 검증
-        List<ItemRequest> requests = itemRequestRepository.findByTeamIdAndStatusAndIdIn(
-                teamId,
-                ItemStatus.INTEMP,
-                itemRequestIds
-        );
+        // 여기서는 간단하게 구현하기 위해, 조회된 모든 아이템의 팀 ID가 사용자의 팀 목록에 포함되는지 확인
+        List<ItemRequest> requests = itemRequestRepository.findAllById(itemRequestIds);
 
         if (requests.size() != itemRequestIds.size()) {
-            return itemResponseFactory.createRejectedResponse("선택한 항목 중 임시 상태가 아니거나 팀에 속하지 않는 물품이 있습니다.");
+            return itemResponseFactory.createRejectedResponse("존재하지 않는 물품이 포함되어 있습니다.");
+        }
+
+        for (ItemRequest req : requests) {
+            if (req.getStatus() != ItemStatus.INTEMP) {
+                return itemResponseFactory.createRejectedResponse("임시 상태가 아닌 물품이 포함되어 있습니다.");
+            }
+            if (!userInfo.getTeamIds().contains(req.getTeamId().longValue())) {
+                return itemResponseFactory.createRejectedResponse("권한이 없는 물품이 포함되어 있습니다.");
+            }
         }
 
         itemRequestExecutor.deleteTempItemRequests(itemRequestIds);
@@ -124,12 +136,15 @@ public class ItemRequestFacade {
         try {
             UserInfo userInfo = userReader.read(User.class, userId);
 
-            log.debug("물품 신청 - 사용자 정보: userId={}, teamId={}, userType={}",
-                    userInfo.getUserId(), userInfo.getTeamId(), userInfo.getUserType());
+            log.debug("물품 신청 - 사용자 정보: userId={}, teamIds={}, userType={}",
+                    userInfo.getUserId(), userInfo.getTeamIds(), userInfo.getUserType());
 
             // 검증
             itemValidationService.validateTeamInfo(userInfo);
             itemValidationService.validateProductLink(requestDto);
+
+            // 팀 ID 결정
+            Integer teamId = resolveTeamId(requestDto.getTeamId(), userInfo);
 
             // 상태 결정
             ItemSource itemSource = ItemSource.fromUrl(requestDto.getProductLink());
@@ -153,7 +168,7 @@ public class ItemRequestFacade {
             }
 
             // 승인된 경우 DB에 저장
-            itemRequestExecutor.createTempItemRequest(requestDto, userId, userInfo.getTeamId().intValue());
+            itemRequestExecutor.createTempItemRequest(requestDto, userId, teamId);
             return itemResponseFactory.createResponse(status, message);
 
         } catch (IllegalArgumentException e) {
@@ -166,7 +181,7 @@ public class ItemRequestFacade {
         ItemRequest rejectedItem = itemRequestRepository.findById(itemId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-        if (!rejectedItem.getTeamId().equals(userInfo.getTeamId().intValue())) {
+        if (!userInfo.getTeamIds().contains(rejectedItem.getTeamId().longValue())) {
             throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
         }
 
@@ -179,7 +194,23 @@ public class ItemRequestFacade {
 
         return itemResponseFactory.createResponse(
                 ItemStatus.INTEMP,
-                "거절된 물품을 임시 신청으로 이동했습니다. 수정 후 다시 제출하세요."
-        );
+                "거절된 물품을 임시 신청으로 이동했습니다. 수정 후 다시 제출하세요.");
+    }
+
+    private Integer resolveTeamId(Integer requestTeamId, UserInfo userInfo) {
+        if (requestTeamId != null) {
+            if (!userInfo.getTeamIds().contains(requestTeamId.longValue())) {
+                throw new CustomException(ErrorCode.FORBIDDEN_TEAM_ITEM);
+            }
+            return requestTeamId;
+        } else {
+            if (userInfo.getTeamIds().isEmpty()) {
+                throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
+            }
+            if (userInfo.getTeamIds().size() == 1) {
+                return userInfo.getTeamIds().get(0).intValue();
+            }
+            throw new IllegalArgumentException("팀 ID를 선택해주세요.");
+        }
     }
 }
