@@ -4,8 +4,11 @@ import co.kr.muldum.domain.item.dto.*;
 import co.kr.muldum.domain.item.dto.req.AddRejectTemplatesRequest;
 import co.kr.muldum.domain.item.dto.req.ItemGuideRequest;
 import co.kr.muldum.domain.item.dto.req.ItemOpenRequest;
+import co.kr.muldum.domain.item.dto.req.ShippingPolicyRequest;
 import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
+import co.kr.muldum.domain.item.dto.res.ShippingPolicyResponse;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
+import co.kr.muldum.domain.item.service.ItemShippingPolicyService;
 import co.kr.muldum.domain.item.service.RejectTemplateService;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import co.kr.muldum.global.security.CustomUserDetails;
@@ -34,6 +37,7 @@ public class TeacherItemController {
 
     private final TeacherItemService teacherItemService;
     private final RejectTemplateService rejectTemplateService;
+    private final ItemShippingPolicyService itemShippingPolicyService;
 
     @PostMapping("/open")
     public ResponseEntity<ItemActionResponseDto> openNthItemRequestPeriod(
@@ -420,6 +424,16 @@ public class TeacherItemController {
     ) {
         log.info("선생님 물품신청 가이드 수정 요청 - teacherId: {}", userDetails.getUserId());
         ItemGuideResponse response = teacherItemService.updateItemGuide(request, guideId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/shipping-policy")
+    public ResponseEntity<ShippingPolicyResponse> upsertShippingPolicy(
+            @Valid @RequestBody ShippingPolicyRequest request
+    ) {
+        log.info("선생님 배송 정책 저장 요청 - 최소 배송비: {}, 신청 불가 여부: {}",
+                request.atLeastShippingMoney(), request.youCantApplyForIgenship());
+        ShippingPolicyResponse response = itemShippingPolicyService.saveOrUpdatePolicy(request);
         return ResponseEntity.ok(response);
     }
 }

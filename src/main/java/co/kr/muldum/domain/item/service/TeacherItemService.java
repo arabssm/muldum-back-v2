@@ -23,6 +23,7 @@ import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -545,17 +546,28 @@ public class TeacherItemService {
 
     @Transactional
     public ItemGuideResponse createItemGuide(ItemGuideRequest request, Long teacherId) {
-        ItemGuide guide = ItemGuide.create(
-                teacherId,
-                request.getContent(),
-                request.getProjectType()
-        );
+        List<ItemGuide> guides = itemGuideRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        ItemGuide guide;
+        String messageSuffix;
 
-        itemGuideRepository.save(guide);
+        if (guides.isEmpty()) {
+            guide = ItemGuide.create(
+                    teacherId,
+                    request.getContent(),
+                    request.getProjectType()
+            );
+            itemGuideRepository.save(guide);
+            messageSuffix = "등록되었습니다.";
+        } else {
+            guide = guides.get(0);
+            guide.update(request.getContent(), request.getProjectType());
+            removeOtherGuides(guide.getId(), guides);
+            messageSuffix = "수정되었습니다.";
+        }
 
         return ItemGuideResponse.builder()
                 .id(guide.getId())
-                .message(guide.getProjectType() + " 물품 신청 가이드가 등록되었습니다.")
+                .message(guide.getProjectType() + " 물품 신청 가이드가 " + messageSuffix)
                 .build();
     }
 
@@ -566,10 +578,23 @@ public class TeacherItemService {
 
         guide.update(request.getContent(), request.getProjectType());
 
+        removeOtherGuides(guide.getId(), null);
+
         return ItemGuideResponse.builder()
                 .id(guide.getId())
                 .message(guide.getProjectType() + " 물품 신청 가이드가 수정되었습니다.")
                 .build();
+    }
+
+    private void removeOtherGuides(Long guideIdToKeep, List<ItemGuide> cachedGuides) {
+        List<Long> redundantIds = (cachedGuides != null ? cachedGuides.stream() : itemGuideRepository.findAll().stream())
+                .map(ItemGuide::getId)
+                .filter(id -> !Objects.equals(id, guideIdToKeep))
+                .toList();
+
+        if (!redundantIds.isEmpty()) {
+            itemGuideRepository.deleteAllByIdInBatch(redundantIds);
+        }
     }
 
     private List<TeacherItemResponseDto> buildResponse(List<ItemRequest> items, Long teacherId) {
