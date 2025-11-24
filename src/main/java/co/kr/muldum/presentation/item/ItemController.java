@@ -1,7 +1,9 @@
 package co.kr.muldum.presentation.item;
 
 import co.kr.muldum.domain.item.dto.res.GetItemGuideResponse;
+import co.kr.muldum.domain.item.dto.res.ShippingPolicyResponse;
 import co.kr.muldum.domain.item.service.ItemRequestService;
+import co.kr.muldum.domain.item.service.ItemShippingPolicyService;
 import co.kr.muldum.domain.item.service.TeacherItemService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ public class ItemController {
 
     private final TeacherItemService teacherItemService;
     private final ItemRequestService itemRequestService;
+    private final ItemShippingPolicyService itemShippingPolicyService;
 
     @PostMapping("/items/issue")
     public ResponseEntity<String> fixNthIssues() {
@@ -35,5 +38,13 @@ public class ItemController {
         GetItemGuideResponse itemGuide = itemRequestService.getItemGuide(guideId, projectType);
 
         return ResponseEntity.ok(itemGuide);
+    }
+
+    @GetMapping("/ara/items/shipping-policy")
+    public ResponseEntity<ShippingPolicyResponse> getShippingPolicy() {
+        log.info("물품 배송 정책 조회 요청");
+        return itemShippingPolicyService.getPolicy()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 }
