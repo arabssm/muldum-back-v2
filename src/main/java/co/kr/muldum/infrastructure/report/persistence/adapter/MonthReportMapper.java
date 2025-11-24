@@ -34,7 +34,7 @@ public class MonthReportMapper {
                 .mentorFeedback(content.getMentorFeedback())
                 .status(entity.getStatus())
                 .submittedAt(entity.getSubmittedAt())
-                .score(entity.getScore())
+                .feedback(entity.getFeedback())
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
@@ -49,7 +49,7 @@ public class MonthReportMapper {
                 .reportContent(serializedContent)
                 .status(domain.getStatus())
                 .submittedAt(domain.getSubmittedAt())
-                .score(domain.getScore())
+                .feedback(domain.getFeedback())
                 .createdAt(domain.getCreatedAt())
                 .build();
     }

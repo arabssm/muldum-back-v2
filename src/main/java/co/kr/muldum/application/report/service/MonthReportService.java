@@ -14,6 +14,8 @@ import co.kr.muldum.domain.report.model.MonthReport;
 import co.kr.muldum.domain.report.model.ReportStatus;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.repository.UserRepository;
+import co.kr.muldum.global.exception.CustomException;
+import co.kr.muldum.global.exception.ErrorCode;
 import co.kr.muldum.global.exception.MonthReportNotFoundException;
 import co.kr.muldum.global.exception.UnauthorizedReportAccessException;
 import co.kr.muldum.global.exception.UnauthorizedTeamAccessException;
@@ -40,21 +42,26 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
         int currentMonth = LocalDateTime.now().getMonthValue();
         Optional<MonthReport> existingReport = loadMonthReportPort.findByUserIdAndMonth(command.getUserId(), currentMonth);
 
-        MonthReport monthReport = existingReport.map(report -> MonthReport.builder()
-                .id(report.getId())
-                .userId(report.getUserId())
-                .teamId(resolveTeamId(report.getTeamId(), command.getTeamId(), command.getUserId()))
-                .topic(command.getTopic())
-                .goal(command.getGoal())
-                .tech(command.getTech())
-                .problem(command.getProblem())
-                .teacherFeedback(command.getTeacherFeedback())
-                .mentorFeedback(command.getMentorFeedback())
-                .status(report.getStatus())
-                .submittedAt(report.getSubmittedAt())
-                .score(report.getScore())
-                .createdAt(report.getCreatedAt())
-                .build()
+        MonthReport monthReport = existingReport.map(report -> {
+            if (report.getStatus() == ReportStatus.SUBMIT) {
+                throw new CustomException(ErrorCode.REPORT_ALREADY_SUBMITTED);
+            }
+            return MonthReport.builder()
+                    .id(report.getId())
+                    .userId(report.getUserId())
+                    .teamId(resolveTeamId(report.getTeamId(), command.getTeamId(), command.getUserId()))
+                    .topic(command.getTopic())
+                    .goal(command.getGoal())
+                    .tech(command.getTech())
+                    .problem(command.getProblem())
+                    .teacherFeedback(command.getTeacherFeedback())
+                    .mentorFeedback(command.getMentorFeedback())
+                    .status(report.getStatus())
+                    .submittedAt(report.getSubmittedAt())
+                    .feedback(report.getFeedback())
+                    .createdAt(report.getCreatedAt())
+                    .build();
+        }
         ).orElseGet(() -> MonthReport.builder()
                 .userId(command.getUserId())
                 .teamId(command.getTeamId())
@@ -65,6 +72,7 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                 .teacherFeedback(command.getTeacherFeedback())
                 .mentorFeedback(command.getMentorFeedback())
                 .status(ReportStatus.DRAFT)
+                .feedback(null)
                 .build());
 
         return saveMonthReportPort.save(monthReport);
@@ -96,7 +104,7 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                 .mentorFeedback(command.getMentorFeedback())
                 .status(status)
                 .submittedAt(LocalDateTime.now())
-                .score(existingReport.getScore())
+                .feedback(existingReport.getFeedback())
                 .createdAt(existingReport.getCreatedAt())
                 .build();
 
@@ -139,7 +147,7 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                 .mentorFeedback(report.getMentorFeedback())
                 .status(report.getStatus())
                 .submittedAt(report.getSubmittedAt())
-                .score(report.getScore())
+                .feedback(report.getFeedback() != null ? report.getFeedback() : "")
                 .build();
     }
 
@@ -157,6 +165,7 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                         .topic(report.getTopic())
                         .status(report.getStatus())
                         .submittedAt(report.getSubmittedAt())
+                        .feedback(report.getFeedback() != null ? report.getFeedback() : "")
                         .build())
                 .collect(Collectors.toList());
     }
@@ -174,11 +183,11 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                 .goal(monthReport.getGoal())
                 .tech(monthReport.getTech())
                 .problem(monthReport.getProblem())
-                .teacherFeedback(feedback) // Update teacherFeedback with the provided feedback
+                .teacherFeedback(monthReport.getTeacherFeedback())
                 .mentorFeedback(monthReport.getMentorFeedback())
                 .status(ReportStatus.DRAFT)
                 .submittedAt(monthReport.getSubmittedAt())
-                .score(monthReport.getScore()) // Keep the existing score, or remove if not applicable
+                .feedback(feedback)
                 .createdAt(monthReport.getCreatedAt())
                 .build();
         saveMonthReportPort.save(scoredReport);

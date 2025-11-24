@@ -3,9 +3,9 @@ package co.kr.muldum.application.report.dto.response;
 import co.kr.muldum.domain.report.model.ReportStatus;
 import lombok.Builder;
 import lombok.Getter;
-import java.util.List;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -22,5 +22,5 @@ public class TeacherMonthReportApplicationResponse {
     private String mentorFeedback;
     private ReportStatus status;
     private LocalDateTime submittedAt;
-    private Integer score;
+    private String feedback;
 }
