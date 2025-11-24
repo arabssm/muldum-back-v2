@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -92,22 +94,19 @@ public class TeacherItemController {
     //엑셀
     @GetMapping("/xlsx")
     public ResponseEntity<InputStreamResource> getApprovedItemsAsXlsx(
-            @RequestParam(required = false) Integer nth,
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws IOException {
 
-        Integer targetNth = nth;
-        if (targetNth == null) {
-            NthStatusResponseDto currentStatus = teacherItemService.getNthStatus();
-            targetNth = currentStatus.getNth();
-            if (targetNth == null || targetNth == 0) {
-                throw new IllegalArgumentException("현재 열린 물품 신청 차수가 없습니다. nth 파라미터를 지정해주세요.");
-            }
-        }
-
-        log.info("{}차 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", targetNth, userDetails.getUserId());
-        InputStreamResource resource = new InputStreamResource(teacherItemService.getApprovedItemsAsXlsxWithNth(targetNth));
-        String filename = "approved_items_" + targetNth + "차" + ".xlsx";
+        log.info("{} 승인된 물품 엑셀 다운로드 요청 - teacherId: {}", date, userDetails.getUserId());
+        InputStreamResource resource = new InputStreamResource(
+                date != null
+                        ? teacherItemService.getApprovedItemsAsXlsxOnDate(date)
+                        : teacherItemService.getApprovedItemsAsXlsx()
+        );
+        String filename = date != null
+                ? "approved_items_" + date + ".xlsx"
+                : "approved_items_all.xlsx";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
@@ -126,11 +125,73 @@ public class TeacherItemController {
 
     @GetMapping("/approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllApprovedItems(
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 승인 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
-        List<TeacherItemResponseDto> response = teacherItemService.getAllApprovedItems(userDetails.getUserId());
+        log.info("선생님 승인 물품 조회 요청 - teacherId: {}, date: {}", userDetails.getUserId(), date);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllApprovedItems(userDetails.getUserId(), date);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllMajorPendingItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 물품 전체 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllMajorPendingItems(userDetails.getUserId());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllMajorApprovedItems(
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 승인 물품 조회 요청 - teacherId: {}, date: {}", userDetails.getUserId(), date);
+        List<TeacherItemResponseDto> response = teacherItemService.getAllMajorApprovedItems(userDetails.getUserId(), date);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major/rejected")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllMajorRejectedItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 거절 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllMajorRejectedItems(userDetails.getUserId());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/approved-on")
+    public ResponseEntity<List<TeacherItemResponseDto>> getApprovedItemsOnDate(
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "teamName", required = false) String teamName,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("특정 날짜 승인 물품 조회 요청 - teacherId: {}, date: {}, teamName: {}", userDetails.getUserId(), date, teamName);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsApprovedOn(date, userDetails.getUserId(), teamName);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/rejected-on")
+    public ResponseEntity<List<TeacherItemResponseDto>> getRejectedItemsOnDate(
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "teamName", required = false) String teamName,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("특정 날짜 거절 물품 조회 요청 - teacherId: {}, date: {}, teamName: {}", userDetails.getUserId(), date, teamName);
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsRejectedOn(date, userDetails.getUserId(), teamName);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/approved-dates")
+    public ResponseEntity<List<LocalDate>> getApprovedDates(
+            @RequestParam(value = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("승인 완료 날짜 목록 조회 요청 - teacherId: {}, start: {}, end: {}", userDetails.getUserId(), start, end);
+        List<LocalDate> dates = teacherItemService.getApprovedDates(start, end);
+        return ResponseEntity.ok(dates);
     }
 
     @GetMapping("/{teamId}")
@@ -145,12 +206,33 @@ public class TeacherItemController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/major/{teamId}")
+    public ResponseEntity<List<TeacherItemResponseDto>> getMajorItemsByTeamId(
+            @PathVariable Integer teamId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 팀별 물품 조회 요청 - teacherId: {}, teamId: {}", userDetails.getUserId(), teamId);
+
+        List<TeacherItemResponseDto> response = teacherItemService.getMajorItemsByTeamId(teamId, userDetails.getUserId());
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/not-approved")
     public ResponseEntity<List<TeacherItemResponseDto>> getAllNotApprovedItems(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         log.info("선생님 물품 중 승인 필요 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
         List<TeacherItemResponseDto> response = teacherItemService.getAllNotApprovedItems(userDetails.getUserId());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major/not-approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getAllMajorNotApprovedItems(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 승인 필요 물품 조회 요청 - teacherId: {}", userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getAllMajorNotApprovedItems(userDetails.getUserId());
         return ResponseEntity.ok(response);
     }
 
@@ -166,14 +248,40 @@ public class TeacherItemController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{teamId}/approved")
-    public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamIdApproved(
+    @GetMapping("/major/{teamId}/not-approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getMajorItemsByTeamIdNotApproved(
             @PathVariable Integer teamId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("선생님 팀별 물품 중 승인된 물품 조회 요청");
+        log.info("선생님 전공동아리 팀별 승인 필요 물품 조회 요청");
 
-        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdApproved(teamId, userDetails.getUserId());
+        List<TeacherItemResponseDto> response = teacherItemService.getMajorItemsByTeamIdNotApproved(teamId, userDetails.getUserId());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{teamId}/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamIdApproved(
+            @PathVariable Integer teamId,
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 팀별 물품 중 승인된 물품 조회 요청 - date: {}", date);
+
+        List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdApproved(teamId, userDetails.getUserId(), date);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major/{teamId}/approved")
+    public ResponseEntity<List<TeacherItemResponseDto>> getMajorItemsByTeamIdApproved(
+            @PathVariable Integer teamId,
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 팀별 승인된 물품 조회 요청 - date: {}", date);
+
+        List<TeacherItemResponseDto> response = teacherItemService.getMajorItemsByTeamIdApproved(teamId, userDetails.getUserId(), date);
 
         return ResponseEntity.ok(response);
     }
@@ -186,6 +294,18 @@ public class TeacherItemController {
         log.info("선생님 팀별 물품 중 거절된 물품 조회 요청");
 
         List<TeacherItemResponseDto> response = teacherItemService.getItemsByTeamIdRejected(teamId, userDetails.getUserId());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/major/{teamId}/rejected")
+    public ResponseEntity<List<TeacherItemResponseDto>> getMajorItemsByTeamIdRejected(
+            @PathVariable Integer teamId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("선생님 전공동아리 팀별 거절된 물품 조회 요청");
+
+        List<TeacherItemResponseDto> response = teacherItemService.getMajorItemsByTeamIdRejected(teamId, userDetails.getUserId());
 
         return ResponseEntity.ok(response);
     }
@@ -250,7 +370,7 @@ public class TeacherItemController {
         log.info("물품 승인 요청 - teacherId: {}, 승인할 물품 수: {}",
                 userDetails.getUserId(), approveRequests.size());
 
-        ItemActionResponseDto response = teacherItemService.approveItems(approveRequests);
+        ItemActionResponseDto response = teacherItemService.approveItems(approveRequests, userDetails.getUserId());
 
         return ResponseEntity.ok(response);
     }

@@ -78,4 +78,11 @@ public class TeamspaceController {
     public TeamspaceResponseDto getMajorTeams() {
         return teamspaceService.getMajorTeams();
     }
+
+    // 전공동아리 팀 조회 (교사용)
+    @GetMapping("/tch/teamspace/major")
+    @PreAuthorize("hasRole('TEACHER')")
+    public TeamspaceResponseDto getMajorTeamsForTeacher() {
+        return teamspaceService.getMajorTeams();
+    }
 }

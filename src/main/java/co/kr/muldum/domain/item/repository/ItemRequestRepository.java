@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -43,5 +44,21 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             @Param("excludeId") Long excludeId,
             @Param("keyword") String keyword,
             @Param("limit") int limit
+    );
+
+    List<ItemRequest> findByApprovedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<ItemRequest> findByRejectedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query(value = """
+            SELECT DISTINCT DATE(approved_at) AS approved_date
+            FROM item_requests
+            WHERE approved_at IS NOT NULL
+              AND approved_at >= COALESCE(:start, approved_at)
+              AND approved_at <= COALESCE(:end, approved_at)
+            ORDER BY approved_date
+            """, nativeQuery = true)
+    List<Date> findDistinctApprovedDates(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
     );
 }

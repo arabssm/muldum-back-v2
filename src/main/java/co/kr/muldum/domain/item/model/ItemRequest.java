@@ -61,6 +61,12 @@ public class ItemRequest {
     @Column(name = "delivery_number")
     private String deliveryNumber;
 
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @Column(name = "rejected_at")
+    private LocalDateTime rejectedAt;
+
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
@@ -86,5 +92,13 @@ public class ItemRequest {
 
     public void updateRequestDetails(RequestDetails requestDetails) {
         this.requestDetails = requestDetails;
+    }
+
+    public void updateApprovedAt(LocalDateTime approvedAt) {
+        this.approvedAt = approvedAt;
+    }
+
+    public void updateRejectedAt(LocalDateTime rejectedAt) {
+        this.rejectedAt = rejectedAt;
     }
 }
