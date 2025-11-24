@@ -154,7 +154,9 @@ public class TeamspaceService {
                             })
                             .map(member -> {
                                 Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+
+                                String studentId = buildStudentId(profile);
+
                                 return TeamspaceMemberDto.builder()
                                         .userId(member.getUser().getId())
                                         .userName(member.getUser().getName())
@@ -315,7 +317,9 @@ public class TeamspaceService {
                             })
                             .map(member -> {
                                 Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+
+                                String studentId = buildStudentId(profile);
+
                                 return TeamspaceMemberDto.builder()
                                         .userId(member.getUser().getId())
                                         .userName(member.getUser().getName())
@@ -394,5 +398,18 @@ public class TeamspaceService {
                 newTeam.getName(),
                 "팀이 추가되었습니다."
         );
+    }
+
+    private String buildStudentId(Map<String, Object> profile) {
+        if (profile == null) return null;
+
+        String grade = String.valueOf(profile.get("grade"));
+        String classNo = String.valueOf(profile.get("class"));
+        String number = String.valueOf(profile.get("number"));
+
+        if (grade == null || classNo == null || number == null) return null;
+        if (grade.equals("null") || classNo.equals("null") || number.equals("null")) return null;
+
+        return grade + classNo + number;
     }
 }
