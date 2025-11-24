@@ -154,7 +154,17 @@ public class TeamspaceService {
                             })
                             .map(member -> {
                                 Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+
+                                String grade = profile != null ? String.valueOf(profile.get("grade")) : null;
+                                String classNo = profile != null ? String.valueOf(profile.get("class")) : null;
+                                String number = profile != null ? String.valueOf(profile.get("number")) : null;
+
+                                // studentId 생성
+                                String studentId = null;
+                                if (grade != null && classNo != null && number != null) {
+                                    studentId = grade + classNo + number;
+                                }
+
                                 return TeamspaceMemberDto.builder()
                                         .userId(member.getUser().getId())
                                         .userName(member.getUser().getName())
@@ -315,7 +325,17 @@ public class TeamspaceService {
                             })
                             .map(member -> {
                                 Map<String, Object> profile = member.getUser().getProfile();
-                                String studentId = profile != null ? (String) profile.get("studentId") : null;
+
+                                String grade = profile != null ? (String) profile.get("grade") : null;
+                                String classNo = profile != null ? (String) profile.get("class") : null;
+                                String number = profile != null ? (String) profile.get("number") : null;
+
+                                // studentId 생성 로직 (원하는 대로 포맷 조정)
+                                String studentId = null;
+                                if (grade != null && classNo != null && number != null) {
+                                    studentId = grade + classNo + number;
+                                }
+
                                 return TeamspaceMemberDto.builder()
                                         .userId(member.getUser().getId())
                                         .userName(member.getUser().getName())
