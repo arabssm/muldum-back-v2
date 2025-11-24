@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    Optional<Team> findByName(String name);
+    Optional<Team> findFirstByNameOrderByIdAsc(String name);
 
     // 팀 타입으로 팀 목록 조회
     @Query("SELECT t FROM Team t WHERE t.type = ?1 ORDER BY t.id")

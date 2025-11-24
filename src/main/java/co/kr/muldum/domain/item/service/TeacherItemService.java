@@ -11,12 +11,14 @@ import co.kr.muldum.domain.item.dto.res.ItemGuideResponse;
 import co.kr.muldum.domain.item.model.*;
 import co.kr.muldum.domain.item.model.enums.ItemStatus;
 import co.kr.muldum.domain.item.model.enums.TeamType;
+import co.kr.muldum.domain.item.repository.ItemApprovalHistoryRepository;
 import co.kr.muldum.domain.item.repository.ItemGuideRepository;
 import co.kr.muldum.domain.item.repository.ItemRequestRepository;
 import co.kr.muldum.domain.item.repository.NthStatusRepository;
 import co.kr.muldum.domain.item.repository.NthStatusHistoryRepository;
 import co.kr.muldum.domain.item.repository.ViewRepository;
-import co.kr.muldum.domain.item.model.View;
+import co.kr.muldum.domain.teamspace.model.Team;
+import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.user.UserReader;
 import co.kr.muldum.domain.user.model.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +53,8 @@ public class TeacherItemService {
     private final NthStatusHistoryRepository nthStatusHistoryRepository;
     private final ItemGuideRepository itemGuideRepository;
     private final ViewRepository viewRepository;
+    private final ItemApprovalHistoryRepository itemApprovalHistoryRepository;
+    private final TeamRepository teamRepository;
 
     @Transactional
     public String fixNthIssues() {
@@ -96,19 +105,11 @@ public class TeacherItemService {
         return excelExportService.createXlsx(dtos);
     }
 
-    public ByteArrayInputStream getApprovedItemsAsXlsxWithNth(
-            Integer nth
-    ) throws IOException {
-        NthStatus nthStatus = nthStatusRepository.findByNthStatusIdForExcel(Long.valueOf(nth))
-                .orElseThrow(() -> new RuntimeException("해당 nthStatus 없음"));
+    public ByteArrayInputStream getApprovedItemsAsXlsxOnDate(LocalDate targetDate) throws IOException {
+        LocalDateTime startOfDay = targetDate.atStartOfDay();
+        LocalDateTime endOfDay = targetDate.atTime(LocalTime.MAX);
 
-        LocalDateTime startDateTime = nthStatus.getCreatedAt();
-        String endDate = nthStatus.getDeadlineDate();
-        LocalDate endLocalDate = LocalDate.parse(endDate);
-        LocalDateTime endDateTime = endLocalDate.atTime(LocalTime.MAX);
-
-        List<ItemRequest> items = itemRequestRepository.findByStatusAndUpdatedAtBetween(
-                ItemStatus.APPROVED, startDateTime, endDateTime);
+        List<ItemRequest> items = itemRequestRepository.findByApprovedAtBetween(startOfDay, endOfDay);
         List<ItemExcelResponseDto> dtos = items.stream()
                 .map(this::convertToItemExcelResponseDto)
                 .collect(Collectors.toList());
@@ -148,8 +149,61 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getAllApprovedItems(Long teacherId) {
-        return buildResponse(itemRequestRepository.findByStatus(ItemStatus.APPROVED), teacherId);
+    public List<TeacherItemResponseDto> getAllApprovedItems(Long teacherId, LocalDate targetDate) {
+        List<ItemRequest> items = itemRequestRepository.findByStatus(ItemStatus.APPROVED);
+        if (targetDate != null) {
+            items = filterByDate(items, targetDate, true);
+        }
+        return buildResponse(items, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getAllMajorPendingItems(Long teacherId) {
+        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.PENDING), TeamType.MAJOR), teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getAllMajorApprovedItems(Long teacherId, LocalDate targetDate) {
+        List<ItemRequest> items = filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.APPROVED), TeamType.MAJOR);
+        if (targetDate != null) {
+            items = filterByDate(items, targetDate, true);
+        }
+        return buildResponse(items, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getAllMajorRejectedItems(Long teacherId) {
+        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.REJECTED), TeamType.MAJOR), teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsApprovedOn(LocalDate targetDate, Long teacherId, String teamName) {
+        log.info("특정 날짜 승인 물품 조회 시작 - date: {}, teamName: {}", targetDate, teamName);
+        Integer teamId = resolveTeamIdFromName(teamName);
+        List<ItemRequest> items = findItemsByStatusAndDate(targetDate, ItemStatus.APPROVED, teamId);
+        log.info("특정 날짜 승인 물품 조회 완료 - 총 {}건", items.size());
+        return buildResponse(items, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsRejectedOn(LocalDate targetDate, Long teacherId, String teamName) {
+        log.info("특정 날짜 거절 물품 조회 시작 - date: {}, teamName: {}", targetDate, teamName);
+        Integer teamId = resolveTeamIdFromName(teamName);
+        List<ItemRequest> items = findItemsByStatusAndDate(targetDate, ItemStatus.REJECTED, teamId);
+        log.info("특정 날짜 거절 물품 조회 완료 - 총 {}건", items.size());
+        return buildResponse(items, teacherId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocalDate> getApprovedDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("startDate는 endDate보다 이후일 수 없습니다.");
+        }
+        LocalDateTime start = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+        return itemRequestRepository.findDistinctApprovedDates(start, end).stream()
+                .map(java.sql.Date::toLocalDate)
+                .toList();
     }
 
     @Transactional
@@ -167,8 +221,19 @@ public class TeacherItemService {
     }
 
     @Transactional
+    public List<TeacherItemResponseDto> getMajorItemsByTeamId(Integer teamId, Long teacherId) {
+        validateTeamType(teamId, TeamType.MAJOR);
+        return getItemsByTeamId(teamId, teacherId);
+    }
+
+    @Transactional
     public List<TeacherItemResponseDto> getAllNotApprovedItems(Long teacherId) {
         return getAllPendingItems(teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getAllMajorNotApprovedItems(Long teacherId) {
+        return getAllMajorPendingItems(teacherId);
     }
 
     @Transactional
@@ -186,7 +251,13 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getItemsByTeamIdApproved(Integer teamId, Long teacherId) {
+    public List<TeacherItemResponseDto> getMajorItemsByTeamIdNotApproved(Integer teamId, Long teacherId) {
+        validateTeamType(teamId, TeamType.MAJOR);
+        return getItemsByTeamIdNotApproved(teamId, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getItemsByTeamIdApproved(Integer teamId, Long teacherId, LocalDate targetDate) {
         log.info("팀별 승인 상태 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
@@ -194,9 +265,25 @@ public class TeacherItemService {
                 ItemStatus.APPROVED
         );
 
+        if (targetDate != null) {
+            LocalDateTime start = targetDate.atStartOfDay();
+            LocalDateTime end = targetDate.atTime(LocalTime.MAX);
+            items = items.stream()
+                    .filter(item -> item.getApprovedAt() != null
+                            && !item.getApprovedAt().isBefore(start)
+                            && !item.getApprovedAt().isAfter(end))
+                    .toList();
+        }
+
         log.info("팀 {}의 승인된 물품 수: {}", teamId, items.size());
 
         return buildResponse(items, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getMajorItemsByTeamIdApproved(Integer teamId, Long teacherId, LocalDate targetDate) {
+        validateTeamType(teamId, TeamType.MAJOR);
+        return getItemsByTeamIdApproved(teamId, teacherId, targetDate);
     }
 
     @Transactional
@@ -211,6 +298,12 @@ public class TeacherItemService {
         log.info("팀 {}의 거절된 물품 수: {}", teamId, items.size());
 
         return buildResponse(items, teacherId);
+    }
+
+    @Transactional
+    public List<TeacherItemResponseDto> getMajorItemsByTeamIdRejected(Integer teamId, Long teacherId) {
+        validateTeamType(teamId, TeamType.MAJOR);
+        return getItemsByTeamIdRejected(teamId, teacherId);
     }
 
     @Transactional
@@ -236,7 +329,9 @@ public class TeacherItemService {
                         .orElse(null);
 
                 if (item != null) {
+                    LocalDateTime rejectedAt = LocalDateTime.now();
                     item.updateStatus(ItemStatus.REJECTED);
+                    item.updateRejectedAt(rejectedAt);
                     // 거절 사유 저장 (RequestDetails 업데이트)
                     if (item.getRequestDetails() != null) {
                         item.getRequestDetails().updateReason(request.getReason());
@@ -261,7 +356,7 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public ItemActionResponseDto approveItems(List<ApproveItemRequestDto> approveRequests) {
+    public ItemActionResponseDto approveItems(List<ApproveItemRequestDto> approveRequests, Long teacherId) {
         log.info("물품 승인 처리 시작 - 처리할 물품 수: {}", approveRequests.size());
 
         int processedCount = 0;
@@ -271,8 +366,17 @@ public class TeacherItemService {
                         .orElse(null);
 
                 if (item != null) {
+                    LocalDateTime approvedAt = LocalDateTime.now();
                     item.updateStatus(ItemStatus.APPROVED);
+                    item.updateApprovedAt(approvedAt);
                     itemRequestRepository.save(item);
+                    itemApprovalHistoryRepository.save(
+                            ItemApprovalHistory.builder()
+                                    .itemRequest(item)
+                                    .teacherId(teacherId)
+                                    .approvedAt(approvedAt)
+                                    .build()
+                    );
                     processedCount++;
                     log.info("물품 승인 완료 - itemId: {}", request.getItem_id());
                 } else {
@@ -291,10 +395,11 @@ public class TeacherItemService {
                 .build();
     }
 
-    private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
+    private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest, String teamName) {
         return TeacherItemResponseDto.builder()
                 .team_id(itemRequest.getTeamId())
-                .type(TeamType.NETWORK)
+                .team_name(teamName)
+                .type(itemRequest.getTeamType() != null ? itemRequest.getTeamType() : TeamType.NETWORK)
                 .item_id(itemRequest.getId())
                 .product_name(itemRequest.getProductInfo() != null ?
                         itemRequest.getProductInfo().getName() : null)
@@ -316,6 +421,8 @@ public class TeacherItemService {
                 .rejectReason(itemRequest.getRequestDetails() != null ?
                         itemRequest.getRequestDetails().getReason() : null)
                 .updatedAt(itemRequest.getUpdatedAt())
+                .approvedAt(itemRequest.getApprovedAt())
+                .rejectedAt(itemRequest.getRejectedAt())
                 .build();
     }
 
@@ -467,8 +574,9 @@ public class TeacherItemService {
 
     private List<TeacherItemResponseDto> buildResponse(List<ItemRequest> items, Long teacherId) {
         saveViewForItems(items, teacherId);
+        Map<Integer, String> teamNames = resolveTeamNames(items);
         return items.stream()
-                .map(this::convertToTeacherItemResponseDto)
+                .map(item -> convertToTeacherItemResponseDto(item, teamNames.get(item.getTeamId())))
                 .toList();
     }
 
@@ -484,5 +592,102 @@ public class TeacherItemService {
                         .watchedAt(now)
                         .build()
         ));
+    }
+
+    private List<ItemRequest> filterByTeamType(List<ItemRequest> items, TeamType teamType) {
+        if (teamType == null || items == null) {
+            return items;
+        }
+        return items.stream()
+                .filter(item -> item.getTeamType() == teamType)
+                .toList();
+    }
+
+    private List<ItemRequest> filterByTeamId(List<ItemRequest> items, Integer teamId) {
+        if (teamId == null || items == null) {
+            return items;
+        }
+        return items.stream()
+                .filter(item -> item.getTeamId() != null && Objects.equals(item.getTeamId(), teamId))
+                .toList();
+    }
+
+    private List<ItemRequest> filterByDate(List<ItemRequest> items, LocalDate targetDate, boolean useApprovedAt) {
+        if (items == null || targetDate == null) {
+            return items;
+        }
+        LocalDateTime start = targetDate.atStartOfDay();
+        LocalDateTime end = targetDate.atTime(LocalTime.MAX);
+        return items.stream()
+                .filter(item -> {
+                    LocalDateTime timestamp = useApprovedAt ? item.getApprovedAt() : item.getRejectedAt();
+                    return timestamp != null && !timestamp.isBefore(start) && !timestamp.isAfter(end);
+                })
+                .toList();
+    }
+
+    private void validateTeamType(Integer teamId, TeamType requiredType) {
+        if (teamId == null) {
+            throw new IllegalArgumentException("teamId가 필요합니다.");
+        }
+        Team team = teamRepository.findById(teamId.longValue())
+                .orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다. teamId: " + teamId));
+        TeamType mappedType = team.getType() != null
+                ? TeamType.valueOf(team.getType().name())
+                : TeamType.NETWORK;
+        if (mappedType != requiredType) {
+            throw new IllegalArgumentException("요청한 팀은 " + requiredType + " 팀이 아닙니다. teamId: " + teamId);
+        }
+    }
+
+    private List<ItemRequest> findItemsByStatusAndDate(LocalDate targetDate, ItemStatus status, Integer teamId) {
+        LocalDateTime startOfDay = targetDate.atStartOfDay();
+        LocalDateTime endOfDay = targetDate.atTime(LocalTime.MAX);
+        List<ItemRequest> items;
+        if (status == ItemStatus.APPROVED) {
+            items = itemRequestRepository.findByApprovedAtBetween(startOfDay, endOfDay);
+        } else if (status == ItemStatus.REJECTED) {
+            items = itemRequestRepository.findByRejectedAtBetween(startOfDay, endOfDay);
+        } else {
+            items = Collections.emptyList();
+        }
+        return filterByTeamId(items, teamId);
+    }
+
+    private Integer resolveTeamIdFromName(String teamName) {
+        if (teamName == null || teamName.isBlank()) {
+            return null;
+        }
+        Team team = teamRepository.findFirstByNameOrderByIdAsc(teamName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 팀을 찾을 수 없습니다: " + teamName));
+        if (team.getId() == null) {
+            throw new IllegalStateException("팀 ID가 없습니다: " + teamName);
+        }
+        return team.getId().intValue();
+    }
+
+    private Map<Integer, String> resolveTeamNames(List<ItemRequest> items) {
+        if (items == null || items.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Set<Integer> teamIds = items.stream()
+                .map(ItemRequest::getTeamId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (teamIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<Integer, String> teamNameMap = new HashMap<>();
+        List<Team> teams = teamRepository.findAllById(
+                teamIds.stream()
+                        .map(Integer::longValue)
+                        .toList()
+        );
+        for (Team team : teams) {
+            if (team.getId() != null) {
+                teamNameMap.put(team.getId().intValue(), team.getName());
+            }
+        }
+        return teamNameMap;
     }
 }

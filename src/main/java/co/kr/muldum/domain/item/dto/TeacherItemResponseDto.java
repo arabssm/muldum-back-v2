@@ -1,6 +1,5 @@
 package co.kr.muldum.domain.item.dto;
 
-import co.kr.muldum.domain.item.model.ItemRequest;
 import co.kr.muldum.domain.item.model.enums.TeamType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -12,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TeacherItemResponseDto {
     private Integer team_id;
+    private String team_name;
     private TeamType type;
     private Long item_id;
     private String product_name;
@@ -26,60 +26,9 @@ public class TeacherItemResponseDto {
     private String rejectReason;
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
+    @JsonProperty("approved_at")
+    private LocalDateTime approvedAt;
+    @JsonProperty("rejected_at")
+    private LocalDateTime rejectedAt;
 
-    public static TeacherItemResponseDto from(ItemRequest itemRequest) {
-        return TeacherItemResponseDto.builder()
-                .team_id(itemRequest.getTeamId())
-                .type(TeamType.NETWORK) // 고정값
-                .item_id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getName() : null)
-                .quantity(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getQuantity() : null)
-                .price(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getPrice() : null)
-                .productLink(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getLink() : null)
-                .reason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
-                .status(itemRequest.getStatus().name())
-                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
-                        itemRequest.getDeliveryNumber() : null)
-                .deliveryPrice(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryPrice() : null)
-                .deliveryTime(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryTime() : null)
-                .rejectReason(itemRequest.getStatus().isRejected() && itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
-                .updatedAt(itemRequest.getUpdatedAt())
-                .build();
-    }
-
-    private TeacherItemResponseDto convertToTeacherItemResponseDto(ItemRequest itemRequest) {
-        return TeacherItemResponseDto.builder()
-                .team_id(itemRequest.getTeamId())
-                .type(TeamType.NETWORK) // 고정값
-                .item_id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getName() : null)
-                .quantity(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getQuantity() : null)
-                .price(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getPrice() : null)
-                .productLink(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getLink() : null)
-                .reason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
-                .status(itemRequest.getStatus().name())
-                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
-                        itemRequest.getDeliveryNumber() : null)
-                .deliveryPrice(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryPrice() : null)
-                .deliveryTime(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryTime() : null)
-                .rejectReason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
-                .updatedAt(itemRequest.getUpdatedAt())
-                .build();
-    }
 }
