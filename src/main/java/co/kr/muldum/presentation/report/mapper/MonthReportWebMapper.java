@@ -77,6 +77,7 @@ public class MonthReportWebMapper {
                 .teacherFeedback(report.getTeacherFeedback())
                 .mentorFeedback(report.getMentorFeedback())
                 .status(report.getStatus())
+                .feedback(report.getFeedback())
                 .build();
     }
 
