@@ -658,7 +658,7 @@ public class TeacherItemService {
         if (teamName == null || teamName.isBlank()) {
             return null;
         }
-        Team team = teamRepository.findByName(teamName)
+        Team team = teamRepository.findFirstByNameOrderByIdAsc(teamName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 팀을 찾을 수 없습니다: " + teamName));
         if (team.getId() == null) {
             throw new IllegalStateException("팀 ID가 없습니다: " + teamName);

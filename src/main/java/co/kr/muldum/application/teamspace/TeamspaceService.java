@@ -83,7 +83,7 @@ public class TeamspaceService {
 
             if (teamName == null || studentId == null || studentName == null) continue;
 
-            Team team = teamRepository.findByName(teamName)
+            Team team = teamRepository.findFirstByNameOrderByIdAsc(teamName)
                     .map(existing -> {
                         if (existing.getType() == null) {
                             existing.setType(teamType);
