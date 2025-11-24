@@ -38,7 +38,7 @@ public class MonthReportEntity {
 
     private LocalDateTime submittedAt;
 
-    private int score;
+    private String feedback;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -23,6 +23,6 @@ public class MonthReport {
     private final String mentorFeedback;
     private final ReportStatus status;
     private final LocalDateTime submittedAt;
-    private final int score;
+    private final String feedback;
     private final LocalDateTime createdAt;
 }

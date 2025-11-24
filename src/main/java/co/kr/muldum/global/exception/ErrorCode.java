@@ -37,7 +37,11 @@ public enum ErrorCode {
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "유효하지 않은 날짜 범위입니다."),
     UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "일정에 접근할 권한이 없습니다."),
     CALENDAR_ENTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."),
-    SCHEDULE_CONFLICT(HttpStatus.CONFLICT, "일정이 충돌합니다.");
+    SCHEDULE_CONFLICT(HttpStatus.CONFLICT, "일정이 충돌합니다."),
+
+    // Report
+    REPORT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "이미 제출된 보고서는 수정할 수 없습니다.");
+
 
     private final HttpStatus status;
     private final String message;
