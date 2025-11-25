@@ -89,6 +89,13 @@ public class TeacherItemService {
         }
     }
 
+    @Transactional
+    public void fixApprovedAtIssues(LocalDateTime start, LocalDateTime end) {
+        log.info("ApprovedAt 일괄 업데이트 시작 - start: {}, end: {}", start, end);
+        int updatedCount = itemRequestRepository.bulkUpdateApprovedAt(start, end, end);
+        log.info("ApprovedAt 일괄 업데이트 완료 - 총 {}건 업데이트됨", updatedCount);
+    }
+
     public NthStatusResponseDto getNthStatus() {
         log.info("현재 물품 신청 차수 조회 시작");
 
@@ -143,7 +150,6 @@ public class TeacherItemService {
                 .build();
     }
 
-
     @Transactional
     public List<TeacherItemResponseDto> getAllPendingItems(Long teacherId) {
         return buildResponse(itemRequestRepository.findByStatus(ItemStatus.PENDING), teacherId);
@@ -160,12 +166,14 @@ public class TeacherItemService {
 
     @Transactional
     public List<TeacherItemResponseDto> getAllMajorPendingItems(Long teacherId) {
-        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.PENDING), TeamType.MAJOR), teacherId);
+        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.PENDING), TeamType.MAJOR),
+                teacherId);
     }
 
     @Transactional
     public List<TeacherItemResponseDto> getAllMajorApprovedItems(Long teacherId, LocalDate targetDate) {
-        List<ItemRequest> items = filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.APPROVED), TeamType.MAJOR);
+        List<ItemRequest> items = filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.APPROVED),
+                TeamType.MAJOR);
         if (targetDate != null) {
             items = filterByDate(items, targetDate, true);
         }
@@ -174,7 +182,8 @@ public class TeacherItemService {
 
     @Transactional
     public List<TeacherItemResponseDto> getAllMajorRejectedItems(Long teacherId) {
-        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.REJECTED), TeamType.MAJOR), teacherId);
+        return buildResponse(filterByTeamType(itemRequestRepository.findByStatus(ItemStatus.REJECTED), TeamType.MAJOR),
+                teacherId);
     }
 
     @Transactional
@@ -213,8 +222,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatusIn(
                 teamId,
-                List.of(ItemStatus.PENDING, ItemStatus.APPROVED)
-        );
+                List.of(ItemStatus.PENDING, ItemStatus.APPROVED));
 
         log.info("팀 {}의 조회된 물품 수: {}", teamId, items.size());
 
@@ -243,8 +251,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.PENDING
-        );
+                ItemStatus.PENDING);
 
         log.info("팀 {}의 승인 안된 물품 수: {}", teamId, items.size());
 
@@ -263,8 +270,7 @@ public class TeacherItemService {
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.APPROVED
-        );
+                ItemStatus.APPROVED);
 
         if (targetDate != null) {
             LocalDateTime start = targetDate.atStartOfDay();
@@ -282,19 +288,19 @@ public class TeacherItemService {
     }
 
     @Transactional
-    public List<TeacherItemResponseDto> getMajorItemsByTeamIdApproved(Integer teamId, Long teacherId, LocalDate targetDate) {
+    public List<TeacherItemResponseDto> getMajorItemsByTeamIdApproved(Integer teamId, Long teacherId,
+            LocalDate targetDate) {
         validateTeamType(teamId, TeamType.MAJOR);
         return getItemsByTeamIdApproved(teamId, teacherId, targetDate);
     }
 
     @Transactional
-    public List<TeacherItemResponseDto>  getItemsByTeamIdRejected(Integer teamId, Long teacherId) {
+    public List<TeacherItemResponseDto> getItemsByTeamIdRejected(Integer teamId, Long teacherId) {
         log.info("팀별 거절 상태 물품 조회 시작 - teamId: {}", teamId);
 
         List<ItemRequest> items = itemRequestRepository.findByTeamIdAndStatus(
                 teamId,
-                ItemStatus.REJECTED
-        );
+                ItemStatus.REJECTED);
 
         log.info("팀 {}의 거절된 물품 수: {}", teamId, items.size());
 
@@ -376,8 +382,7 @@ public class TeacherItemService {
                                     .itemRequest(item)
                                     .teacherId(teacherId)
                                     .approvedAt(approvedAt)
-                                    .build()
-                    );
+                                    .build());
                     processedCount++;
                     log.info("물품 승인 완료 - itemId: {}", request.getItem_id());
                 } else {
@@ -402,25 +407,19 @@ public class TeacherItemService {
                 .team_name(teamName)
                 .type(itemRequest.getTeamType() != null ? itemRequest.getTeamType() : TeamType.NETWORK)
                 .item_id(itemRequest.getId())
-                .product_name(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getName() : null)
-                .quantity(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getQuantity() : null)
-                .price(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getPrice() : null)
-                .productLink(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getLink() : null)
-                .reason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
+                .product_name(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getName() : null)
+                .quantity(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getQuantity() : null)
+                .price(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getPrice() : null)
+                .productLink(itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getLink() : null)
+                .reason(itemRequest.getRequestDetails() != null ? itemRequest.getRequestDetails().getReason() : null)
                 .status(itemRequest.getStatus().name())
-                .deliveryNumber(itemRequest.getDeliveryNumber() != null ?
-                        itemRequest.getDeliveryNumber() : null)
-                .deliveryPrice(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryPrice() : null)
-                .deliveryTime(itemRequest.getProductInfo() != null ?
-                        itemRequest.getProductInfo().getDeliveryTime() : null)
-                .rejectReason(itemRequest.getRequestDetails() != null ?
-                        itemRequest.getRequestDetails().getReason() : null)
+                .deliveryNumber(itemRequest.getDeliveryNumber() != null ? itemRequest.getDeliveryNumber() : null)
+                .deliveryPrice(
+                        itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getDeliveryPrice() : null)
+                .deliveryTime(
+                        itemRequest.getProductInfo() != null ? itemRequest.getProductInfo().getDeliveryTime() : null)
+                .rejectReason(
+                        itemRequest.getRequestDetails() != null ? itemRequest.getRequestDetails().getReason() : null)
                 .updatedAt(itemRequest.getUpdatedAt())
                 .approvedAt(itemRequest.getApprovedAt())
                 .rejectedAt(itemRequest.getRejectedAt())
@@ -480,8 +479,7 @@ public class TeacherItemService {
                     requestDto.getDescription(),
                     requestDto.getLink(),
                     requestDto.getDeliveryPrice(),
-                    requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null
-            );
+                    requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null);
         } else {
             // If ProductInfo is null, create a new one
             ProductInfo newProductInfo = ProductInfo.builder()
@@ -491,7 +489,9 @@ public class TeacherItemService {
                     .link(requestDto.getLink())
                     .description(requestDto.getDescription())
                     .deliveryPrice(requestDto.getDeliveryPrice())
-                    .deliveryTime(requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime()) : null)
+                    .deliveryTime(
+                            requestDto.getDeliveryTime() != null ? LocalDateTime.parse(requestDto.getDeliveryTime())
+                                    : null)
                     .build();
             item.updateProductInfo(newProductInfo);
         }
@@ -510,8 +510,7 @@ public class TeacherItemService {
             Integer nth, String type,
             List<ItemMinPriceRequest> guide,
             String deadlineDate,
-            Long teacherId
-    ) {
+            Long teacherId) {
         log.info("{}차 물품 신청 기간 오픈 처리 시작", nth);
 
         NthStatus nthStatus = nthStatusRepository.findByNthStatusId(1L)
@@ -526,8 +525,7 @@ public class TeacherItemService {
                         .guide(guide)
                         .deadlineDate(deadlineDate)
                         .teacherId(teacherId)
-                        .build()
-        );
+                        .build());
 
         log.info("{}차 물품 신청 기간 오픈 완료", nth);
     }
@@ -554,8 +552,7 @@ public class TeacherItemService {
             guide = ItemGuide.create(
                     teacherId,
                     request.getContent(),
-                    request.getProjectType()
-            );
+                    request.getProjectType());
             itemGuideRepository.save(guide);
             messageSuffix = "등록되었습니다.";
         } else {
@@ -587,7 +584,8 @@ public class TeacherItemService {
     }
 
     private void removeOtherGuides(Long guideIdToKeep, List<ItemGuide> cachedGuides) {
-        List<Long> redundantIds = (cachedGuides != null ? cachedGuides.stream() : itemGuideRepository.findAll().stream())
+        List<Long> redundantIds = (cachedGuides != null ? cachedGuides.stream()
+                : itemGuideRepository.findAll().stream())
                 .map(ItemGuide::getId)
                 .filter(id -> !Objects.equals(id, guideIdToKeep))
                 .toList();
@@ -615,8 +613,7 @@ public class TeacherItemService {
                         .viewer(teacherId)
                         .viewedItemId(item.getId())
                         .watchedAt(now)
-                        .build()
-        ));
+                        .build()));
     }
 
     private List<ItemRequest> filterByTeamType(List<ItemRequest> items, TeamType teamType) {
@@ -706,8 +703,7 @@ public class TeacherItemService {
         List<Team> teams = teamRepository.findAllById(
                 teamIds.stream()
                         .map(Integer::longValue)
-                        .toList()
-        );
+                        .toList());
         for (Team team : teams) {
             if (team.getId() != null) {
                 teamNameMap.put(team.getId().intValue(), team.getName());
