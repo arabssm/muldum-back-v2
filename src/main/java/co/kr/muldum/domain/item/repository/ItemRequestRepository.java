@@ -60,8 +60,8 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
                         SELECT DISTINCT DATE(ir.approved_at) AS approved_date
                         FROM item_requests ir
                         WHERE ir.approved_at IS NOT NULL
-                          AND (:start IS NULL OR ir.approved_at >= CAST(:start AS TIMESTAMP))
-                          AND (:end IS NULL OR ir.approved_at <= CAST(:end AS TIMESTAMP))
+                          AND ir.approved_at >= COALESCE(CAST(:start AS TIMESTAMP), ir.approved_at)
+                          AND ir.approved_at <= COALESCE(CAST(:end AS TIMESTAMP), ir.approved_at)
                         ORDER BY approved_date
                         """, nativeQuery = true)
         List<Date> findDistinctApprovedDates(
