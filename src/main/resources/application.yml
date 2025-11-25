@@ -60,3 +60,4 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
     co.kr.muldum.global.security: DEBUG
+    org.hibernate.SQL: OFF
