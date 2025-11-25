@@ -5,6 +5,7 @@ import co.kr.muldum.domain.item.dto.res.ShippingPolicyResponse;
 import co.kr.muldum.domain.item.service.ItemRequestService;
 import co.kr.muldum.domain.item.service.ItemShippingPolicyService;
 import co.kr.muldum.domain.item.service.TeacherItemService;
+import co.kr.muldum.domain.item.dto.req.BatchUpdateApprovedAtRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,7 @@ public class ItemController {
     @GetMapping("/ara/items/guide/{guide_id}")
     public ResponseEntity<GetItemGuideResponse> getOneItemGuide(
             @PathVariable("guide_id") Long guideId,
-            @RequestParam("type") String projectType
-    ) {
+            @RequestParam("type") String projectType) {
         log.info("물품 가이드 조회 요청 - guideId: {}, projectType: {}", guideId, projectType);
 
         GetItemGuideResponse itemGuide = itemRequestService.getItemGuide(guideId, projectType);
@@ -46,5 +46,15 @@ public class ItemController {
         return itemShippingPolicyService.getPolicy()
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @PatchMapping("/ara/items/issue/approved_at")
+    public ResponseEntity<String> fixApprovedAtIssues(
+            @RequestBody BatchUpdateApprovedAtRequest request) {
+        log.info("물품신청 approved_at 문제 해결 요청 접수 - start: {}, end: {}", request.startDate(), request.endDate());
+
+        teacherItemService.fixApprovedAtIssues(request.startDate(), request.endDate());
+
+        return ResponseEntity.ok("ApprovedAt update completed.");
     }
 }
