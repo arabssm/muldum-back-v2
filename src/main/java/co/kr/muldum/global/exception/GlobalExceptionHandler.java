@@ -5,6 +5,7 @@ import co.kr.muldum.domain.file.exception.InvalidFileTypeException;
 import co.kr.muldum.presentation.report.exception.UnauthorizedRoleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -69,4 +70,18 @@ public class GlobalExceptionHandler {
                         "message", ex.getMessage()
                 ));
     }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+    String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+            .findFirst()
+            .map(org.springframework.validation.FieldError::getDefaultMessage)
+            .orElse("입력값이 유효하지 않습니다.");
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(Map.of(
+                    "statusCode", 400,
+                    "message", errorMessage
+            ));
+  }
 }
