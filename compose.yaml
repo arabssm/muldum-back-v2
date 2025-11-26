@@ -26,6 +26,7 @@ services:
       - .env
     volumes:
       - ./club-2025-1deb98e262f6.json:/app/club-2025-1deb98e262f6.json
+      - ./muldum-7037c46e2566.json:/app/muldum-7037c46e2566.json
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
@@ -47,6 +48,7 @@ services:
       GOOGLE_USER_INFO_URL: ${GOOGLE_USER_INFO_URL}
       GOOGLE_TOKEN_URL: ${GOOGLE_TOKEN_URL}
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      GOOGLE_CALENDAR_KEY_FILE_PATH: /app/muldum-7037c46e2566.json
 
     ports:
       - "8080:8080"
