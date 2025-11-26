@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -47,12 +46,11 @@ public class TeacherMonthReportController {
 
     @GetMapping
     public ResponseEntity<TeacherMonthReportListResponse> getTeacherMonthReportsByTeamAndMonth(
-            @RequestParam("team") Long teamId,
+            @RequestParam(value = "team", required = false) Long teamId,
             @RequestParam(value = "month", required = false) Integer month
     ) {
         validateTeacherRole(SecurityUtil.getCurrentUserType());
         Long teacherId = SecurityUtil.getCurrentUserId();
-        Objects.requireNonNull(teamId, "team parameter is required");
         var reports = getTeacherMonthReportUseCase.getByTeamAndMonth(teamId, month, teacherId);
         var reportResponses = reports.stream()
                 .map(monthReportWebMapper::toTeacherSimpleResponse)

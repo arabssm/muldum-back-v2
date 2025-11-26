@@ -123,12 +123,44 @@ public class GoogleSheetImportService {
 
             Map<String, String> dataMap = new HashMap<>();
             for (int col = 0; col < headerRow.size() && col < row.size(); col++) {
-                dataMap.put(headerRow.get(col).toString().trim(), row.get(col).toString().trim());
+                String rawHeader = Optional.ofNullable(headerRow.get(col))
+                        .map(Object::toString)
+                        .map(String::trim)
+                        .orElse(null);
+                if (rawHeader == null || rawHeader.isBlank()) continue;
+
+                String canonicalHeader = mapToCanonicalHeader(rawHeader);
+                String cellValue = Optional.ofNullable(row.get(col))
+                        .map(Object::toString)
+                        .map(String::trim)
+                        .orElse(null);
+                if (cellValue == null || canonicalHeader == null) continue;
+
+                dataMap.put(canonicalHeader, cellValue);
             }
             result.add(dataMap);
         }
 
         return Map.of("sheetName", sheetName, "rows", result);
+    }
+
+    private String mapToCanonicalHeader(String header) {
+        String normalized = header.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        switch (normalized) {
+            case "team":
+            case "teamid":
+            case "teamname":
+                return "team";
+            case "studentid":
+                return "studentId";
+            case "studentname":
+            case "name":
+                return "name";
+            case "role":
+                return "role";
+            default:
+                return null;
+        }
     }
 
     public String getSheetName(String googleSheetUrl) {

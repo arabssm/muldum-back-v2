@@ -26,6 +26,13 @@ public class MonthReportPersistenceAdapter implements LoadMonthReportPort, SaveM
     }
 
     @Override
+    public List<MonthReport> findAll() {
+        return monthReportJpaRepository.findAll().stream()
+                .map(monthReportMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<MonthReport> findByUserId(Long userId) {
         return monthReportJpaRepository.findByUserId(userId).stream()
                 .map(monthReportMapper::toDomain)
@@ -35,6 +42,13 @@ public class MonthReportPersistenceAdapter implements LoadMonthReportPort, SaveM
     @Override
     public List<MonthReport> findByTeamAndMonth(Long teamId, int month) {
         return monthReportJpaRepository.findByTeamIdAndMonth(teamId, month).stream()
+                .map(monthReportMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MonthReport> findByMonth(int month) {
+        return monthReportJpaRepository.findByMonth(month).stream()
                 .map(monthReportMapper::toDomain)
                 .collect(Collectors.toList());
     }
