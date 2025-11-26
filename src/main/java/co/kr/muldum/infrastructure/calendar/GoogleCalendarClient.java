@@ -5,6 +5,7 @@ import co.kr.muldum.calendar.application.dto.GoogleCalendarEventsResponse;
 import co.kr.muldum.calendar.domain.StudentCalendar;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
@@ -81,6 +82,10 @@ public class GoogleCalendarClient {
                     .nextPageToken(events.getNextPageToken())
                     .nextSyncToken(events.getNextSyncToken())
                     .build();
+        } catch (GoogleJsonResponseException e) {
+            log.error("Google Calendar API error: status={}, message={}, calendarId={}",
+                    e.getStatusCode(), e.getMessage(), targetCalendarId, e);
+            throw handleGoogleApiException(e, targetCalendarId);
         } catch (IOException e) {
             log.error("Failed to fetch events from Google Calendar calendarId={}", targetCalendarId, e);
             throw new CustomException(ErrorCode.GOOGLE_CALENDAR_SYNC_FAILED);
@@ -104,6 +109,10 @@ public class GoogleCalendarClient {
                     .setSendNotifications(false)
                     .execute();
             return created.getId();
+        } catch (GoogleJsonResponseException e) {
+            log.error("Google Calendar API error during create: status={}, calendarId={}",
+                    e.getStatusCode(), targetCalendarId, e);
+            throw handleGoogleApiException(e, targetCalendarId);
         } catch (IOException e) {
             log.error("Failed to create event on Google Calendar calendarId={}", targetCalendarId, e);
             throw new CustomException(ErrorCode.GOOGLE_CALENDAR_SYNC_FAILED);
@@ -121,6 +130,10 @@ public class GoogleCalendarClient {
                     .update(targetCalendarId, eventId, event)
                     .setSendNotifications(false)
                     .execute();
+        } catch (GoogleJsonResponseException e) {
+            log.error("Google Calendar API error during update: status={}, eventId={}, calendarId={}",
+                    e.getStatusCode(), eventId, targetCalendarId, e);
+            throw handleGoogleApiException(e, targetCalendarId);
         } catch (IOException e) {
             log.error("Failed to update Google Calendar event={} calendarId={}", eventId, targetCalendarId, e);
             throw new CustomException(ErrorCode.GOOGLE_CALENDAR_SYNC_FAILED);
@@ -136,6 +149,10 @@ public class GoogleCalendarClient {
             calendar.events()
                     .delete(targetCalendarId, eventId)
                     .execute();
+        } catch (GoogleJsonResponseException e) {
+            log.error("Google Calendar API error during delete: status={}, eventId={}, calendarId={}",
+                    e.getStatusCode(), eventId, targetCalendarId, e);
+            throw handleGoogleApiException(e, targetCalendarId);
         } catch (IOException e) {
             log.error("Failed to delete Google Calendar event={} calendarId={}", eventId, targetCalendarId, e);
             throw new CustomException(ErrorCode.GOOGLE_CALENDAR_SYNC_FAILED);
@@ -193,5 +210,33 @@ public class GoogleCalendarClient {
         eventDateTime.setDate(new DateTime(targetDate.toString()));
         eventDateTime.setTimeZone(zoneId.getId());
         return eventDateTime;
+    }
+
+    private CustomException handleGoogleApiException(GoogleJsonResponseException e, String calendarId) {
+        int statusCode = e.getStatusCode();
+        String message = e.getMessage();
+
+        // 403 Forbidden - API가 비활성화되었거나 권한 없음
+        if (statusCode == 403) {
+            if (message != null && (message.contains("SERVICE_DISABLED") ||
+                                   message.contains("has not been used") ||
+                                   message.contains("accessNotConfigured"))) {
+                return new CustomException(ErrorCode.GOOGLE_CALENDAR_API_DISABLED,
+                        "Google Calendar API가 활성화되지 않았습니다. " +
+                        "Google Cloud Console에서 Calendar API를 활성화하고 몇 분 후 재시도해주세요.");
+            }
+            return new CustomException(ErrorCode.GOOGLE_CALENDAR_PERMISSION_DENIED,
+                    "구글 캘린더 '" + calendarId + "'에 대한 접근 권한이 없습니다.");
+        }
+
+        // 404 Not Found - 캘린더를 찾을 수 없음
+        if (statusCode == 404) {
+            return new CustomException(ErrorCode.GOOGLE_CALENDAR_NOT_CONFIGURED,
+                    "구글 캘린더 '" + calendarId + "'를 찾을 수 없습니다.");
+        }
+
+        // 기타 에러
+        return new CustomException(ErrorCode.GOOGLE_CALENDAR_SYNC_FAILED,
+                "구글 캘린더 동기화 중 오류가 발생했습니다: " + message);
     }
 }
