@@ -104,10 +104,14 @@ public class TeamspaceService {
             String classNum = studentId.substring(1, 2);
             String number = String.valueOf(Integer.parseInt(studentId.substring(2)));
 
-            userRepository.findByGradeClassNumberAndName(grade, classNum, number, studentName)
+            userRepository.findByStudentId(studentId)
+                    .or(() -> userRepository.findByGradeClassNumberAndName(grade, classNum, number, studentName))
                     .ifPresent(user -> {
-                        Map<String, Object> profile = new HashMap<>(user.getProfile());
+                        Map<String, Object> profile = Optional.ofNullable(user.getProfile())
+                                .map(HashMap::new)
+                                .orElseGet(HashMap::new);
                         profile.put("team_id", team.getId());
+                        profile.putIfAbsent("studentId", studentId);
                         user.setProfile(profile);
                         userRepository.save(user);
 

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -153,9 +154,17 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
 
     @Override
     public List<TeacherMonthReportApplicationResponse> getByTeamAndMonth(Long teamId, Integer month, Long teacherId) {
-        List<MonthReport> reports = month != null
-                ? loadMonthReportPort.findByTeamAndMonth(teamId, month)
-                : loadMonthReportPort.findByTeamId(teamId);
+        List<MonthReport> reports;
+        if (teamId != null) {
+            reports = month != null
+                    ? loadMonthReportPort.findByTeamAndMonth(teamId, month)
+                    : loadMonthReportPort.findByTeamId(teamId);
+        } else {
+            reports = month != null
+                    ? loadMonthReportPort.findByMonth(month)
+                    : loadMonthReportPort.findAll();
+            reports = sortReportsByMonthDescending(reports);
+        }
         return reports.stream()
                 .map(report -> TeacherMonthReportApplicationResponse.builder()
                         .reportId(report.getId())
@@ -191,6 +200,21 @@ public class MonthReportService implements SaveMonthReportUseCase, SubmitMonthRe
                 .createdAt(monthReport.getCreatedAt())
                 .build();
         saveMonthReportPort.save(scoredReport);
+    }
+
+    private List<MonthReport> sortReportsByMonthDescending(List<MonthReport> reports) {
+        return reports.stream()
+                .sorted(Comparator.comparingInt(this::extractMonthValue)
+                        .reversed()
+                        .thenComparing(MonthReport::getCreatedAt,
+                                Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
+    }
+
+    private int extractMonthValue(MonthReport report) {
+        return Optional.ofNullable(report.getCreatedAt())
+                .map(LocalDateTime::getMonthValue)
+                .orElse(0);
     }
 
     private Long resolveTeamId(Long existingTeamId, Long providedTeamId, Long userId) {
