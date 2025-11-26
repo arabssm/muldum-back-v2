@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -59,6 +60,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 기본 키 기반 조회
     Optional<User> findById(Long id);
+
+    @Query(value = "SELECT * FROM users u WHERE (u.profile->>'team_id')::bigint = :teamId", nativeQuery = true)
+    List<User> findByTeamId(@Param("teamId") Long teamId);
 
     @Modifying
     @Query(value = """

@@ -46,6 +46,9 @@ public class StudentCalendar {
     @Column(name = "google_event_id", length = 255)
     private String googleEventId;
 
+    @Column(name = "task_id")
+    private Long taskId;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -95,6 +98,10 @@ public class StudentCalendar {
             return;
         }
         this.googleEventId = eventId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
     private static void validate(String teamId, String creatorId,

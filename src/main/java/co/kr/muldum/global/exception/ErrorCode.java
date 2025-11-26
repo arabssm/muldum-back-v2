@@ -44,7 +44,11 @@ public enum ErrorCode {
     GOOGLE_CALENDAR_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "구글 캘린더 접근 권한이 없습니다."),
 
     // Report
-    REPORT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "이미 제출된 보고서는 수정할 수 없습니다.");
+    REPORT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "이미 제출된 보고서는 수정할 수 없습니다."),
+
+    // Task
+    NOT_FOUND_TASK(HttpStatus.NOT_FOUND, "작업을 찾을 수 없습니다."),
+    USER_NOT_IN_SAME_TEAM(HttpStatus.BAD_REQUEST, "담당자는 같은 팀 소속이어야 합니다.");
 
 
     private final HttpStatus status;

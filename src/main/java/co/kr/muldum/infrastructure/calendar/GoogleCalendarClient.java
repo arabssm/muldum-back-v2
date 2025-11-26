@@ -196,12 +196,11 @@ public class GoogleCalendarClient {
     private Event toEvent(StudentCalendar studentCalendar, ZoneId zoneId) {
         EventDateTime start = toEventDateTime(studentCalendar.getStartDate(), false, zoneId);
         EventDateTime end = toEventDateTime(studentCalendar.getEndDate(), true, zoneId);
-        Event event = new Event()
+        return new Event()
                 .setSummary(studentCalendar.getTitle())
                 .setDescription(studentCalendar.getContent())
                 .setStart(start)
                 .setEnd(end);
-        return event;
     }
 
     private EventDateTime toEventDateTime(LocalDate date, boolean exclusiveEnd, ZoneId zoneId) {

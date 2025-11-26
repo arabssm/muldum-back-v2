@@ -29,6 +29,17 @@ spring:
         access-key: ${AWS_ACCESS_KEY_ID}
         secret-key: ${AWS_SECRET_ACCESS_KEY}
         region: ${AWS_BUCKET_REGION}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 jwt:
   secret-key: ${JWT_SECRET_KEY}
 
@@ -66,3 +77,14 @@ logging:
     org.springframework.web: DEBUG
     co.kr.muldum.global.security: DEBUG
     org.hibernate.SQL: OFF
+
+notion:
+  oauth:
+    client-id: ${NOTION_OAUTH_CLIENT_ID}
+    client-secret: ${NOTION_OAUTH_CLIENT_SECRET}
+    redirect-uri: ${NOTION_OAUTH_REDIRECT_URI}
+  api-version: "2022-06-28"
+
+app:
+  frontend-url: ${FRONTEND_URL}
+

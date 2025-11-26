@@ -168,6 +168,11 @@ public class StudentCalendarService {
             return base;
         }
 
+        // Google Calendar의 all-day 이벤트는 종료일이 exclusive이므로, 우리 시스템에 맞게 inclusive로 변경
+        if (event.isAllDay() && endDate.isAfter(startDate)) {
+            endDate = endDate.minusDays(1);
+        }
+
         return StudentCalendarResponse.builder()
                 .calendarId(base.getCalendarId())
                 .startYear(startDate.getYear())
