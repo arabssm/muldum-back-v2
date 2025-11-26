@@ -8,7 +8,6 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +19,21 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Configuration
-@RequiredArgsConstructor
 public class GoogleCalendarConfig {
 
     private final GoogleCredentialFileProvider googleCredentialFileProvider;
-
-    @Value("${google.calendar.credentials-path}")
     private final String credentialsPath;
-
-    @Value("${google.calendar.application-name:muldum-calendar}")
     private final String applicationName;
+
+    public GoogleCalendarConfig(
+            GoogleCredentialFileProvider googleCredentialFileProvider,
+            @Value("${google.calendar.credentials-path}") String credentialsPath,
+            @Value("${google.calendar.application-name:muldum-calendar}") String applicationName
+    ) {
+        this.googleCredentialFileProvider = googleCredentialFileProvider;
+        this.credentialsPath = credentialsPath;
+        this.applicationName = applicationName;
+    }
 
     @Bean
     public Calendar calendarService() throws IOException, GeneralSecurityException {
