@@ -68,6 +68,18 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
                         @Param("start") LocalDateTime start,
                         @Param("end") LocalDateTime end);
 
+        @Query(value = """
+                        SELECT DISTINCT DATE(ir.rejected_at) AS rejected_date
+                        FROM item_requests ir
+                        WHERE ir.rejected_at IS NOT NULL
+                          AND ir.rejected_at >= COALESCE(CAST(:start AS TIMESTAMP), ir.rejected_at)
+                          AND ir.rejected_at <= COALESCE(CAST(:end AS TIMESTAMP), ir.rejected_at)
+                        ORDER BY rejected_date
+                        """, nativeQuery = true)
+        List<Date> findDistinctRejectedDates(
+                        @Param("start") LocalDateTime start,
+                        @Param("end") LocalDateTime end);
+
         @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
         @Query("UPDATE ItemRequest i SET i.approvedAt = :approvedAt WHERE i.createdAt >= :start AND i.createdAt < :end")
         int bulkUpdateApprovedAt(

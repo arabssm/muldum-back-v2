@@ -36,6 +36,9 @@ public class Team {
     @Column(name = "config", columnDefinition = "jsonb")
     private TeamSettings config;
 
+    @Column(name = "google_calendar_id", length = 255)
+    private String googleCalendarId;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -45,11 +48,12 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Team(String name, String content, TeamSettings config, TeamType type) {
+    public Team(String name, String content, TeamSettings config, TeamType type, String googleCalendarId) {
         this.name = name;
         this.content = content;
         this.config = config;
         this.type = type;
+        this.googleCalendarId = googleCalendarId;
     }
 
     public void changeContent(String name, String content) {

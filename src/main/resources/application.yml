@@ -43,6 +43,11 @@ oauth:
 google:
   sheets:
     credentials-path: ${GOOGLE_SHEETS_KEY_FILE_PATH}
+  calendar:
+    credentials-path: ${GOOGLE_CALENDAR_KEY_FILE_PATH:${GOOGLE_SHEETS_KEY_FILE_PATH}}
+    default-calendar-id: ${GOOGLE_CALENDAR_ID:}
+    application-name: ${GOOGLE_CALENDAR_APP_NAME:muldum-calendar}
+    time-zone: ${GOOGLE_CALENDAR_TIME_ZONE:Asia/Seoul}
 team:
   default-banner-image: ${DEFAULT_TEAM_BANNER_IMAGE}
 

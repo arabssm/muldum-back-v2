@@ -43,6 +43,9 @@ public class StudentCalendar {
     @Column(name = "end_date_time", nullable = false, columnDefinition = "DATE")
     private LocalDate endDate;
 
+    @Column(name = "google_event_id", length = 255)
+    private String googleEventId;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -53,13 +56,14 @@ public class StudentCalendar {
 
     private StudentCalendar(String teamId, String creatorId, String title,
                             String content, LocalDate startDate,
-                            LocalDate endDate) {
+                            LocalDate endDate, String googleEventId) {
         this.teamId = teamId;
         this.creatorId = creatorId;
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.googleEventId = googleEventId;
     }
 
     public static StudentCalendar create(String teamId, String creatorId,
@@ -72,7 +76,8 @@ public class StudentCalendar {
                 title.trim(),
                 content.trim(),
                 startDate,
-                endDate
+                endDate,
+                null
         );
     }
 
@@ -83,6 +88,13 @@ public class StudentCalendar {
         this.content = content.trim();
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void linkGoogleEvent(String eventId) {
+        if (eventId == null || eventId.isBlank()) {
+            return;
+        }
+        this.googleEventId = eventId;
     }
 
     private static void validate(String teamId, String creatorId,
@@ -117,5 +129,9 @@ public class StudentCalendar {
 
     public LocalDate getEndDate() {
         return endDate;
+    }
+
+    public String getGoogleEventId() {
+        return googleEventId;
     }
 }

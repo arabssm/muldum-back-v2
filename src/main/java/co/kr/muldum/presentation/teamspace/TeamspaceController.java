@@ -20,7 +20,7 @@ public class TeamspaceController {
 
     private final TeamspaceService teamspaceService;
 
-    @DeleteMapping("/tch/teamspace/network/team/{team_id}")
+    @DeleteMapping("/tch/teamspace/team/{team_id}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteTeam(
             @PathVariable("team_id") Long teamId
