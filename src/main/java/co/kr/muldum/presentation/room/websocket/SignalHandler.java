@@ -246,17 +246,31 @@ public class SignalHandler extends TextWebSocketHandler {
         session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
     }
 
+    public int broadcastToRoom(String roomId, Map<String, ?> message) {
+        return broadcast(roomId, message);
+    }
+
     private void broadcastToAll(String roomId, Map<String, ?> message) {
-        roomSessions.getOrDefault(roomId, Map.of()).values().forEach(info -> {
+        broadcast(roomId, message);
+    }
+
+    private int broadcast(String roomId, Map<String, ?> message) {
+        Map<String, UserSessionInfo> sessionsInRoom = roomSessions.getOrDefault(roomId, Map.of());
+        int delivered = 0;
+
+        for (UserSessionInfo info : sessionsInRoom.values()) {
             try {
                 WebSocketSession session = info.session();
                 if (session.isOpen()) {
                     sendMessage(session, message);
+                    delivered++;
                 }
             } catch (IOException e) {
                 log.error("Failed to broadcast to session {}: {}", info.session().getId(), e.getMessage());
             }
-        });
+        }
+
+        return delivered;
     }
 
     private boolean isChatMessage(String type) {

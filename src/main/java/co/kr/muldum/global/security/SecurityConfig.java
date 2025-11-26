@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/stt/broadcast").permitAll()
                 .requestMatchers("/ara/**").permitAll()
                 .requestMatchers("/user/issue").permitAll()
                 .requestMatchers("/items/issue").permitAll()

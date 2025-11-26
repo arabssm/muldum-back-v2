@@ -5,6 +5,7 @@ import co.kr.muldum.domain.teamspace.repository.TeamRepository;
 import co.kr.muldum.domain.teamspace.repository.TeamspaceMemberRepository;
 import co.kr.muldum.domain.user.model.User;
 import co.kr.muldum.domain.user.repository.UserRepository;
+import co.kr.muldum.domain.user.model.UserType;
 import co.kr.muldum.global.exception.CustomException;
 import co.kr.muldum.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,25 @@ public class TeamService {
 
         teamRepository.flush();
         log.info("Team id: {} 수정 완료 by User unknown", teamId);
+    }
+
+    @Transactional
+    public void updateTeamGoogleCalendar(Long teamId, String googleCalendarId, Long currentUserId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        if (user.getUserType() != UserType.STUDENT) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        if (!teamspaceMemberRepository.existsByTeam_IdAndUser_Id(teamId, currentUserId)) {
+            throw new CustomException(ErrorCode.NOT_TEAM_MEMBER);
+        }
+
+        team.setGoogleCalendarId(googleCalendarId);
+        teamRepository.flush();
     }
 }

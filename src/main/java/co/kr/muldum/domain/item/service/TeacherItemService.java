@@ -216,6 +216,18 @@ public class TeacherItemService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<LocalDate> getRejectedDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("startDate는 endDate보다 이후일 수 없습니다.");
+        }
+        LocalDateTime start = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+        return itemRequestRepository.findDistinctRejectedDates(start, end).stream()
+                .map(java.sql.Date::toLocalDate)
+                .toList();
+    }
+
     @Transactional
     public List<TeacherItemResponseDto> getItemsByTeamId(Integer teamId, Long teacherId) {
         log.info("팀별 PENDING, APPROVED 물품 조회 시작 - teamId: {}", teamId);

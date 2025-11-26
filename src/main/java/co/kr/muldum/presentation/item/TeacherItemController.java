@@ -198,6 +198,17 @@ public class TeacherItemController {
         return ResponseEntity.ok(dates);
     }
 
+    @GetMapping("/rejected-dates")
+    public ResponseEntity<List<LocalDate>> getRejectedDates(
+            @RequestParam(value = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        log.info("거절 완료 날짜 목록 조회 요청 - teacherId: {}, start: {}, end: {}", userDetails.getUserId(), start, end);
+        List<LocalDate> dates = teacherItemService.getRejectedDates(start, end);
+        return ResponseEntity.ok(dates);
+    }
+
     @GetMapping("/{teamId}")
     public ResponseEntity<List<TeacherItemResponseDto>> getItemsByTeamId(
             @PathVariable Integer teamId,
